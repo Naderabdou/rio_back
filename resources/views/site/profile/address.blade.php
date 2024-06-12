@@ -63,7 +63,7 @@
                                 @forelse ($user->address as $address)
                                     <div class="main-address-order">
                                         <div class="title-address-order">
-                                            <h2>عنوان {{ $loop->iteration }} </h2>
+                                            <h2>{{ transWord('Address') }} {{ $loop->iteration }} </h2>
                                             <div class="d-flex gap-5">
                                                 <a href="" data-toggle="modal"
                                                     data-target=".address-modal-update-{{ $address->id }}"
@@ -187,7 +187,7 @@
                             <div class="input-form arrow-select">
                                 <select class="form-select form-control city_id" name="city_id">
                                     <option value=""> {{ transWord('اختر المدينه') }} </option>
-                                  
+
                                 </select>
                             </div>
                             <div class="input-form">
@@ -315,7 +315,7 @@
 
         //                  //append new address render
         //                 $('.address-order').append(data);
-                            
+
         //                 $('.ctm-btn').prop('disabled', false);
 
 

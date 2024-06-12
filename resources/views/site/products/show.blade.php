@@ -319,7 +319,7 @@
 @endsection
 @push('js')
     <script src="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.8.1/slick.js"></script>
-    <script>
+    {{-- <script>
         // $(document).ready(function() {
         //     $.validator.addMethod("noSpecialChars", function(value, element) {
         //         return this.optional(element) || /^[a-zA-Z0-9\u0600-\u06FF ]*$/.test(value);
@@ -535,5 +535,5 @@
             })
 
         });
-    </script>
+    </script> --}}
 @endpush

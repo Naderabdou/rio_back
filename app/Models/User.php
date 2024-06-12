@@ -116,10 +116,20 @@ class User extends Authenticatable
         return $this->hasMany(Address::class, 'user_id', 'id');
     }
 
+    // public function orders()
+    // {
+    //     return $this->hasMany(Order::class, 'user_id', 'id');
+    // }
+    public function cart()
+    {
+        return $this->hasOne(Order::class ,'user_id','id')->where('type', 'cart');
+    }
+
     public function orders()
     {
-        return $this->hasMany(Order::class, 'user_id', 'id');
+        return $this->hasMany(Order::class, 'user_id', 'id')->where('type', 'order');
     }
+
 
 
 }

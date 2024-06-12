@@ -102,7 +102,8 @@
                                             <button id="btn_login"
                                                 class="w-100 ctm-btn">{{ transWord('تسجيل الدخول') }}
                                             </button>
-                                            <a id="forget_pass" href="" data-toggle="modal" data-target=".forget-password-modal"
+                                            <a id="forget_pass" href="" data-toggle="modal"
+                                                data-target=".forget-password-modal"
                                                 data-dismiss="modal">{{ transWord(' هل نسيت كلمة المرور ؟') }} </a>
                                         </div>
                                     </div>
@@ -213,7 +214,7 @@
                                 <div class="input-form">
                                     <input type="email" placeholder="{{ transWord('البريد الالكتروني') }}"
                                         class="form-control" name="email">
-                                        <div style="color: red" class="email_error" class="error-message"></div>
+                                    <div style="color: red" class="email_error" class="error-message"></div>
 
 
                                 </div>
@@ -260,23 +261,31 @@
                             <input type="hidden" name="email" id="email_check" value="">
                             <div class="title-aosh">
                                 <h2>{{ transWord('ادخال كود التحقق') }}</h2>
-                                <p id="email_code">{{ transWord('برجاء ادخال كود التحقق المرسل الي البريد الالكتروني') }} AHMED24@GMAIL.COM</p>
+                                <p id="email_code">
+                                    {{ transWord('برجاء ادخال كود التحقق المرسل الي البريد الالكتروني') }}
+                                    AHMED24@GMAIL.COM</p>
                             </div>
                             <div class="form-aosh">
 
                                 <div class="otp-container">
-                                    <input type="text" class="otp-input" pattern="\d" maxlength="1" name="code[]">
-                                    <input type="text" class="otp-input" pattern="\d" maxlength="1" disabled name="code[]">
-                                    <input type="text" class="otp-input" pattern="\d" maxlength="1" disabled name="code[]">
-                                    <input type="text" class="otp-input" pattern="\d" maxlength="1" disabled name="code[]">
+                                    <input type="text" class="otp-input" pattern="\d" maxlength="1"
+                                        name="code[]">
+                                    <input type="text" class="otp-input" pattern="\d" maxlength="1" disabled
+                                        name="code[]">
+                                    <input type="text" class="otp-input" pattern="\d" maxlength="1" disabled
+                                        name="code[]">
+                                    <input type="text" class="otp-input" pattern="\d" maxlength="1" disabled
+                                        name="code[]">
 
                                 </div>
                                 <div style="color: red" class="code_error" class="error-message"></div>
 
                                 <div class="btn-aosh">
-                                    <button class="w-100 ctm-btn btn_checkCode" >{{ transWord('ارسال') }}</button>
+                                    <button class="w-100 ctm-btn btn_checkCode">{{ transWord('ارسال') }}</button>
                                     <div class="resend-massage">
-                                        <p>{{ transWord('لم يتم استلام الكود') }} <a id="resend_code" href="{{ route('site.resendCode') }}"> {{ transWord('اضغط لاعادة الارسال') }}</a></p>
+                                        <p>{{ transWord('لم يتم استلام الكود') }} <a id="resend_code"
+                                                href="{{ route('site.resendCode') }}">
+                                                {{ transWord('اضغط لاعادة الارسال') }}</a></p>
                                     </div>
                                 </div>
                             </div>
@@ -304,7 +313,7 @@
                             <span aria-hidden="true"> <i class="bi bi-x-circle"></i></span>
                         </button>
                         <div class="logo-aosh">
-                            <a href="{{route('site.home') }}">
+                            <a href="{{ route('site.home') }}">
                                 <object data="{{ asset('site/images/logo.svg') }}" type="">
                                     <img src="{{ asset('site/images/logo.svg') }}" alt="">
                                 </object>
@@ -317,22 +326,23 @@
                             <div class="title-aosh">
                                 @csrf
                                 <input type="hidden" name="email" id="email_update" value="">
-                                <h2>{{transWord('إعادة تعيين كلمة المرور')}}</h2>
-                                <p>{{transWord('يمكنك تغيير كلمة المرور الان لضمان ')}}</p>
+                                <h2>{{ transWord('إعادة تعيين كلمة المرور') }}</h2>
+                                <p>{{ transWord('يمكنك تغيير كلمة المرور الان لضمان ') }}</p>
                             </div>
                             <div class="form-aosh">
 
                                 <div class="input-form">
-                                    <input type="password" placeholder="{{ transWord('كلمة المرور') }}" class="form-control"
-                                        name="password">
+                                    <input type="password" placeholder="{{ transWord('كلمة المرور') }}"
+                                        class="form-control" name="password">
 
-                                        <div style="color: red" class="password_error" class="error-message"></div>
+                                    <div style="color: red" class="password_error" class="error-message"></div>
 
                                 </div>
                                 <div class="input-form">
-                                    <input type="password" placeholder="{{ transWord('تأكيد كلمة المرور') }}" class="form-control"
-                                        name="password_confirmation">
-                                        <div style="color: red" class="password_confirmation_error" class="error-message"></div>
+                                    <input type="password" placeholder="{{ transWord('تأكيد كلمة المرور') }}"
+                                        class="form-control" name="password_confirmation">
+                                    <div style="color: red" class="password_confirmation_error"
+                                        class="error-message"></div>
 
 
                                 </div>
@@ -362,51 +372,59 @@
     =================== -->
         <div class="cart-header">
             <div class="title-cart-header">
-                <h2> عربة التسوق </h2>
+                <h2> {{ transWord('عربة التسوق ') }}</h2>
                 <div class="close-cart-header"><i class="bi bi-x-circle"></i></div>
             </div>
 
             <div class="product-cart-header">
-                <ul>
-                    <li>
-                        <div class="img-product-cart-header">
-                            <img src="images/p1.png" alt="">
-                        </div>
-                        <div class="text-product-cart-header">
-                            <h2> <span> زجاجة مياه رياضية </span>
-                                <button class="remove-cart-header"> <i class="bi bi-trash"></i></button>
-                            </h2>
-                            <div>
-                                <span> X1</span>
-                                <div class="price-cart-header"> EGP 175 <span class="old-price"> 200 EGP </span></div>
-                            </div>
-                        </div>
-                    </li>
-                    <li>
-                        <div class="img-product-cart-header">
-                            <img src="images/p1.png" alt="">
-                        </div>
-                        <div class="text-product-cart-header">
-                            <h2> <span> زجاجة مياه رياضية </span>
-                                <button class="remove-cart-header"> <i class="bi bi-trash"></i></button>
-                            </h2>
-                            <div>
-                                <span> X1</span>
-                                <div class="price-cart-header"> EGP 175 <span class="old-price"> 200 EGP </span></div>
-                            </div>
-                        </div>
-                    </li>
+                <ul id="add_cart">
+                    @if (auth()->user() && auth()->user()->cart)
+                        @php
+                            $orderItems = auth()->user()->cart;
+                        @endphp
+                        @forelse ($orderItems->orderItems as $item)
+                            <li>
+                                <div class="img-product-cart-header">
+                                    <img src="{{ $item->products->image_path }}" alt="">
+                                </div>
+                                <div class="text-product-cart-header">
+                                    <h2> <span> {{ $item->product_name }}</span>
+                                        <button class="remove-cart-header"> <i class="bi bi-trash"></i></button>
+                                    </h2>
+                                    <div>
+                                        <span> {{ $item->quantity }}</span>
+                                        <div class="price-cart-header"> EGP {{ $item->price }} <span
+                                                class="old-price"> {{ $item->products->price_after_discount ?? 0 }}
+                                                EGP </span></div>
+                                    </div>
+                                </div>
+                            </li>
+                        @empty
+
+                            <h3 id="order_emty">
+                                {{ transWord('لا يوجد منتجات في العربة') }}
+                            </h3>
+                        @endforelse
+                    @endif
+
+
 
                 </ul>
             </div>
-
-            <div class="btns-cart-header">
-                <div class="total-cart-header pb-3">
-                    <h2> المجموع <span>EGP 350</span></h2>
-                </div>
-                <a href="cart.html" class="w-100 mt-2 ctm-btn2"> مشاهدة عربة التسوق</a>
-                <a href="puyment.html" class="w-100 mt-2 ctm-btn">اتمام عملية الشراء</a>
-            </div>
+            @if (auth()->user() && auth()->user()->cart)
+                @if ($orderItems->orderItems->count() > 0)
+                    <div class="btns-cart-header">
+                        <div class="total-cart-header pb-3">
+                            <h2> {{ transWord('المجموع') }} <span> EGP {{ $orderItems->orderItems->sum('price') }}
+                                </span>
+                            </h2>
+                        </div>
+                        <a href="{{ route('site.cart') }}" class="w-100 mt-2 ctm-btn2">
+                            {{ transWord('مشاهدة عربة التسوق') }}</a>
+                        <a href="puyment.html" class="w-100 mt-2 ctm-btn">{{ transWord('اتمام عملية الشراء') }}</a>
+                    </div>
+                @endif
+            @endif
         </div>
         <!-- end add to cart  ======
     =================== -->

@@ -23,6 +23,7 @@
 
     <meta name="msapplication-TileColor" content="">
     <meta name="msapplication-TileImage" content="">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
 
     @seo
 

@@ -9,10 +9,10 @@
 @section('content')
 
     <!-- start app ====
-                                    ===============================
-                                    ================================
-                                    ============== --
-                                    -->
+                                        ===============================
+                                        ================================
+                                        ============== --
+                                        -->
     <main id="app">
         <!-- start hero -->
         <section class="hero">
@@ -104,8 +104,13 @@
                                             <h2>{{ $offer->title }}</h2>
                                             <p>{{ $offer->sub_title }}</p>
                                             <div class="product-price">
-                                                <h3>{{ $offer->price }}</h3>
-                                                <h4> {{ $offer->price_after_discount }} </h4>
+                                                <h3>EGP {{ $offer->price }} </h3>
+                                                {{-- <h4> EGP {{ $products->price_after_discount }} </h4> --}}
+                                                {{-- <h4> {{ $product->price_after_discount ?? $product->price }} EGP </h4> --}}
+                                                <h4> {{ $offer->price_after_discount ?? 0 }} EGP </h4>
+
+                                                <div class="offer-price"> {{ $offer->discount ?? 0 }}% OFF</div>
+
                                             </div>
                                         </div>
                                         <div style="background-color: {{ $offer->label_color }}"
@@ -115,7 +120,9 @@
                                     <div class="btns-product">
                                         <a href="{{ route('site.products.show', $offer->id) }}"
                                             class="ctm-btn3 w-100">{{ transWord('مشاهدة المنتج') }}</a>
-                                        <a href="" class="btn-cart">
+                                        <a href="{{ route('site.cart.store') }}"
+                                            class="{{ auth()->user() ? 'btn-cart' : 'auth_login' }}"
+                                            data-id="{{ $offer->id }}">
                                             <svg width="32" height="33" viewBox="0 0 32 33" fill="none"
                                                 xmlns="http://www.w3.org/2000/svg">
                                                 <path
@@ -210,7 +217,7 @@
                     @forelse ($products as $product)
                         <div class="col-lg-4 col-md-6">
                             <div class="sub-product">
-                                <a href="{{ route('site.products.show',$product->id) }}">
+                                <a href="{{ route('site.products.show', $product->id) }}">
                                     <div class="img-sub-product">
                                         <img src="{{ $product->image_path }}" alt="">
                                     </div>
@@ -223,7 +230,10 @@
                                 <div class="btns-product">
                                     <a href="{{ route('site.products.show', $product->id) }}"
                                         class="ctm-btn3 w-100">{{ transWord('مشاهدة المنتج') }}</a>
-                                    <a href="" class="btn-cart">
+
+                                    <a href="{{ route('site.cart.store') }}"
+                                        class="{{ auth()->user() ? 'btn-cart' : 'auth_login' }}"
+                                        data-id="{{ $product->id }}">
                                         <svg width="32" height="33" viewBox="0 0 32 33" fill="none"
                                             xmlns="http://www.w3.org/2000/svg">
                                             <path
@@ -271,31 +281,33 @@
         <section class="banners mr-section">
             <div class="main-container">
                 <div class="owl-carousel owl-theme " id="banners">
-                    @forelse ( $banners as $banner )
-                    <div class="item">
-                        <div class="sub-banners" style="background-color: {{ $banner->color['color_ground'] }};">
-                            <div class="img-banners">
-                                <img src="{{ $banner->image_path }}" alt="">
-                            </div>
-                            <div class="text-banner">
-                                <h3>{{ $banner->title }}</h3>
-                                <h2 style="color: {{ $banner->color['color_title'] }}">{{ $banner->sub_title }}</h2>
-                                <a href="{{ route('site.products') }}" style="background-color: {{ $banner->color['color_btn'] }}" class="ctm-btn"> {{ transWord('تسوق الان ') }}</a>
+                    @forelse ($banners as $banner)
+                        <div class="item">
+                            <div class="sub-banners" style="background-color: {{ $banner->color['color_ground'] }};">
+                                <div class="img-banners">
+                                    <img src="{{ $banner->image_path }}" alt="">
+                                </div>
+                                <div class="text-banner">
+                                    <h3>{{ $banner->title }}</h3>
+                                    <h2 style="color: {{ $banner->color['color_title'] }}">{{ $banner->sub_title }}</h2>
+                                    <a href="{{ route('site.products') }}"
+                                        style="background-color: {{ $banner->color['color_btn'] }}" class="ctm-btn">
+                                        {{ transWord('تسوق الان ') }}</a>
+                                </div>
                             </div>
                         </div>
-                    </div>
                     @empty
-                    <div class="item">
-                        <div class="sub-banners" style="background-color: #EDFAFF;">
-                            <div class="img-banners">
-                                <img src="{{ asset('site/images/not.png') }}" alt="">
-                            </div>
-                            <div class="text-banner">
-                                <h3>{{ transWord('لايوجد اعلانات االان') }}</h3>
+                        <div class="item">
+                            <div class="sub-banners" style="background-color: #EDFAFF;">
+                                <div class="img-banners">
+                                    <img src="{{ asset('site/images/not.png') }}" alt="">
+                                </div>
+                                <div class="text-banner">
+                                    <h3>{{ transWord('لايوجد اعلانات االان') }}</h3>
 
+                                </div>
                             </div>
                         </div>
-                    </div>
                     @endforelse
 
 
@@ -340,8 +352,46 @@
     </main>
 
     <!-- end app ====
-                                    =============================
-                                    ==================================
-                                    ==================== -->
+                                        =============================
+                                        ==================================
+                                        ==================== -->
 
 @endsection
+@push('js')
+    <script>
+        $(document).ready(function() {
+            $('.btn-cart').click(function(e) {
+                e.preventDefault();
+                var id = $(this).data('id');
+                var url = $(this).attr('href');
+                $.ajax({
+                    url: url,
+                    type: 'GET',
+                    data: {
+                        id: id
+                    },
+                    success: function(data) {
+                        Swal.fire({
+                            icon: 'success',
+                            title: `<h5> ${data.message}</h5> `,
+                            showConfirmButton: false,
+                            timer: 1500
+                        });
+                        if(data.type == 'success'){
+                            setTimeout(() => {
+                            location.reload();
+
+                         }, 1000);
+                        }
+
+                        
+                        // $('#add_cart').append(data);
+                        // $('#order_emty').hide();
+                        // $('.cart_count').text(data.cart_count);
+                        // $('.cart_count').show();
+                    }
+                });
+            });
+        });
+    </script>
+@endpush

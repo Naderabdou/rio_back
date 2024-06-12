@@ -245,6 +245,22 @@ Route::namespace('Site')->name('site.')->middleware('lang')->group(function () {
         Route::post('reviews', 'ReviewController@store')->name('reviews.store');
         //-------------------- End reviews Products Routes -------------------//
 
+        //-------------------- Cart Routes -------------------//
+        Route::get('cart', 'CartController@index')->name('cart');
+        Route::get('cart/store', 'CartController@store')->name('cart.store');
+        Route::post('cart/update', 'CartController@update')->name('cart.update');
+        Route::delete('cart/{id}', 'CartController@destroy')->name('cart.destroy');
+        Route::post('cart/coupon', 'CartController@coupon')->name('cart.coupon');
+        Route::post('cart/coupon/remove', 'CartController@removeCoupon')->name('cart.coupon.remove');
+        //-------------------- End Cart Routes -------------------//
+
+        //--------------------- checkout Routes -------------------//
+        Route::get('checkout', 'CheckoutController@index')->name('checkout');
+        Route::post('checkout', 'CheckoutController@store')->name('checkout.store');
+        //-------------------- End checkout Routes -------------------//
+
+
+
 
 
 

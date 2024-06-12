@@ -508,6 +508,47 @@ $(document).ready(function () {
         });
     })
 
+    var lang = 'ar';
 
+    if (lang == 'ar') {
+        var message = 'يجب عليك التسجيل لاستخدام هذه الميرة';
+        var message_sure = 'هل تريد التسجبل ؟';
+        var yes = 'نعم';
+        var no = 'لا';
+        var message_close = 'تم الالغاء بنجاح';
+        var paynow = 'اشتري الان';
+    } else {
 
+        var message = 'You must register to use this feature';
+        var message_sure = 'Do you want to register ?';
+        var yes = 'Yes';
+        var no = 'No';
+        var message_close = 'Canceled successfully';
+        var paynow = 'Pay Now';
+    }
+
+    $(document).on('click', '.auth_login', function (e) {
+        e.preventDefault();
+        Swal.fire({
+            title: message_sure,
+            text: message,
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: yes,
+            cancelButtonText: no
+        }).then((result) => {
+            if (result.isConfirmed) {
+
+                $('.login-modal').modal('show');
+
+            } else {
+
+            }
+        })
+
+    });
+
+   
 });
