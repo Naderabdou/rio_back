@@ -1,0 +1,70 @@
+<svg width="381" height="302" viewBox="0 0 381 302" fill="none" xmlns="http://www.w3.org/2000/svg">
+<style> 
+.gf1 {
+        animation:linear;
+
+        transform-box: fill-box;
+    animation-fill-mode: both;
+  animation-name: fillkay;
+  animation-fill-mode: both;
+	animation-duration: 2.5s;
+    
+	animation-iteration-count: infinite;
+}
+
+
+
+
+.gf2{
+    animation:linear;
+        transform-box: fill-box;
+    animation-fill-mode: both;
+  animation-delay: .2s;
+  animation-name: fillkay;
+  animation-fill-mode: both;
+	animation-duration: 2.5s;
+    
+	animation-iteration-count: infinite;
+}
+
+.gf3{
+        animation:linear;
+
+        transform-box: fill-box;
+    animation-fill-mode: both;
+  animation-delay: .4s;
+  animation-name: fillkay;
+  animation-fill-mode: both;
+	animation-duration: 2.5s;
+	animation-iteration-count: infinite;
+}
+
+.gf4{
+        animation:linear;
+
+        transform-box: fill-box;
+    animation-fill-mode: both;
+  animation-delay: .6s;
+  animation-name: fillkay;
+  animation-fill-mode: both;
+	animation-duration: 2.5s;
+	animation-iteration-count: infinite;
+}
+@keyframes fillkay {
+0% {
+ fill:#00ABE3
+}
+50% {
+  fill:#ED257A
+}
+
+100% {
+fill:#00ABE3
+}
+}
+</style>
+<path class="gf1" d="M172.189 165.537C172.189 165.537 367.566 134.457 380.111 293.607C380.111 293.607 180.997 347.997 172.189 165.537Z" fill="#00ABE3"/>
+<path class="gf2" d="M175.379 146.515C175.379 146.515 395.044 155.357 319.509 0.493896C319.509 0.761826 134.275 -4.32883 175.379 146.515Z" fill="#00ABE3"/>
+<path class="gf3" d="M161.775 148.656C161.775 148.656 -2.90772 186.166 0.829 65.5978C0.829 65.8657 141.49 37.1973 161.775 148.656Z" fill="#00ABE3"/>
+<path class="gf4" d="M161.506 164.197C163.908 180.808 159.104 199.563 146.292 214.3C131.612 230.911 106.79 237.342 82.5009 236.002C75.8282 235.734 73.1591 233.591 73.4261 227.696C73.693 217.247 79.0311 205.19 84.6362 196.08C90.2412 186.971 98.5154 179.469 108.925 174.914C124.939 167.144 143.623 165.001 161.506 164.197Z" fill="#00ABE3"/>
+</svg>
