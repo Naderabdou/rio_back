@@ -37,7 +37,7 @@ Route::middleware('localization')->group(function () {
         Route::post('update-password', 'AuthController@updatePassword')->name('updatePassword');
         //------------------- End Auth Routes -------------------//
 
-        Route::middleware('auth')->group(function () {
+        Route::middleware(['auth','role:admin'])->group(function () {
             //------------------- Dashboard Routes -------------------//
             Route::get('/', 'DashboardController@home')->name('home');
             Route::get('/test', function () {
@@ -190,12 +190,11 @@ Route::namespace('Site')->name('site.')->group(function () {
     Route::post('login', 'AuthController@login')->name('login')->middleware('guest');
 
     Route::post('register', 'AuthController@register')->name('register')->middleware('guest');
-    Route::post('logout', 'AuthController@logout')->name('logout')->middleware('auth');
+    Route::get('logout', 'AuthController@logout')->name('logout')->middleware('auth');
     Route::post('forget-password', 'AuthController@forgetPassword')->name('forgetPassword')->middleware('guest');
     Route::post('check-code', 'AuthController@checkCode')->name('checkCode')->middleware('guest');
     Route::get('resend-code/{email?}', 'AuthController@resendCode')->name('resendCode')->middleware('guest');
-        Route::post('update-password', 'AuthController@updatePassword')->name('updatePassword')->middleware('guest');
-
+    Route::post('update-password', 'AuthController@updatePassword')->name('updatePassword')->middleware('guest');
 });
 
 Route::namespace('Site')->name('site.')->middleware('lang')->group(function () {
@@ -207,8 +206,12 @@ Route::namespace('Site')->name('site.')->middleware('lang')->group(function () {
     Route::get('products', 'ProductController@index')->name('products');
     Route::get('products/filter', 'ProductController@filter')->name('products.filter');
    // Route::get('products/arrange', 'ProductController@arrange')->name('products.arrange');
+   Route::get('products/search', 'ProductController@search')->name('products.search');
     Route::get('products/{id}', 'ProductController@show')->name('products.show');
+
+
     //------------------- End Products Routes -------------------//
+
 
     //------------------- About Us Routes -------------------//
     Route::get('aboutUs', 'AboutUsController@index')->name('aboutUs');
@@ -224,6 +227,41 @@ Route::namespace('Site')->name('site.')->middleware('lang')->group(function () {
     Route::get('add-favorite', 'FavoriteController@store')->name('add.favorite');
     Route::delete('remove-favorite/{id}', 'FavoriteController@destroy')->name('favorite.destroy');
     //-------------------- End Favorite Routes -------------------//
+
+
+    Route::middleware('auth')->group(function () {
+        //-------------------- Profile Routes -------------------//
+        Route::get('profile', 'ProfileController@index')->name('profile');
+        Route::post('profile', 'ProfileController@update')->name('profile.update');
+        Route::post('profile/change-password', 'ProfileController@changePassword')->name('profile.changePassword');
+        //-------------------- End Profile Routes -------------------//
+
+
+        //-------------------- Address Routes -------------------//
+        Route::resource('profile/address', 'AddressController')->only(['index','store','update','destroy']);
+        Route::post('cities', 'AddressController@cities')->name('cities');
+        //-------------------- End Address Routes -------------------//
+
+        //-------------------- Orders Routes -------------------//
+        Route::get('profile/orders', 'OrderController@index')->name('orders');
+        Route::get('profile/orders/{id}', 'OrderController@show')->name('orders.show');
+        Route::get('profile/filter', 'OrderController@filter')->name('orders.filter');
+        //-------------------- End Orders Routes -------------------//
+
+        //-------------------- reviews Products Routes -------------------//
+        Route::post('reviews', 'ReviewController@store')->name('reviews.store');
+        //-------------------- End reviews Products Routes -------------------//
+
+
+
+
+
+
+        //-------------------- End Profile Routes -------------------//
+
+
+
+    });
 
 
 

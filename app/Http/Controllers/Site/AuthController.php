@@ -39,8 +39,6 @@ class AuthController extends Controller
         Auth::attempt(['email' => $request->email, 'password' => $request->password]);
 
         return response()->json(['message' => 'Registered successfully']);
-
-
     }
 
     public function logout()
@@ -58,7 +56,7 @@ class AuthController extends Controller
         $user = User::where('email', $request->email)->first();
         if ($user) {
             $user->sendEmailVerificationCode();
-            return response()->json(['message' => 'Reset password link sent to your email','email'=>$request->email]);
+            return response()->json(['message' => 'Reset password link sent to your email', 'email' => $request->email]);
         } else {
             return response()->json(['message' => 'User not found'], 422);
         }
@@ -66,10 +64,11 @@ class AuthController extends Controller
 
     public function checkCode(CheckCodeRequest $request)
     {
-      $code  = implode('', $request->code);
+        $code  = implode('', $request->code);
         $user = User::where('email', $request->email)->first();
         if ($user->code == $code) {
-            return response()->json(['message' => 'Code is correct']);
+            $user->update(['code' => null]);
+            return response()->json(['message' => 'Code is correct', 'email' => $request->email]);
         } else {
             return response()->json(['message' => 'Code is incorrect'], 422);
         }
@@ -78,8 +77,13 @@ class AuthController extends Controller
     public function updatePassword(ResetPasswordRequest $request)
     {
         $user = User::where('email', $request->email)->first();
-        $user->update('password', $request->password);
-        return response()->json(['message' => 'Password reset successfully']);
+        if (!$user) {
+            return response()->json(['message' => 'User not found'], 422);
+        }
+
+        $user->password = $request->password;
+        $user->save();
+        return response()->json(['message' => 'Password update successfully']);
     }
 
     public function resendCode($email)
@@ -90,6 +94,4 @@ class AuthController extends Controller
         $user->sendEmailVerificationCode();
         return response()->json(['message' => 'Code sent to your email']);
     }
-
-
 }

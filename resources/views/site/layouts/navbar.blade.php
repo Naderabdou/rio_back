@@ -11,7 +11,7 @@
             </div>
 
             <div class="search-top-par">
-                <form action="">
+                <form action="{{ route('site.products') }}">
                     <input type="text" placeholder="{{ transWord('البحث ..') }}" class="form-control" name="search">
                     <button> <img src="{{ asset('site/images/icon/search.svg') }}" alt=""></button>
                 </form>
@@ -35,7 +35,7 @@
                                     d="M3.61339 19.1278C0.128869 21.4604 0.128869 25.2617 3.61339 27.5799C7.57308 30.2293 14.067 30.2293 18.0267 27.5799C21.5112 25.2473 21.5112 21.446 18.0267 19.1278C14.0814 16.4928 7.58748 16.4928 3.61339 19.1278Z"
                                     stroke="#00ABE3" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" />
                             </svg>
-                            <span> {{ transWord('التسجيل') }} </span>
+                            <span> {{ transWord('تسجيل الدخول') }} </span>
                         </a>
                     </div>
 
@@ -44,15 +44,22 @@
 
                 @auth
 
-                    <div class="btn-heart">
-                        <form action="{{ route('site.logout') }}" method="post">
-                            @csrf
-                            <input type="submit" value="{{ transWord('تسجيل الخروج') }}">
-                        </form>
-                        </form>
+                <div class="btn-sin">
 
-                    </div>
-                @endauth
+                    <a href="{{ route('site.profile') }}">
+                        <svg width="22" height="31" viewBox="0 0 22 31" fill="none"
+                            xmlns="http://www.w3.org/2000/svg">
+                            <path
+                                d="M11.0502 14.2718C10.9062 14.2574 10.7335 14.2574 10.5751 14.2718C7.14814 14.1566 4.42676 11.3488 4.42676 7.8931C4.42676 4.36537 7.27773 1.5 10.8199 1.5C14.3476 1.5 17.2129 4.36537 17.2129 7.8931C17.1986 11.3488 14.4772 14.1566 11.0502 14.2718Z"
+                                stroke="#00ABE3" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" />
+                            <path
+                                d="M3.61339 19.1278C0.128869 21.4604 0.128869 25.2617 3.61339 27.5799C7.57308 30.2293 14.067 30.2293 18.0267 27.5799C21.5112 25.2473 21.5112 21.446 18.0267 19.1278C14.0814 16.4928 7.58748 16.4928 3.61339 19.1278Z"
+                                stroke="#00ABE3" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" />
+                        </svg>
+                        <span id="username"> {{ auth()->user()->name }}</span>
+                    </a>
+                </div>
+
                 <div class="btn-heart">
                     <a href="">
                         <svg width="32" height="33" viewBox="0 0 32 33" fill="none"
@@ -86,6 +93,7 @@
                         <span> {{ transWord('السلة') }} </span>
                     </a>
                 </div>
+                @endauth
                 <div class="menu-div">
                     <div class="content" id="times-ican">
                         <a href="#" title="Navigation menu" class="navicon" aria-label="Navigation">

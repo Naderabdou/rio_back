@@ -8,4 +8,16 @@ use Illuminate\Database\Eloquent\Model;
 class Address extends Model
 {
     use HasFactory;
+    protected $guarded = [];
+
+
+    public function city()
+    {
+        return $this->belongsTo(City::class, 'city_id', 'id');
+    }
+
+    public function governorate()
+    {
+        return $this->belongsTo(Governorate::class, 'governorate_id', 'id');
+    }
 }

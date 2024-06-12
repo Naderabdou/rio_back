@@ -8,4 +8,15 @@ use Illuminate\Database\Eloquent\Model;
 class Governorate extends Model
 {
     use HasFactory;
+    protected $guarded = [];
+
+    public function cities()
+    {
+        return $this->hasMany(City::class, 'governorate_id', 'id');
+    }
+
+    public function getNameAttribute()
+    {
+        return $this->attributes['name_' . app()->getLocale()];
+    } // end getTitleAttribut
 }

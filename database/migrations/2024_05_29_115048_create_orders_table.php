@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('orders', function (Blueprint $table) {
             $table->id();
             $table->string('order_number'); //
-            $table->enum('status', ['pending', 'pocessing', 'driving', 'completed', 'declined'])->default('pending');
+            $table->enum('status', ['pending', 'pocessing','shipped', 'driving', 'completed', 'declined'])->default('pending');
             $table->enum('type', ['order', 'cart'])->default('order'); //نوع الطلب
             $table->integer('total_price'); //السعر الكلي
             $table->string('tax')->nullable();
@@ -27,7 +27,7 @@ return new class extends Migration
             $table->foreignId('address_id')->nullable()->constrained('addresses')->onDelete('set null'); //العنوان
          //   $table->foreignId('payment_id')->nullable()->constrained('payments')->onDelete('set null'); //المستخدم الذي قام بالطلب
          $table->foreignId('payment_id')->nullable()->constrained('payments')->onDelete('set null'); //العنوان
-            $table->string('payment_method');
+            $table->string('payment_method')->nullable();
 
             $table->string('name');
             $table->string('email');
@@ -36,6 +36,7 @@ return new class extends Migration
             $table->string('city');
             $table->string('country');
             $table->timestamp('processing_at')->nullable();
+            $table->timestamp('shipped_at')->nullable();
             $table->timestamp('driving_at')->nullable();
             $table->timestamp('completed_at')->nullable();
             //العنوان

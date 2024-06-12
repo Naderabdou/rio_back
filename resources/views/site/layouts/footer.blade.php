@@ -313,8 +313,10 @@
 
 
 
-                        <form action="{{ route('site.updatePassword') }}" id="form_update_password">
+                        <form action="{{ route('site.updatePassword') }}" id="form_update_password" method="POST">
                             <div class="title-aosh">
+                                @csrf
+                                <input type="hidden" name="email" id="email_update" value="">
                                 <h2>{{transWord('إعادة تعيين كلمة المرور')}}</h2>
                                 <p>{{transWord('يمكنك تغيير كلمة المرور الان لضمان ')}}</p>
                             </div>
@@ -323,10 +325,16 @@
                                 <div class="input-form">
                                     <input type="password" placeholder="{{ transWord('كلمة المرور') }}" class="form-control"
                                         name="password">
+
+                                        <div style="color: red" class="password_error" class="error-message"></div>
+
                                 </div>
                                 <div class="input-form">
                                     <input type="password" placeholder="{{ transWord('تأكيد كلمة المرور') }}" class="form-control"
-                                        name="comfirm_password">
+                                        name="password_confirmation">
+                                        <div style="color: red" class="password_confirmation_error" class="error-message"></div>
+
+
                                 </div>
                                 <div class="btn-aosh">
                                     <button id="btn_password" class="w-100 ctm-btn">{{ transWord('ارسال') }}</button>

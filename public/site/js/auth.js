@@ -276,6 +276,7 @@ $(document).ready(function () {
             contentType: false,
             processData: false,
             success: function (data) {
+                $('#email_update').val(data.email);
                 $('.resend-massage').show();
                 // console.log(data, 'data');
                 // // var html = $('#email_code').html();
@@ -377,7 +378,6 @@ $(document).ready(function () {
 
                 $('.spinner-border').remove();
 
-                
 
             },
             error: function (data) {
@@ -417,6 +417,95 @@ $(document).ready(function () {
     });
 
 
+    $(document).on('submit', '#form_update_password', function (e) {
+        e.preventDefault();
+        $('#btn_password').prop('disabled', true);
+        // Hide the button
+        $('#btn_password').hide();
+
+        // Add a spinner
+        $('#btn_password').parent().append(
+            `<div class="spinner-border  text-primary" style="width: 3rem; height: 3rem;" role="status">
+<span class="sr-only">Loading...</span>
+</div>
+               `
+        );
+
+
+
+
+
+        var formData = new FormData($('#form_update_password')[0]);
+
+
+        var url = this.action;
+
+        $.ajax({
+            url: url,
+            type: "POST",
+            data: formData,
+            contentType: false,
+            processData: false,
+            success: function (data) {
+                console.log(data, 'data');
+
+
+                $('#form_update_password')[0].reset();
+
+
+
+                $('#btn_password').prop('disabled', false);
+
+
+                // Show the button
+                $('#btn_password').show();
+
+                // Remove the spinner
+                $('#btn_password').next('.spinner-border').remove();
+                Swal.fire({
+                    icon: 'success',
+                    title: `<h5> ${data.message}</h5> `,
+                    showConfirmButton: false,
+                    timer: 1500
+                });
+
+                $('.comfirm-password-modal').modal('hide');
+                $('.error-message').text('');
+
+
+
+
+            },
+            error: function (data) {
+                var text = data.responseJSON.message;
+
+
+
+                $('.error-message').text('');
+                $('#btn_password').prop('disabled', false);
+
+
+                // Show the button
+                $('#btn_password').show();
+
+                // Remove the spinner
+                $('.spinner-border').remove();
+                // Display validation errors under each input
+                var errors = data.responseJSON.errors;
+                $.each(errors, function (field, messages) {
+                    var errorMessage = messages.join(', ');
+                    //  console.log('#' + field + '_error');
+                    $('.' + field + '_error').text(errorMessage);
+
+                });
+
+
+
+
+            },
+
+        });
+    })
 
 
 

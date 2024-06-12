@@ -25,9 +25,4 @@ class ProductDetails extends Model
     {
         return $this->attributes['value_' . app()->getLocale()];
     } // end getTitleAttribut
-
-
-   
-
-
 }

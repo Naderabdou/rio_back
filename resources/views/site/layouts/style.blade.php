@@ -11,9 +11,9 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
 <link rel="stylesheet" href="{{ asset('site/css/animate.css') }}">
 
+
 <link rel="stylesheet" href="{{ asset('site/css/general.css') }}">
 @stack('css')
-
 <link rel="stylesheet" href="{{ asset('site/css/header.css') }}">
 <link rel="stylesheet" href="{{ asset('site/css/footer.css') }}">
 <link rel="stylesheet" href="{{ asset('site/css/main.css') }}">

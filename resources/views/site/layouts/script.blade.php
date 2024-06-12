@@ -20,6 +20,48 @@
 @else
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.2/localization/messages_en.min.js"></script>
 @endif
+@if (session()->has('success'))
+    <script>
+        const Toast = Swal.mixin({
+            toast: true,
+            position: 'top-end',
+            showConfirmButton: false,
+            timer: 4000,
+            timerProgressBar: true,
+            didOpen: (toast) => {
+                toast.addEventListener('mouseenter', Swal.stopTimer)
+                toast.addEventListener('mouseleave', Swal.resumeTimer)
+            }
+        })
+
+        Toast.fire({
+            icon: 'success',
+            title: "{{ session()->get('success') }}"
+        })
+    </script>
+@endif
+
+@if (session()->has('error'))
+    <script>
+        const Toast = Swal.mixin({
+            toast: true,
+            position: 'top-end',
+            showConfirmButton: false,
+            timer: 4000,
+            timerProgressBar: true,
+            didOpen: (toast) => {
+                toast.addEventListener('mouseenter', Swal.stopTimer)
+                toast.addEventListener('mouseleave', Swal.resumeTimer)
+            }
+        })
+
+        Toast.fire({
+            icon: 'error',
+            title: "{{ session()->get('error') }}"
+        })
+    </script>
+@endif
+
 <script>
     @php
         $messages = [
@@ -33,6 +75,7 @@
             'passwordConfirmationMessage' => transWord('The password and confirmation password do not match'),
             'phoneMinLengthMessage' => transWord('The phone must be at least 10 numbers'),
             'phoneMaxLengthMessage' => transWord('The phone must be at most 14 numbers'),
+            'stringMessage' => transWord('يجب ان يحتوي علي حروف فقط'),
         ];
     @endphp
 
@@ -42,7 +85,10 @@
 </script>
 <script>
     $(document).ready(function() {
-
+        $('#btn-close-model').on('click', function(e) {
+            e.preventDefault();
+            $('.logout-modal').modal('hide');
+        });
         $.validator.addMethod("noSpecialChars", function(value, element) {
             return this.optional(element) || /^[a-zA-Z0-9\u0600-\u06FF ]*$/.test(value);
         }, window.noSpecialChars);
@@ -130,8 +176,8 @@
                 // Add a spinner
                 $('.ctm-btn').parent().append(
                     `<div class="spinner-border text-primary" style="width: 3rem; height: 3rem;" role="status">
-  <span class="sr-only">Loading...</span>
-</div>
+                <span class="sr-only">Loading...</span>
+                </div>
                        `
                 );
 
@@ -183,6 +229,8 @@
 
             },
         });
+
+
 
     })
 </script>

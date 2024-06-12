@@ -70,6 +70,9 @@ class Kernel extends HttpKernel
         'localization' => Localization::class,
         'api_localization' => ApiLocalization::class,
         'lang' => \App\Http\Middleware\Lang::class,
+        'role' => \App\Http\Middleware\CheckRole::class,
+        'route' => \App\Http\Middleware\CheckRoute::class,
+
 
     ];
 }

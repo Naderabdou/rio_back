@@ -71,13 +71,13 @@
                                     <h2> {{ $product->name }}</h2>
                                     <div class="rate">
                                         @for ($i = 1; $i <= 5; $i++)
-                                            @if ($i <= $product->reviews->avg('rating'))
+                                            @if ($i <= round($product->reviews->avg('rating')))
                                                 <span class="fa fa-star checked"></span>
                                             @else
                                                 <span class="fa fa-star"></span>
                                             @endif
                                         @endfor
-                                        <i>({{ $product->reviews->avg('rating') ?? 0 }})</i>
+                                        <i>({{ round($product->reviews->avg('rating')) ?? 0 }})</i>
                                     </div>
                                 </div>
                                 <div class="btns-share">
@@ -94,8 +94,13 @@
 
                             <div class="product-price">
                                 <h3> {{ $product->price }} EGP </h3>
-                                <h4> {{ $product->price_after_discount }} EGP </h4>
-                                <div class="offer-price"> {{ $product->discount }}% OFF</div>
+                                {{-- @if ($product->discount)
+                                <h4> {{ $product->price_after_discount  }} EGP </h4>
+                                <div class="offer-price"> {{ $product->discount ?? 0 }}% OFF</div>
+                                @endif --}}
+                                {{-- <h4> {{ $product->price_after_discount ?? $product->price }} EGP </h4> --}}
+                                <h4> {{ $product->price_after_discount ?? 0 }} EGP </h4>
+                                <div class="offer-price"> {{ $product->discount ?? 0 }}% OFF</div>
                             </div>
 
                             <p>
@@ -116,15 +121,15 @@
                             <div class="features-product">
                                 <div class="sub-features-product">
                                     <img src="{{ asset('site/images/f5.png') }}" alt="">
-                                    <h2>تسوق آمن </h2>
+                                    <h2>{{ transWord('تسوق آمن') }}</h2>
                                 </div>
                                 <div class="sub-features-product">
                                     <img src="{{ asset('site/images/f6.png') }}" alt="">
-                                    <h2>الدفع عند الاستلام</h2>
+                                    <h2>{{ transWord('الدفع عند الاستلام') }}</h2>
                                 </div>
                                 <div class="sub-features-product">
                                     <img src="{{ asset('site/images/f7.png') }}" alt="">
-                                    <h2>تسوق آمن</h2>
+                                    <h2>{{ transWord('تسوق آمن') }}</h2>
                                 </div>
                             </div>
                         </div>
@@ -154,63 +159,74 @@
                     <div class="col-lg-12">
                         <div class="comments-details">
                             <h2>{{ transWord('التقييمات والتعليقات') }}</h2>
-                            @forelse ( $product->reviews as $review )
-                            <div class="sub-comments-details">
-                                <div class="img-comments-details">
-                                    <img src="{{ $review->user?->image_path }}" alt="">
-                                </div>
-
-                                <div class="text-comments-details">
-                                    <h2> {{ $review->user->name }}</h2>
-                                    <div class="rate">
-
-                                        @for ($i = 1; $i <= 5; $i++)
-                                            @if ($i <= $review->rating)
-                                                <span class="fa fa-star checked"></span>
-                                            @else
-                                                <span class="fa fa-star"></span>
-                                            @endif
-                                        @endfor
-                                        <i>({{ $review->rating }})</i>
+                            @forelse ( $reviews as $review )
+                                <div class="sub-comments-details">
+                                    <div class="img-comments-details">
+                                        <img src="{{ $review->user?->image_path }}" alt="">
                                     </div>
-                                    <p>
-                                        {{ $review->review }}
-                                    </p>
+
+                                    <div class="text-comments-details">
+                                        <h2> {{ $review->user->name }}</h2>
+                                        <div class="rate">
+
+                                            @for ($i = 1; $i <= 5; $i++)
+                                                @if ($i <= $review->rating)
+                                                    <span class="fa fa-star checked"></span>
+                                                @else
+                                                    <span class="fa fa-star"></span>
+                                                @endif
+                                            @endfor
+                                            <i>({{ $review->rating }})</i>
+                                        </div>
+                                        <p>
+                                            {{ $review->review }}
+                                        </p>
+                                    </div>
                                 </div>
-                            </div>
 
                             @empty
-                            <div class="sub-comments-details">
-                                <h2>{{ transWord('لا يوجد تعليقات') }}</h2>
-                            </div>
+                                <div class="sub-comments-details">
+                                    <h2>{{ transWord('لا يوجد تعليقات') }}</h2>
+                                </div>
                             @endforelse
 
 
+
                         </div>
-                        <form action="">
+                        {{-- <div class="col-lg-12">
+
+                            {{ $reviews->links('site.pagination.custom') }}
+
+                        </div> --}}
+                        <form action="{{ route('site.reviews.store') }}" method="post"
+                            id="{{ auth()->user() ? 'form_reviews' : 'auth_login' }}">
+                            @csrf
                             <div class="add-form-comments">
                                 <div class="input-form w-100">
-                                    <input type="text" placeholder="اكتب تعليقك" name="comment" class="form-control">
+                                    <input type="text" placeholder="{{ transWord('اكتب تعليقك') }}" name="review"
+                                        class="form-control" required>
                                 </div>
+                                <input type="hidden" name="product_id" value="{{ $product->id }}">
                                 <div class="form-control add-rate text-center">
                                     <span class="rating">
-                                        <input type="radio" name="rate" id="star5" value="5">
+                                        <input type="radio" name="rating" id="star5" value="5">
                                         <label for="star5"><span class="fa fa-star"></span></label>
 
-                                        <input type="radio" name="rate" id="star4" value="4">
+                                        <input type="radio" name="rating" id="star4" value="4">
                                         <label for="star4"><span class="fa fa-star"></span></label>
 
-                                        <input type="radio" name="rate" id="star3" value="3">
+                                        <input type="radio" name="rating" id="star3" value="3">
                                         <label for="star3"><span class="fa fa-star"></span></label>
 
-                                        <input type="radio" name="rate" id="star2" value="2">
+                                        <input type="radio" name="rating" id="star2" value="2">
                                         <label for="star2"><span class="fa fa-star"></span></label>
 
-                                        <input type="radio" name="rate" id="star1" value="1">
+                                        <input checked type="radio" name="rating" id="star1" value="1">
                                         <label for="star1"><span class="fa fa-star"></span></label>
                                     </span>
                                 </div>
-                                <button type="submit" id="review_button" class="ctm-btn"> إرسال </button>
+                                <button type="submit" id="review_button" class="ctm-btn"> {{ transWord('إرسال') }}
+                                </button>
 
                             </div>
                         </form>
@@ -227,7 +243,7 @@
                                     @forelse ($productsRalated as $products)
                                         <div class="item">
                                             <div class="sub-product">
-                                                <a href="{{ route('site.products.show',$products->id) }}">
+                                                <a href="{{ route('site.products.show', $products->id) }}">
                                                     <div class="img-sub-product">
                                                         <img src="{{ $products->image_path }}" alt="">
                                                     </div>
@@ -237,13 +253,18 @@
                                                         <p>{{ $products->sub_title }}</p>
                                                         <div class="product-price">
                                                             <h3>EGP {{ $products->price }} </h3>
-                                                            <h4> EGP {{ $products->price_after_discount }} </h4>
+                                                            {{-- <h4> EGP {{ $products->price_after_discount }} </h4> --}}
+                                                            {{-- <h4> {{ $product->price_after_discount ?? $product->price }} EGP </h4> --}}
+                                                            <h4> {{ $product->price_after_discount ?? 0 }} EGP </h4>
+
+                                                            <div class="offer-price"> {{ $product->discount ?? 0 }}% OFF</div>
                                                         </div>
                                                     </div>
                                                 </a>
                                                 <div class="btns-product">
-                                                    <a href="{{ route('site.products.show',$products->id) }}" class="ctm-btn3 w-100">
-                                                       {{ transWord('مشاهدة المنتج') }}
+                                                    <a href="{{ route('site.products.show', $products->id) }}"
+                                                        class="ctm-btn3 w-100">
+                                                        {{ transWord('مشاهدة المنتج') }}
                                                     </a>
                                                     <a href="" class="btn-cart">
                                                         <svg width="32" height="33" viewBox="0 0 32 33"
@@ -272,9 +293,9 @@
                                             </div>
                                         </div>
                                     @empty
-                                    <div>
-                                        <h2>{{ transWord('لا يوجد منتجات مشابهة') }}</h2>
-                                    </div>
+                                        <div>
+                                            <h2>{{ transWord('لا يوجد منتجات مشابهة') }}</h2>
+                                        </div>
                                     @endforelse
 
 
@@ -294,6 +315,8 @@
 
 
 @push('js')
+<script src="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.8.1/slick.js"></script>
+
 <script>
     // add top favoret
 $(document).ready(function () {
@@ -399,50 +422,224 @@ $(document).on('click', '.auth_login', function (e) {
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     </main>
 @endsection
-@push('js')
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.8.1/slick.js"></script>
-@endpush
+{{-- @push('js')
+    <script>
+        // $(document).ready(function() {
+        //     $.validator.addMethod("noSpecialChars", function(value, element) {
+        //         return this.optional(element) || /^[a-zA-Z0-9\u0600-\u06FF ]*$/.test(value);
+        //     }, window.noSpecialChars);
+
+
+        //     $.validator.addMethod('string', function(value, element) {
+        //         return this.optional(element) || /^[\u0600-\u06FFa-zA-Z\s]+$/i.test(value);
+        //     }, window.stringMessage);
+
+
+        //     $("#form_reviews").validate({
+
+
+        //         rules: {
+        //             // Define validation rules for your form fields here
+        //             review: {
+        //                 required: true,
+        //                 minlength: 2,
+        //                 noSpecialChars: true,
+        //                 string: true
+        //             },
+
+        //             rating: {
+        //                 required: true,
+
+        //             },
+
+
+        //             // Add more fields as needed
+        //         },
+
+
+
+
+        //         errorElement: "span",
+        //         errorLabelContainer: ".errorTxt",
+
+
+        //         submitHandler: function(form) {
+        //             $('.ctm-btn').prop('disabled', true);
+        //             // Hide the button
+        //             $('.ctm-btn').hide();
+
+        //             // Add a spinner
+        //             $('.ctm-btn').parent().append(
+        //                 `<div class="spinner-border text-primary" style="width: 3rem; height: 3rem;" role="status">
+        //         <span class="sr-only">Loading...</span>
+        //         </div>
+        //                `
+        //             );
+
+
+        //             var formData = new FormData(form);
+        //             let url = form.action;
+        //             $.ajax({
+        //                 url: url,
+        //                 method: 'POST',
+        //                 data: formData,
+        //                 processData: false,
+        //                 contentType: false,
+        //                 success: function(data) {
+        //                     console.log(data);
+
+        //                     form.reset();
+        //                     Swal.fire({
+        //                         icon: 'success',
+        //                         title: `<h5> ${data.success}</h5> `,
+        //                         showConfirmButton: false,
+        //                         timer: 2000
+        //                     });
+        //                     //i need append the new review to the reviews section class comments-details
+        //                     var review = `
+        //                     <div class="sub-comments-details">
+        //                             <div class="img-comments-details">
+        //                                 <img src="${data.image}" alt="">
+        //                             </div>
+
+        //                             <div class="text-comments-details">
+        //                                 <h2> ${data.name} </h2>
+        //                                 <div class="rate">
+
+        //                                     <span class="fa fa-star
+        //                                     ${data.rating >= 1 ? 'checked' : ''}"></span>
+        //                                     <span class="fa fa-star
+        //                                     ${data.rating >= 2 ? 'checked' : ''}"></span>
+        //                                     <span class="fa fa-star
+        //                                     ${data.rating >= 3 ? 'checked' : ''}"></span>
+
+        //                                     <span class="fa fa-star
+        //                                     ${data.rating >= 4 ? 'checked' : ''}"></span>
+        //                                     <span class="fa fa-star
+        //                                     ${data.rating >= 5 ? 'checked' : ''}"></span>
+        //                                     <i>(${data.rating})</i>
+        //                                 </div>
+        //                                 <p>
+        //                                     ${data.review}
+        //                                 </p>
+        //                             </div>
+        //                         </div>
+        //                     `;
+
+
+        //                     $('.comments-details').append(review);
+
+
+
+
+
+
+
+        //                     $('.ctm-btn').prop('disabled', false);
+
+
+        //                     // Show the button
+        //                     $('.ctm-btn').show();
+
+        //                     // Remove the spinner
+        //                     $('.ctm-btn').next('.spinner-border').remove();
+
+        //                 },
+        //                 error: function(data) {
+
+        //                     $('.ctm-btn').prop('disabled', false);
+
+        //                     // Show the button
+        //                     $('.ctm-btn').show();
+
+        //                     // Remove the spinner
+        //                     $('.ctm-btn').next('.spinner-border').remove();
+        //                     $('.error-message').text('');
+        //                     var errors = data.responseJSON.errors;
+        //                     $.each(errors, function(field, messages) {
+        //                         var errorMessage = messages.join(', ');
+        //                         $('#' + field + '_error').text(
+        //                             errorMessage);
+        //                     });
+        //                 },
+        //             });
+
+        //         },
+        //     });
+
+        //     // $(document).on('submit', '#form_reviews', function(e) {
+        //     //     console.log('submit');
+        //     //     e.preventDefault();
+        //     //     var form = $(this);
+        //     //     var url = form.attr('action');
+        //     //     var formData = new FormData($('#form_reviews')[0]);
+
+        //     //     $.ajax({
+        //     //         type: 'POST',
+        //     //         url: url,
+        //     //         data: formData,
+        //     //         processData: false,
+        //     //         contentType: false,
+        //     //         success: function(data) {
+        //     //             console.log(data);
+        //     //             if (data.status == true) {
+        //     //                 $('#form_reviews')[0].reset();
+        //     //                 toastr.success(data.message);
+        //     //             } else {
+        //     //                 toastr.error(data.message);
+        //     //             }
+        //     //         },
+        //     //         error: function(data) {
+        //     //             console.log(data);
+        //     //             toastr.error('error');
+        //     //         }
+        //     //     });
+
+        //     // });
+        // });
+
+        var lang = 'ar';
+
+        if (lang == 'ar') {
+            var message = 'يجب عليك التسجيل لاستخدام هذه الميرة';
+            var message_sure = 'هل تريد التسجبل ؟';
+            var yes = 'نعم';
+            var no = 'لا';
+            var message_close = 'تم الالغاء بنجاح';
+            var paynow = 'اشتري الان';
+        } else {
+
+            var message = 'You must register to use this feature';
+            var message_sure = 'Do you want to register ?';
+            var yes = 'Yes';
+            var no = 'No';
+            var message_close = 'Canceled successfully';
+            var paynow = 'Pay Now';
+        }
+
+        $(document).on('submit', '#auth_login', function(e) {
+            e.preventDefault();
+            Swal.fire({
+                title: message_sure,
+                text: message,
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: yes,
+                cancelButtonText: no
+            }).then((result) => {
+                if (result.isConfirmed) {
+
+                    $('.login-modal').modal('show');
+
+                } else {
+
+                }
+            })
+
+        });
+    </script>
+@endpush --}}

@@ -19,14 +19,9 @@ class ProductImages extends Model
         return $this->belongsTo(Product::class, 'product_id', 'id');
     }
 
-    // public function getImagePathAttribute()
-    // {
-    //     return asset('storage/' . $this->image);
-    // }
-
     public function getImagePathAttribute()
     {
-        return  $this->image;
+        return asset('storage/' . $this->image);
     }
 
 }

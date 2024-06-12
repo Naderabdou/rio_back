@@ -12,8 +12,12 @@ class ProductController extends Controller
 {
     public function index()
     {
-       // $products = Product::paginate(4);
-        $products = Product::latest()->get();
+
+
+        $products = Product::when(Request()->search, function ($query) {
+
+            $query->where('name_ar', 'like', '%' . Request()->search . '%')->orWhere('name_en', 'like', '%' . Request()->search . '%');
+        })->paginate(9);
         $categories = Category::withCount('products')->latest()->get();
         $brands = Brand::latest()->get();
         return view('site.products.index', compact('products', 'categories', 'brands'));

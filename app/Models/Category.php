@@ -22,13 +22,9 @@ class Category extends Model
 
 
 
-    // public function getImagePathAttribute()
-    // {
-    //     return asset('storage/' . $this->image);
-    // }
-   public function getImagePathAttribute()
+    public function getImagePathAttribute()
     {
-        return asset( $this->image); //test
+        return asset('storage/' . $this->image);
     }
 
 

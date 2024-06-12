@@ -3,6 +3,8 @@
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
+use id;
+use App\Models\Order;
 use App\Models\Favorite;
 use Laravel\Sanctum\HasApiTokens;
 use Spatie\Permission\Traits\HasRoles;
@@ -27,7 +29,10 @@ class User extends Authenticatable
         'email',
         'password',
         'code',
+        'image',
     ];
+
+    protected $appends = ['image_path'];
 
     /**
      * The attributes that should be hidden for serialization.
@@ -97,13 +102,24 @@ class User extends Authenticatable
     //     return $this->fname . ' ' . $this->lname;
     // }
 
-    public function getAvatarPathAttribute()
+    public function getImagePathAttribute()
     {
-        return asset('storage/' . $this->avatar);
+        return asset('storage/' . $this->image);
     }
 
-    public function favorites()
-    {
-        return $this->belongsToMany(Product::class, 'Favorites', 'user_id', 'product_id');
+    public function favorites(){
+
+        return $this->hasMany(Favorite::class, 'user_id', 'id');
     }
+    public function address()
+    {
+        return $this->hasMany(Address::class, 'user_id', 'id');
+    }
+
+    public function orders()
+    {
+        return $this->hasMany(Order::class, 'user_id', 'id');
+    }
+
+
 }

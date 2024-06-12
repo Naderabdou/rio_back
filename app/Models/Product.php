@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Models\Brand;
 use App\Models\Category;
+use App\Models\OrderItems;
 use App\Models\ProductImages;
 use App\Models\ProductDetails;
 use App\Models\ProductReviews;
@@ -80,16 +81,22 @@ class Product extends Model
     //     return asset('storage/' . $this->image);
     // }
 
-    public function getImagePathAttribute()
-    {
-        return  $this->image; //for test
-    }
+    // public function getImagePathAttribute()
+    // {
+    //     return  $this->image; //for test
+    // }
 
 
     public function favorites()
     {
         return $this->hasMany(Favorite::class, 'product_id', 'id');
     }
+
+    public function getImagePathAttribute()
+    {
+        return asset('storage/' . $this->image);
+    }
+
 
     public function sluggable(): array
     {
@@ -98,6 +105,19 @@ class Product extends Model
                 'source' => 'name_en'
             ]
         ];
+    }
+
+    public function scopeWhenSearch($query, $search)
+    {
+        return $query->when($search, function ($q) use ($search) {
+            return $q->where('name_en', 'like', "%$search%")
+                ->orWhere('name_ar', 'like', "%$search%");
+        });
+    }
+
+    public function orderItems()
+    {
+        return $this->hasMany(OrderItems::class);
     }
 
 }
