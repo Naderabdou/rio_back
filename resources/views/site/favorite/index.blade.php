@@ -1,5 +1,5 @@
 @extends('site.layouts.app')
-@section('title', transWord('Home'))
+@section('title', transWord('المفضلة'))
 
 @title(getSetting('seo_title', app()->getLocale()))
 @description(Str::limit(getSetting('desc_seo', app()->getLocale()), 160))
@@ -41,30 +41,39 @@
                                 @foreach ($favorites as $favorite)
                                     <tr>
                                         <th>
-                                            <div class="main-product-cart">
+                                            <div class="main-product-cart" id="product-cart-{{$favorite->product->id  }}">
                                                 <div class="delete-cart">
-                                                    <button> <i class="bi bi-trash"></i></button>
+                                                    <form action="{{route('site.favorite.destroy' , $favorite->product->id  ) }}" method="post">
+                                                        @csrf
+                                                        @method('DELETE')
+
+                                                        <button class="delete-fav" data-url=""> <i class="bi bi-trash"></i></button>
+                                                    </form>
                                                 </div>
                                                 <div class="sub-product-cart">
                                                     <div class="img-product-cart">
-                                                        <img src="images/p1.png" alt="">
+                                                        <img src="{{  $favorite->product->image_path  }}" alt="">
                                                     </div>
-                                                    <h3> زجاجة مياه رياضية </h3>
+                                                    <h3> {{  $favorite->product->name }}</h3>
                                                 </div>
                                             </div>
                                         </th>
                                         <td>
                                             <div class="product-price">
-                                                <h3>EGP 175 </h3>
-                                                <h4> EGP 200 </h4>
+
+                                                <h3>EGP {{ $favorite->product->price }} </h3>
+
+                                                <h4>EGP {{ $favorite->product->price_after_discount }} </h4>
+
+
                                             </div>
                                         </td>
 
                                         <td>
                                             <div class="btn-favorite">
                                                 <a href="" class="ctm-btn2"> <img
-                                                        src="images/icon/shopping-cart-b.svg" alt=""> اضف للسلة </a>
-                                                <a href="" class="btn-share-favorite"> <i class="bi bi-share"></i>
+                                                    src="{{ asset('site/images/icon/shopping-cart-b.svg') }}" alt=""> {{ transWord('اضف للسلة ') }}</a>
+                                                    <a href="" class="btn-share-favorite"> <i class="bi bi-share"></i>
                                                 </a>
                                             </div>
                                         </td>
@@ -97,10 +106,54 @@
 
 
 
+ @session('success')
+        @push('js')
+            <script>
+                Swal.fire({
+                    icon: 'success',
+                    title: '{{ session('success') }}',
+                    showConfirmButton: false,
+                    timer: 1500
+                });
+
+            </script>
+        @endpush
+
+    @endsession
 
 
 
 
+        {{-- @push('js')
+            <script>
+             $(document).on('click', '.delete-cart', function(e) {
+    e.preventDefault();
+    var url = $('.delete-fav').data('url');
+        console.log(url);
+    // $(".delete-cart").click(function (e) {
+    // });
+    $.ajax({
+        url: url,
+        type: 'DELETE',
+        data: {
+            _token: '{{ csrf_token() }}'
+        },
+        success: function(data) {
+            if (data.status == true) {
+                // $('#product-cart-' + id).remove();
+                //show message
+                $(this).parents("tr").remove();
+
+                var message = '{{ transWord('تم الحذف بنجاح') }}';
+                alert(message);
+            }
+        }
+    });
+});
+
+            </script>
+
+        @endpush --}}
 
 
 

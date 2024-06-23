@@ -10,8 +10,8 @@ class OrderController extends Controller
 
     public function index()
     {
-        $orders = auth()->user()->orders()->where('status', '!=', 'cart')->where('status', 'panding')->get();
-
+        $orders = auth()->user()->orders()->where('status', '!=', 'completed')->get();
+        
         return view('site.profile.orders', compact('orders'));
     }
 

@@ -67,6 +67,19 @@
                                                 </div>
                                             </div>
 
+                                            <div class="col-12">
+                                                <div class="form-group">
+                                                    <label for="PAYMOB_IFRAME_ID">PAYMOB_IFRAME_ID</label>
+                                                    <input type="text" id="PAYMOB_IFRAME_ID" class="form-control" name="PAYMOB_IFRAME_ID"
+                                                        value="{{ old('PAYMOB_IFRAME_ID') }}" />
+                                                    @error('PAYMOB_IFRAME_ID')
+                                                        <span class="alert alert-danger">
+                                                            <small class="errorTxt">{{ $message }}</small>
+                                                        </span>
+                                                    @enderror
+                                                </div>
+                                            </div>
+
 
                                             <div class="col-12">
                                                 <div class="form-group">

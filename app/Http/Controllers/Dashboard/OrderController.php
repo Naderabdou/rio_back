@@ -16,8 +16,33 @@ class OrderController extends Controller
 
     public function show($id)
     {
-       $order = Order::findOrFail($id);
+        $order = Order::findOrFail($id);
         return view('dashboard.orders.show', compact('order'));
+    }
+
+
+    public function changeStatus($id, $status)
+    {
+        $order = Order::findOrFail($id);
+        $order->update(['status' => $status]);
+        switch ($status) {
+            case 'completed':
+                $order->update(['completed_at' => now()]);
+                break;
+            case 'driving':
+                $order->update(['driving_at' => now()]);
+                break;
+            case 'processing':
+                $order->update(['processing_at' => now()]);
+                break;
+            case 'shipped':
+                $order->update(['shipped_at' => now()]);
+                break;
+            case 'declined':
+                $order->update(['canceled_at' => now()]);
+                break;
+        }
+        return redirect()->back()->with('success', 'تم تغيير حالة الطلب بنجاح');
     }
 
 
@@ -25,5 +50,4 @@ class OrderController extends Controller
     {
         return redirect()->route('admin.orders.index');
     }
-
 }

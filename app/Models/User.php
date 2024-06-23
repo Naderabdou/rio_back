@@ -107,8 +107,8 @@ class User extends Authenticatable
         return asset('storage/' . $this->image);
     }
 
-    public function favorites()
-    {
+    public function favorites(){
+
         return $this->hasMany(Favorite::class, 'user_id', 'id');
     }
     public function address()

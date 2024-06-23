@@ -87,12 +87,12 @@ $(document).ready(function () {
                 number: true,
             },
             discount: {
-                required: true,
+                // required: true,
                 number: true,
 
             },
             price_after_discount: {
-                required: true,
+                // required: true,
                 number: true,
 
             },

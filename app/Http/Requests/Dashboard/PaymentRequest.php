@@ -25,6 +25,7 @@ class PaymentRequest extends FormRequest
             'name_ar' => 'required|string|max:255|unique:payments,name_ar,'.$this->id,
             'name_en' => 'required|string|max:255|unique:payments,name_en,'.$this->id,
             'image' => 'nullable|image',
+            'PAYMOB_IFRAME_ID' => 'required|string|max:255',
         ];
     }
 }

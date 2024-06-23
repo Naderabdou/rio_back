@@ -31,82 +31,24 @@
         <section class="products-page mr-section">
             <div class="main-container">
                 <div class="row">
-                    <div class="col-lg-4">
-                        <div class="filter-products">
-                            <div class="sub-filter-products">
-                                <div class="title-filter">
-                                    <h2>{{ transWord('كل الاقسام') }}</h2>
-                                </div>
-                                <ul class="categories-a-filter">
-                                    @forelse ($categories as $category)
-                                        <li>
-                                            <div class="input-radio">
-                                                <input type="radio" id="categories-{{ $category->id }}" name="categories">
-                                                <label for="categories-1"> <img src="{{ $category->image_path }}"
-                                                        alt="">
-                                                    {{ $category->name }}
-                                                    <span> ( {{ $category->products_count }} ) </span> </label>
-                                            </div>
-                                        </li>
-                                    @empty
-                                        <li>
-                                            {{ transWord('لا يوجد اقسام') }}
-                                        </li>
-                                    @endforelse
 
-
-                                </ul>
-                            </div>
-                            <div class="sub-filter-products">
-                                <div class="title-filter">
-                                    <h2>{{ transWord('مادة التصنيع') }}</h2>
-                                </div>
-                                <ul class="check-filter">
-                                    @forelse ($brands as $brand)
-                                        <li class="input-check">
-                                            <input type="checkbox" id="check1-{{ $brand->id }}" name="check-product"
-                                                value="{{ $brand->name }}">
-                                            <label for="check1-{{ $brand->id }}"> {{ $brand->name }} </label>
-                                        </li>
-                                    @empty
-                                        <li>
-                                            {{ transWord('لا يوجد مواد تصنيع') }}
-                                        </li>
-                                    @endforelse
-
-                                </ul>
-                            </div>
-                            <div class="sub-filter-products">
-                                <div class="title-filter">
-                                    <h2>{{ transWord('السعر') }}</h2>
-                                </div>
-                                <div class="range_slider">
-                                    <input type="text" class="js-range-slider" name="my_range" value=""
-                                        data-skin="round" data-type="double" data-min="100" data-max="1000"
-                                        data-grid="false" />
-                                    <div class="number_range_slider">
-                                        <input type="number" maxlength="10" value="100" class="from" />
-                                        <input type="number" maxlength="10" value="1000" class="to" />
-                                    </div>
-                                </div>
-                            </div>
-
-                        </div>
-                    </div>
+                    @include('site.products.filterTypes')
 
                     <div class="col-lg-8">
                         <div class="main-product-page">
                             <div class="select-product-page">
                                 <h3>{{ transWord('رتب حسب :') }}</h3>
                                 <div class="input-form arrow-select">
-                                    <select class="form-select form-control " name="category">
+                                    <select class="form-select form-control filter" name="arrane" id="arrange">
                                         <option value="all"> {{ transWord('الكل') }}</option>
                                         <option value="latest"> {{ transWord('الاحدث') }} </option>
+                                        <option value="high_low"> {{ transWord('الاعلى سعرا') }} </option>
+                                        <option value="low_high"> {{ transWord('الاقل سعرا') }} </option>
                                     </select>
                                 </div>
                             </div>
 
-                            <div class="row row-gap">
+                            <div class="row row-gap" id="filter-result">
                                 @forelse ($products as $product)
                                     <div class="col-lg-6">
                                         <div class="sub-product">
@@ -119,11 +61,13 @@
                                                     <h2>{{ $product->name }}</h2>
                                                     <p>{{ $product->sub_title }}</p>
                                                     <div class="product-price">
-                                                        <h3>{{ $product->price }} EGP </h3>
-                                                        {{-- <h4> {{ $product->price_after_discount }} EGP </h4> --}}
+                                                        <h3>EGP {{ $product->price }} </h3>
+                                                        {{-- <h4> EGP {{ $products->price_after_discount }} </h4> --}}
                                                         {{-- <h4> {{ $product->price_after_discount ?? $product->price }} EGP </h4> --}}
                                                         <h4> {{ $product->price_after_discount ?? 0 }} EGP </h4>
+
                                                         <div class="offer-price"> {{ $product->discount ?? 0 }}% OFF</div>
+
                                                     </div>
                                                 </div>
                                                 <div style="background-color: {{ $product->label_color }}"
@@ -132,7 +76,8 @@
                                             <div class="btns-product">
                                                 <a href="{{ route('site.products.show', $product->id) }}"
                                                     class="ctm-btn3 w-100">{{ transWord('مشاهدة المنتج') }}</a>
-                                                <a href="" class="btn-cart">
+                                                <a href="{{ route('site.cart.store') }}" data-id="{{ $product->id }}"  class="{{ auth()->user() ? 'btn-cart' : 'auth_login' }}">
+
                                                     <svg width="32" height="33" viewBox="0 0 32 33" fill="none"
                                                         xmlns="http://www.w3.org/2000/svg">
                                                         <path
@@ -156,18 +101,9 @@
                                         </div>
                                     </div>
                                 @empty
-                                    <div class="col-lg-12">
-                                        <div class="sub-product">
-                                            <h2>{{ transWord('لا يوجد منتجات') }}</h2>
-                                        </div>
-                                    </div>
                                 @endforelse
 
-                                {{-- <div class="col-lg-12">
 
-                                    {{ $products->links('site.pagination.custom') }}
-
-                                </div> --}}
 
                             </div>
                         </div>
@@ -177,18 +113,73 @@
         </section>
 
 
-
-
-
-
-
-
-
-
-
     </main>
 @endsection
 @push('js')
     <script src="https://cdnjs.cloudflare.com/ajax/libs/ion-rangeslider/2.3.0/js/ion.rangeSlider.min.js"></script>
     <script src="{{ asset('site/js/range_slider.js') }}"></script>
+    <script>
+        $(document).ready(function() {
+            $('.filter').on('input', function() {
+                //radio button
+                var category = $('.category_filter:checked').data('category-id');
+
+                var brand = $('.brand_filter:checked');
+                var brands = brand.map(function() {
+                    return $(this).val();
+                }).get();
+                var min_num = $('#min_num_filter').val();
+                var max_num = $('#max_num_filter').val();
+                var arrange = $('#arrange').val();
+                console.log(category);
+                console.log(brands);
+                console.log(min_num);
+                console.log(max_num);
+                $.ajax({
+                    url: "{{ route('site.products.filter') }}",
+                    type: 'GET',
+                    data: {
+                        category: category,
+                        brand: brands,
+                        min_num: min_num,
+                        max_num: max_num,
+                        arrange: arrange
+                    },
+                    success: function(data) {
+
+                        $('#filter-result').html(data);
+
+                    }
+                });
+
+
+            });
+        });
+
+        // $('.js-range-slider').on('change', function() {
+        //     var range = $(this).data('ionRangeSlider');
+        //     $('#min_num_filter').val(range.result.from);
+        //     $('#max_num_filter').val(range.result.to);
+        //     console.log(range.result.from);
+        // });
+    </script>
+
+    {{-- <script>
+        $(document).on('change','#arrange', function() {
+            var arrange = $(this).val();
+            $.ajax({
+                url: "{{ route('site.products.arrange') }}",
+                type: 'GET',
+                data: {
+                    arrange: arrange
+                },
+                success: function(data) {
+                    $('#filter-result').html(data);
+                    //remove data that checked
+                    $('.category_filter').prop('checked', false);
+                    $('.brand_filter').prop('checked', false);
+                }
+            });
+        });
+    </script> --}}
 @endpush

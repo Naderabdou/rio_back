@@ -118,6 +118,12 @@
                     <span class="menu-title text-truncate">{{ transWord(' الشركاء') }}</span>
                 </a>
             </li>
+            <li class="nav-item {{ areActiveRoutes(['admin.orders.index', 'admin.orders.edit']) }}">
+                <a class="d-flex align-items-center" href="{{ route('admin.orders.index') }}">
+                    <i class="fas fa-shopping-cart"></i>
+                    <span class="menu-title text-truncate">{{ transWord(' طلبات المنتجات') }}</span>
+                </a>
+            </li>
 
 
 

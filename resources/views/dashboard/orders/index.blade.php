@@ -59,7 +59,7 @@
                                         @foreach ($orders as $order)
                                             <tr>
                                                 <td>{{ $loop->iteration }}</td>
-                                                <td>{{ $order->order_number	 }}</td>
+                                                <td>{{ $order->order_number }}</td>
                                                 <td>{{ $order->name }}</td>
                                                 <td>
                                                     <a href="mailto:{{ $order->email }}">{{ $order->email }}</a>
@@ -80,11 +80,15 @@
                                                         <span class="badge badge-dark">
                                                             {{ transWord($order->status) }}
                                                         </span>
-                                                        @elseif ($order->status === 'completed')
+                                                    @elseif ($order->status === 'completed')
                                                         <span class="badge badge-success">
                                                             {{ transWord($order->status) }}
                                                         </span>
-                                                        @elseif ($order->status === 'declined')
+                                                        @elseif ($order->status === 'shipped')
+                                                        <span class="badge badge-success">
+                                                            {{ transWord($order->status) }}
+                                                        </span>
+                                                    @elseif ($order->status === 'declined')
                                                         <span class="badge badge-warning">
                                                             {{ transWord($order->status) }}
                                                         </span>
@@ -97,6 +101,27 @@
                                                             class="btn btn-sm btn-warning"><i class="far fa-eye"></i>
                                                         </a>
 
+                                                        <div class="btn-group">
+                                                            <button type="button"
+                                                                class="btn btn-sm btn-primary dropdown-toggle"
+                                                                data-toggle="dropdown">
+                                                                {{ transWord('تغير الحالة') }}
+                                                            </button>
+                                                            <div class="dropdown-menu">
+                                                                <a class="dropdown-item"
+                                                                    href="{{ route('admin.orders.changeStatus', ['id' => $order->id, 'status' => 'pending']) }}">{{ transWord('Pending') }}</a>
+                                                                <a class="dropdown-item"
+                                                                    href="{{ route('admin.orders.changeStatus', ['id' => $order->id, 'status' => 'pocessing']) }}">{{ transWord('Processing') }}</a>
+                                                                <a class="dropdown-item"
+                                                                    href="{{ route('admin.orders.changeStatus', ['id' => $order->id, 'status' => 'shipped']) }}">{{ transWord('shipped') }}</a>
+                                                                <a class="dropdown-item"
+                                                                    href="{{ route('admin.orders.changeStatus', ['id' => $order->id, 'status' => 'driving']) }}">{{ transWord('Driving') }}</a>
+                                                                <a class="dropdown-item"
+                                                                    href="{{ route('admin.orders.changeStatus', ['id' => $order->id, 'status' => 'completed']) }}">{{ transWord('Completed') }}</a>
+                                                                <a class="dropdown-item"
+                                                                    href="{{ route('admin.orders.changeStatus', ['id' => $order->id, 'status' => 'declined']) }}">{{ transWord('Declined') }}</a>
+                                                            </div>
+                                                        </div>
 
 
                                                     </div>

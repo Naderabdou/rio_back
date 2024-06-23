@@ -27,7 +27,7 @@ return new class extends Migration
             $table->foreignId('address_id')->nullable()->constrained('addresses')->onDelete('set null'); //العنوان
          //   $table->foreignId('payment_id')->nullable()->constrained('payments')->onDelete('set null'); //المستخدم الذي قام بالطلب
          $table->foreignId('payment_id')->nullable()->constrained('payments')->onDelete('set null'); //العنوان
-            $table->string('payment_method');
+            $table->string('payment_method')->nullable();
 
             $table->string('name');
             $table->string('email');

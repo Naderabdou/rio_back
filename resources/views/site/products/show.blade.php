@@ -82,7 +82,12 @@
                                 </div>
                                 <div class="btns-share">
                                     <a href=""> <i class="bi bi-share"></i></a>
-                                    <a href=""> <i class="bi bi-heart"></i> </a>
+                                    {{-- <a href=""> <i class="bi bi-heart"></i> </a> --}}
+                                    <a href="" data-url="{{ route('site.add.favorite') }}"
+                                        data-id="{{ $product->id }}"
+                                        class="heart pull-right {{ auth()->user() ? 'add_to_favorite' : 'auth_login' }}"><i
+                                            class="{{ auth()->user() && $product->favorites->contains('user_id', auth()->user()->id) ? 'bi-heart-fill' : 'bi bi-heart' }}"></i></a>
+
                                 </div>
                             </div>
 
@@ -107,8 +112,10 @@
                                     <input type="text" id="required-quantity" value="1" />
                                     <span class="minus"> <i class="bi bi-dash"></i> </span>
                                 </div>
-                                <button class="ctm-btn"> <img src="{{ asset('site/images/icon/shopping-cart-w.svg') }}"
-                                        alt="">{{ transWord('اضف للسلة') }}</button>
+                                <a href="{{ route('site.cart.store') }}" data-id="{{ $products->id }}"
+                                    class="{{ auth()->user() ? 'btn-cart ctm-btn' : 'auth_login ctm-btn' }}">
+
+                                    <a class="ctm-btn"> <img src="{{ asset('site/images/icon/shopping-cart-w.svg') }}"  alt="">{{ transWord('اضف للسلة') }}</a>
                             </div>
 
 
@@ -249,9 +256,11 @@
                                                             <h3>EGP {{ $products->price }} </h3>
                                                             {{-- <h4> EGP {{ $products->price_after_discount }} </h4> --}}
                                                             {{-- <h4> {{ $product->price_after_discount ?? $product->price }} EGP </h4> --}}
-                                                            <h4> {{ $product->price_after_discount ?? 0 }} EGP </h4>
+                                                            <h4> {{ $products->price_after_discount ?? $products->price }}
+                                                                EGP </h4>
 
-                                                            <div class="offer-price"> {{ $product->discount ?? 0 }}% OFF</div>
+                                                            <div class="offer-price"> {{ $products->discount ?? 0 }}% OFF
+                                                            </div>
                                                         </div>
                                                     </div>
                                                 </a>
@@ -260,7 +269,9 @@
                                                         class="ctm-btn3 w-100">
                                                         {{ transWord('مشاهدة المنتج') }}
                                                     </a>
-                                                    <a href="" class="btn-cart">
+                                                    <a href="{{ route('site.cart.store') }}"
+                                                        data-id="{{ $products->id }}"
+                                                        class="{{ auth()->user() ? 'btn-cart' : 'auth_login' }}">
                                                         <svg width="32" height="33" viewBox="0 0 32 33"
                                                             fill="none" xmlns="http://www.w3.org/2000/svg">
                                                             <path
@@ -312,14 +323,115 @@
 
 
 
-
-
-
     </main>
 @endsection
 @push('js')
     <script src="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.8.1/slick.js"></script>
-    {{-- <script>
+
+    <script>
+        // add top favoret
+        $(document).ready(function() {
+
+            $(".add_to_favorite").click(function(e) {
+                e.preventDefault();
+
+                var id = $(this).data('id');
+                var url = $(this).data('url');
+                var This = $(this);
+                $.ajax({
+                    type: "GET",
+                    url: url,
+                    data: {
+                        id: id,
+                    },
+                    dataType: "json",
+                    success: function(response) {
+
+                        if (response.status = true) {
+
+                            if (This.find("i").hasClass("bi-heart-fill")) {
+                                This.find("i").removeClass("bi-heart-fill");
+                                This.find("i").addClass("bi-heart");
+                                This.removeClass("animated rubberBand");
+                                This.css("color", "#005E8A");
+                            } else {
+                                This.find("i").removeClass("bi-heart");
+                                This.find("i").addClass("bi-heart-fill");
+                                This.addClass("animated rubberBand");
+                                //   This.css("color", "#D8282D");
+                            }
+
+                            Swal.fire({
+                                icon: 'success',
+                                title: response.message,
+                                showConfirmButton: false,
+                                timer: 1500
+                            })
+
+                        } else {
+                            Swal.fire({
+                                icon: 'error',
+                                title: response.message,
+                                showConfirmButton: false,
+                                timer: 1500
+                            })
+                        }
+
+                    },
+                });
+
+            });
+
+        });
+
+
+        var lang = 'ar';
+
+        if (lang == 'ar') {
+            var message = 'يجب عليك التسجيل لاستخدام هذه الميرة';
+            var message_sure = 'هل تريد التسجبل ؟';
+            var yes = 'نعم';
+            var no = 'لا';
+            var message_close = 'تم الالغاء بنجاح';
+            var paynow = 'اشتري الان';
+        } else {
+
+            var message = 'You must register to use this feature';
+            var message_sure = 'Do you want to register ?';
+            var yes = 'Yes';
+            var no = 'No';
+            var message_close = 'Canceled successfully';
+            var paynow = 'Pay Now';
+        }
+
+        $(document).on('click', '.auth_login', function(e) {
+            e.preventDefault();
+            Swal.fire({
+                title: message_sure,
+                text: message,
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: yes,
+                cancelButtonText: no
+            }).then((result) => {
+                if (result.isConfirmed) {
+
+                    $('.login-modal').modal('show');
+
+                } else {
+
+                }
+            })
+
+        });
+    </script>
+@endpush
+
+
+{{-- @push('js')
+    <script>
         // $(document).ready(function() {
         //     $.validator.addMethod("noSpecialChars", function(value, element) {
         //         return this.optional(element) || /^[a-zA-Z0-9\u0600-\u06FF ]*$/.test(value);
@@ -535,5 +647,5 @@
             })
 
         });
-    </script> --}}
-@endpush
+</script>
+@endpush --}}

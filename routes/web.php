@@ -148,10 +148,9 @@ Route::middleware('localization')->group(function () {
             //------------------- End Products Routes -------------------//
 
 
-
             //------------------- Orders Routes -------------------//
             Route::resource('orders', 'OrderController')->except(['create', 'store', 'edit', 'update']);
-            Route::get('orders/change-status/{id}/{status}', 'OrderController@changeStatus')->name('orders.change-status');
+            Route::get('orders/change-status/{id}/{status}', 'OrderController@changeStatus')->name('orders.changeStatus');
             //------------------- End  Orders Routes -------------------//
 
 
@@ -200,12 +199,18 @@ Route::namespace('Site')->name('site.')->group(function () {
 Route::namespace('Site')->name('site.')->middleware('lang')->group(function () {
 
     Route::get('/', 'HomeController@index')->name('home');
+    Route::get('/home-filter', 'HomeController@productFilter')->name('homefilter');
 
     // ------------------- Products Routes -------------------//
     Route::get('products', 'ProductController@index')->name('products');
+    Route::get('products/filter', 'ProductController@filter')->name('products.filter');
+   // Route::get('products/arrange', 'ProductController@arrange')->name('products.arrange');
+   Route::get('products/search', 'ProductController@search')->name('products.search');
     Route::get('products/{id}', 'ProductController@show')->name('products.show');
-    Route::get('products/search', 'ProductController@search')->name('products.search');
+
+
     //------------------- End Products Routes -------------------//
+
 
     //------------------- About Us Routes -------------------//
     Route::get('aboutUs', 'AboutUsController@index')->name('aboutUs');
@@ -216,11 +221,8 @@ Route::namespace('Site')->name('site.')->middleware('lang')->group(function () {
     Route::post('contactUs', 'ContactUsController@store')->name('contactUs.store');
     //------------------- End Contact Us Routes -------------------//
 
-    //-------------------- Favorite Routes -------------------//
-    Route::get('favorite', 'FavoriteController@index')->name('favorite');
-    Route::post('favorite', 'FavoriteController@store')->name('favorite.store');
-    Route::delete('favorite/{id}', 'FavoriteController@destroy')->name('favorite.destroy');
-    //-------------------- End Favorite Routes -------------------//
+
+
 
     Route::middleware('auth')->group(function () {
         //-------------------- Profile Routes -------------------//
@@ -249,7 +251,8 @@ Route::namespace('Site')->name('site.')->middleware('lang')->group(function () {
         Route::get('cart', 'CartController@index')->name('cart');
         Route::get('cart/store', 'CartController@store')->name('cart.store');
         Route::post('cart/update', 'CartController@update')->name('cart.update');
-        Route::delete('cart/{id}', 'CartController@destroy')->name('cart.destroy');
+        Route::get('cart/destroy/{id}', 'CartController@destroy')->name('cart.destroy');
+        Route::get('cart/destroy/cart/{id}', 'CartController@destroyIndex')->name('cart.index.destroy');
         Route::post('cart/coupon', 'CartController@coupon')->name('cart.coupon');
         Route::post('cart/coupon/remove', 'CartController@removeCoupon')->name('cart.coupon.remove');
         //-------------------- End Cart Routes -------------------//
@@ -263,7 +266,11 @@ Route::namespace('Site')->name('site.')->middleware('lang')->group(function () {
 
 
 
-
+  //-------------------- Favorite Routes -------------------//
+  Route::get('favorite', 'FavoriteController@index')->name('favorite.index');
+  Route::get('add-favorite', 'FavoriteController@store')->name('add.favorite');
+  Route::delete('remove-favorite/{id}', 'FavoriteController@destroy')->name('favorite.destroy');
+  //-------------------- End Favorite Routes -------------------//
 
 
         //-------------------- End Profile Routes -------------------//

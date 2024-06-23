@@ -2311,3 +2311,30 @@ table .counter span:hover {
   margin: 25px 0;
   color: var(--color-gray);
 }
+
+
+
+.select-puyment {
+    padding: 25px;
+    position: relative;
+    background-color: var(--color-white);
+    border-radius: 20px;
+    margin-bottom: 25px;
+
+    border: 1px solid var(--color-border);
+}
+.select-puyment > h2{
+    padding: 0 15px;
+    font-size: 22px;
+    margin-bottom: 30px;
+    font-family: "semiBold";
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+.title-select-puyment h2{
+    display: flex;
+    cursor: pointer;
+    align-items: center;
+    justify-content: space-between;
+}

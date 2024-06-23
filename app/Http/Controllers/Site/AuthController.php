@@ -23,9 +23,9 @@ class AuthController extends Controller
             : ['phone' => $login, 'password' => $password];
         Auth::attempt($credentials);
         if (Auth::check()) {
-            return response()->json(['message' => 'Logged in successfully', 'user' => Auth::user()]);
+            return response()->json(['message' => transWord('Logged in successfully'), 'user' => Auth::user()]);
         } else {
-            return response()->json(['message' => 'Invalid credentials'], 422);
+            return response()->json(['message' => transWord('بيانات الدخول خطاء')], 422);
         }
     }
 
@@ -38,12 +38,11 @@ class AuthController extends Controller
         //login user
         Auth::attempt(['email' => $request->email, 'password' => $request->password]);
 
-        return response()->json(['message' => 'Registered successfully']);
+        return response()->json(['message' => transWord('Registered successfully')]);
     }
 
     public function logout()
     {
-     
         Auth::logout();
 
         request()->session()->invalidate();
@@ -57,9 +56,9 @@ class AuthController extends Controller
         $user = User::where('email', $request->email)->first();
         if ($user) {
             $user->sendEmailVerificationCode();
-            return response()->json(['message' => 'Reset password link sent to your email', 'email' => $request->email]);
+            return response()->json(['message' => transWord('Reset password link sent to your email'), 'email' => $request->email]);
         } else {
-            return response()->json(['message' => 'User not found'], 422);
+            return response()->json(['message' => transWord('User not found')], 422);
         }
     }
 
@@ -69,9 +68,9 @@ class AuthController extends Controller
         $user = User::where('email', $request->email)->first();
         if ($user->code == $code) {
             $user->update(['code' => null]);
-            return response()->json(['message' => 'Code is correct', 'email' => $request->email]);
+            return response()->json(['message' => transWord('Code is correct'), 'email' => $request->email]);
         } else {
-            return response()->json(['message' => 'Code is incorrect'], 422);
+            return response()->json(['message' => transWord('Code is incorrect')], 422);
         }
     }
 
@@ -79,12 +78,12 @@ class AuthController extends Controller
     {
         $user = User::where('email', $request->email)->first();
         if (!$user) {
-            return response()->json(['message' => 'User not found'], 422);
+            return response()->json(['message' => transWord('User not found')], 422);
         }
 
         $user->password = $request->password;
         $user->save();
-        return response()->json(['message' => 'Password update successfully']);
+        return response()->json(['message' => transWord('Password update successfully')]);
     }
 
     public function resendCode($email)
@@ -93,6 +92,6 @@ class AuthController extends Controller
         $user = User::where('email', $email)->first();
 
         $user->sendEmailVerificationCode();
-        return response()->json(['message' => 'Code sent to your email']);
+        return response()->json(['message' => transWord('Code sent to your email')]);
     }
 }

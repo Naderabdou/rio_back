@@ -18,6 +18,8 @@ class Product extends Model
 
     protected $guarded = [];
 
+
+    protected $appends = ['image_path'];
     public function category()
     {
         return $this->belongsTo(Category::class);
@@ -76,6 +78,22 @@ class Product extends Model
     } // end getDescAttribute
 
 
+    // public function getImagePathAttribute()
+    // {
+    //     return asset('storage/' . $this->image);
+    // }
+
+    // public function getImagePathAttribute()
+    // {
+    //     return  $this->image; //for test
+    // }
+
+
+    public function favorites()
+    {
+        return $this->hasMany(Favorite::class, 'product_id', 'id');
+    }
+
     public function getImagePathAttribute()
     {
         return asset('storage/' . $this->image);
@@ -101,7 +119,18 @@ class Product extends Model
 
     public function orderItems()
     {
-        return $this->hasMany(OrderItems::class);
+        return $this->hasMany(OrderItems::class, 'product_id', 'id');
     }
+
+
+    public function getTotalPriceAttribute($value)
+    {
+       if($this->discount != null && $this->discount > 0){
+          return $this->price_after_discount;
+       }else{
+           return $this->price;
+       }
+    }
+
 
 }

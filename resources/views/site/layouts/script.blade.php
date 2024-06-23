@@ -230,8 +230,93 @@
             },
         });
 
+        $('.btn-cart').click(function(e) {
+            e.preventDefault();
+            var id = $(this).data('id');
+            var url = $(this).attr('href');
+            console.log(url, id);
+            $.ajax({
+                url: url,
+                type: 'GET',
+                data: {
+                    id: id
+                },
+                success: function(data) {
 
 
+
+                    if (data.type == 'error') {
+                        Swal.fire({
+                            icon: 'error',
+                            title: `<h5> ${data.message}</h5> `,
+                            showConfirmButton: false,
+                            timer: 1500
+                        });
+                        return;
+
+                    }
+                    Swal.fire({
+                        icon: 'success',
+                        title: "<h5> {{ transWord('تم الاضافة بنجاح') }} </h5>",
+                        showConfirmButton: false,
+                        timer: 1500
+                    });
+                    // if (data.type == 'success') {
+                    //     setTimeout(() => {
+                    //         location.reload();
+
+                    //     }, 1000);
+                    // }
+
+
+                    $('#add_cart').html(data);
+                    let count =  $('.title-cart-header').data('count');
+                    $('#count_cart').text(count);
+
+                    // $('#order_emty').hide();
+                    // $('.cart_count').text(data.cart_count);
+                    // $('.cart_count').show();
+                }
+            });
+        });
+
+        // $('.btn_remove_cart').click(function(e) {
+        //     e.preventDefault();
+        //     var id = $(this).data('id');
+        //     var url = $(this).attr('href');
+        //     $.ajax({
+        //         url: url,
+        //         type: 'GET',
+        //         data: {
+        //             id: id
+        //         },
+        //         success: function(data) {
+        //             console.log(data);
+        //             if (data.type == 'error') {
+        //                 Swal.fire({
+        //                     icon: 'error',
+        //                     title: `<h5> ${data.message}</h5> `,
+        //                     showConfirmButton: false,
+        //                     timer: 1500
+        //                 });
+        //                 return;
+
+        //             }
+        //             Swal.fire({
+        //                 icon: 'success',
+        //                 title: "<h5> {{ transWord('تم الحذف بنجاح') }} </h5>" ,
+        //                 showConfirmButton: false,
+        //                 timer: 1500
+        //             });
+        //             $('#add_cart').html(data);
+        //             // $('.cart_count').text(data.cart_count);
+        //             // if (data.cart_count == 0) {
+        //             //     $('#order_emty').show();
+        //             //     $('.cart_count').hide();
+        //             // }
+        //         }
+        //     });
+        // });
     })
 </script>
 
@@ -239,4 +324,3 @@
 
 <script src="{{ asset('site/js/otp.js') }}"></script>
 <script src="{{ asset('site/js/custom.js') }}"></script>
-

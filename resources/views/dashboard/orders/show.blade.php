@@ -71,8 +71,8 @@
                                     <hr>
                                     <ul class="list-unstyled">
                                         <li><b class="text-primary"> {{ transWord('السعر الكلي') }} : </b> {{ $order->total_price }}</li>
-                                        <li><b class="text-primary"> {{transWord('الخصم')}} : </b> {{ $order->discount  }}</li>
-                                        <li><b class="text-primary"> {{transWord('السعر السعر الكلي بعد الخصم')}} : </b> {{ $order->price_befor_discount }}</li>
+                                        <li><b class="text-primary"> {{transWord('الخصم')}} : </b> {{ $order->discount ?? 0  }}</li>
+                                        <li><b class="text-primary"> {{transWord('السعر السعر الكلي بعد الخصم')}} : </b> {{ $order->price_before_discount }}</li>
 
                                     </ul>
                                 </div>
@@ -121,7 +121,7 @@
                                                             {{ $loop->iteration }}
                                                         </td>
                                                         <td class="py-1">
-                                                            <img src="{{ $orderItem->courses?->image_path }}"
+                                                            <img src="{{ $orderItem->products?->image_path }}"
                                                                 width="100px" height="100px">
                                                         </td>
                                                         <td class="py-1">

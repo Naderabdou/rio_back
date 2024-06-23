@@ -9,10 +9,10 @@
 @section('content')
 
     <!-- start app ====
-                                        ===============================
-                                        ================================
-                                        ============== --
-                                        -->
+                                                ===============================
+                                                ================================
+                                                ============== --
+                                                -->
     <main id="app">
         <!-- start hero -->
         <section class="hero">
@@ -101,7 +101,7 @@
                                         </div>
 
                                         <div class="text-sub-product">
-                                            <h2>{{ $offer->title }}</h2>
+                                            <h2>{{ $offer->name }}</h2>
                                             <p>{{ $offer->sub_title }}</p>
                                             <div class="product-price">
                                                 <h3>EGP {{ $offer->price }} </h3>
@@ -206,14 +206,16 @@
                     </div>
                     <div class="filter-product-index">
                         <ul>
-                            <li><a href="" class="active"> {{ transWord('الكل') }} </a></li>
-                            <li><a href="">{{ transWord('جديدة') }}</a></li>
-                            <li><a href="">{{ transWord('الاكثر مبيعا') }}</a></li>
+                            <li><a href="" class="active home-filter" id="all"> {{ transWord('الكل') }}
+                                </a></li>
+                            <li><a href="" class=" home-filter" id="new">{{ transWord('جديدة') }}</a></li>
+                            <li><a href=""class=" home-filter" id="most-sale"> {{ transWord('الاكثر مبيعا') }}</a>
+                            </li>
                         </ul>
                     </div>
                 </div>
 
-                <div class="row row-gap">
+                <div class="row row-gap product-result">
                     @forelse ($products as $product)
                         <div class="col-lg-4 col-md-6">
                             <div class="sub-product">
@@ -223,6 +225,7 @@
                                     </div>
 
                                     <div class="text-sub-product">
+
                                         <h2>{{ $product->name }}</h2>
                                         <p>{{ $product->sub_title }}</p>
                                     </div>
@@ -352,43 +355,59 @@
     </main>
 
     <!-- end app ====
-                                        =============================
-                                        ==================================
-                                        ==================== -->
+                                                =============================
+                                                ==================================
+                                                ==================== -->
 
 @endsection
 @push('js')
     <script>
         $(document).ready(function() {
-            $('.btn-cart').click(function(e) {
+            // $('.btn-cart').click(function(e) {
+            //     e.preventDefault();
+            //     var id = $(this).data('id');
+            //     var url = $(this).attr('href');
+            //     $.ajax({
+            //         url: url,
+            //         type: 'GET',
+            //         data: {
+            //             id: id
+            //         },
+            //         success: function(data) {
+            //             Swal.fire({
+            //                 icon: 'success',
+            //                 title: `<h5> ${data.message}</h5> `,
+            //                 showConfirmButton: false,
+            //                 timer: 1500
+            //             });
+            //             if (data.type == 'success') {
+            //                 setTimeout(() => {
+            //                     location.reload();
+
+            //                 }, 1000);
+            //             }
+
+
+            //             // $('#add_cart').append(data);
+            //             // $('#order_emty').hide();
+            //             // $('.cart_count').text(data.cart_count);
+            //             // $('.cart_count').show();
+            //         }
+            //     });
+            // });
+            $('.home-filter').click(function(e) {
                 e.preventDefault();
-                var id = $(this).data('id');
-                var url = $(this).attr('href');
+                var filter = $(this).attr('id');
+                $('.home-filter').removeClass('active');
                 $.ajax({
-                    url: url,
+                    url: "{{ route('site.homefilter') }}",
                     type: 'GET',
                     data: {
-                        id: id
+                        filter: filter
                     },
                     success: function(data) {
-                        Swal.fire({
-                            icon: 'success',
-                            title: `<h5> ${data.message}</h5> `,
-                            showConfirmButton: false,
-                            timer: 1500
-                        });
-                        if(data.type == 'success'){
-                            setTimeout(() => {
-                            location.reload();
-
-                         }, 1000);
-                        }
-
-                        
-                        // $('#add_cart').append(data);
-                        // $('#order_emty').hide();
-                        // $('.cart_count').text(data.cart_count);
-                        // $('.cart_count').show();
+                        $('.product-result').html(data);
+                        $("#" + filter).addClass('active');
                     }
                 });
             });

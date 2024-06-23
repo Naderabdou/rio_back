@@ -379,7 +379,6 @@ $(document).ready(function () {
                 $('.spinner-border').remove();
 
 
-
             },
             error: function (data) {
                 var text = data.responseJSON.message;

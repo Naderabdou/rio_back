@@ -32,7 +32,7 @@ class ProductRequest extends FormRequest
             'label_color' => 'required|string|min:3|max:255',
             'price' => 'required|numeric',
             'discount' => 'nullable|numeric',
-            'price_after_discount' => 'nullable|numeric',
+            'price_after_discount' => 'required_if:discount,null|numeric',
             'stock' => 'required|numeric',
             'category_id' => 'required|exists:categories,id',
             'brand_id' => 'required|exists:brands,id',
@@ -51,8 +51,6 @@ class ProductRequest extends FormRequest
             'value_en.*' => 'required|string|max:255',
 
         ];
-
-
     }
 
     /**
@@ -60,12 +58,13 @@ class ProductRequest extends FormRequest
      *
      * @return array<string, string>
      */
-    public function messages() {
+    public function messages()
+    {
         return [
-           'key_ar.*.required' => transWord('The key Arabic field is required'),
-           'key_en.*.required' => transWord('The key English field is required'),
-              'value_ar.*.required' => transWord('The value Arabic field is required'),
-                'value_en.*.required'=> transWord('The value English field is required'),
+            'key_ar.*.required' => transWord('The key Arabic field is required'),
+            'key_en.*.required' => transWord('The key English field is required'),
+            'value_ar.*.required' => transWord('The value Arabic field is required'),
+            'value_en.*.required' => transWord('The value English field is required'),
 
 
         ];

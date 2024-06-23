@@ -59,8 +59,8 @@
                                                         <h2>{{ $item->product_name }}</h2>
                                                         <h3>EGP {{ $item->price }} </h3>
                                                         <p>
-                                                            {{ transWord('تم التوصيل في ') }}
-                                                            {{ transWord($order->address) }} , {{ $order->driving_at }}
+                                                            {{ transWord('تم استلام طلبك في ') }}  {{ $order->address }} , {{ $order->date }}
+
                                                         </p>
                                                     </div>
                                                 </li>
