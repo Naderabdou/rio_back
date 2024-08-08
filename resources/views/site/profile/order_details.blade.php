@@ -40,7 +40,7 @@
                                     <h2> {{ transWord('رقم الطلب') }} {{ $order->order_number }}</h2>
                                     <p>{{ transWord('تاريخ الطلب') }} {{ $order->date }} </p>
                                 </div>
-                                <h3> {{ $order->price_befor_discount }} </h3>
+                                <h3> {{ $order->price_before_discount }} {{ transWord('جنية') }} </h3>
                             </div>
 
                             <div class="main-scoll">
@@ -172,11 +172,11 @@
                                                             </div>
                                                         </div>
                                                     </th>
-                                                    <td>EGP {{ $item->price }}</td>
+                                                    <td> {{ $item->price }} {{ transWord('جنية') }}</td>
                                                     <td>
                                                        {{ $item->quantity }}
                                                     </td>
-                                                    <td>EGP {{ $order->price_befor_discount }}</td>
+                                                    <td> {{ $item->price *  $item->quantity }} {{ transWord('جنية') }}</td>
                                                 </tr>
                                             @endforeach
 

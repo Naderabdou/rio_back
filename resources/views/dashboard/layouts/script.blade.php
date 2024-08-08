@@ -47,9 +47,18 @@
             'noSpecialChars' => transWord('The field must not contain special characters'),
             'acceptMessagePdf' => transWord('يجب ان يكون الملف من نوع pdf'),
             'acceptSetting' => transWord('يجب ان يكون الصوره او الايقونه من نوع png, jpg, jpeg,svg'),
-            'filesize' => transWord('يجب ان يكون حجم الصوره اقل او يساوي 1 ميجا'),
-
-
+            'filesize' => transWord('يجب ان يكون حجم الصوره او الفيديو اقل او يساوي 1 ميجا'),
+            'discountPrice' => transWord('يجب ان يكون السعر بعد الخصم اقل من السعر الاساسي او يساويه'),
+            'price_after' => transWord('حقل السعر بعد الخصم مطلوب'),
+            'required' => transWord('هذا الحقل مطلوب'),
+            'fullname' => transWord('يجب ادخال الاسم الثلاثي'),
+            'passwordConfirmationMessage' => transWord('The password and confirmation password do not match'),
+            'phoneMaxLengthMessage' => transWord('The phone must be at most 11 numbers'),
+            'stringMessage' => transWord('يجب ان يحتوي علي حروف فقط'),
+            'passwordConfirmMessage' => transWord('The password and confirmation password do not match'),
+            'fullname' => transWord('يجب ادخال الاسم الثلاثي'),
+            'egyptPhone'=> transWord('Please specify a valid Egyptian phone number and start with 010 , 012 , 011 , 015'),
+            'videoMessage' => transWord('The video must be mp4'),
 
         ];
     @endphp
@@ -61,7 +70,6 @@
 
 {{-- <script src="https://cdn.ckeditor.com/4.16.1/standard/ckeditor.js"></script> --}}
 
-<script src="https://unpkg.com/dropzone@5/dist/min/dropzone.min.js"></script>
 <!-- END: Page Vendor JS-->
 
 <!-- BEGIN: Page JS-->
@@ -91,6 +99,114 @@
         },
     });
 </script>
+
+
+
+
+
+
+<!-- ====================================== save token firebase ========================================== -->
+{{-- <script src="https://www.gstatic.com/firebasejs/10.12.3/firebase-app.js"></script>
+
+<script src="https://www.gstatic.com/firebasejs/10.12.3/firebase-analytics.js"></script> --}}
+
+{{-- <script src="https://www.gstatic.com/firebasejs/8.4.1/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.4.1/firebase-firestore.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.4.1/firebase-auth.js"></script>
+<script src="https://www.gstatic.com/firebasejs/7.16.1/firebase-messaging.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.3.2/firebase.js"></script>
+
+
+
+<script>
+    var firebaseConfig = {
+        apiKey: "AIzaSyDaj8Jx5Dx1JoqPSEM8K1sMbQu2XP6T0j0",
+        authDomain: "zadapp-8a43d.firebaseapp.com",
+        projectId: "zadapp-8a43d",
+        storageBucket: "zadapp-8a43d.appspot.com",
+        messagingSenderId: "700480979872",
+        appId: "1:700480979872:web:3175d97d2b1851cb579ac5",
+        measurementId: "G-W7S6TM1RYL"
+    };
+    firebase.initializeApp(firebaseConfig);
+
+
+    // var db = firebase.firestore();
+
+    const messaging = firebase.messaging();
+
+    @if (Auth::check())
+        startFCM();
+    @endif
+
+    function startFCM() {
+        messaging
+            .requestPermission()
+            .then(function() {
+                return messaging.getToken()
+            })
+            .then(function(response) {
+                $.ajaxSetup({
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                    }
+                });
+                $.ajax({
+                    url: "{{ route('admin.store.token') }}",
+                    type: 'POST',
+                    data: {
+                        token: response
+                    },
+                    dataType: 'JSON',
+                    success: function(response) {
+                        //    alert('Token stored.');
+                    },
+                    error: function(error) {
+                        //    alert(error);
+                    },
+                });
+            }).catch(function(error) {
+                alert(error);
+            });
+    }
+
+    messaging.onMessage(function(payload) {
+
+        // console.log("Message received. ");
+        console.log(payload);
+        // append notification
+
+        // // canceled-orders
+        // if (payload.data.status == 'cancel_request') {
+        //     var html = '<li><a href="' + window.location.origin + '/dashboard/canceled-orders' + '">' +
+        //         payload.notification.body +
+        //         '</a></li>';
+        // } else {
+        //     var html = '<li><a href="' + window.location.origin + '/dashboard/orders' + '">' +
+        //         payload.notification.body +
+        //         '</a></li>';
+        // }
+
+
+
+        // $('.no-notify').text('');
+        // $('.notification-list').append(html);
+
+        // const title = payload.notification.title;
+        // const options = {
+        //     body: payload.notification.body,
+        //     // icon: payload.notification.icon,
+        // };
+
+
+        // if (Notification.permission === 'granted') {
+        //     navigator.serviceWorker.ready.then(function(registration) {
+        //         registration.showNotification(title, options);
+        //     });
+        // }
+
+    });
+</script> --}}
 
 
 @stack('js')
@@ -149,20 +265,23 @@
 </script>
 <script>
     $(document).ready(function() {
-function readURL(input) {
-if (input.files && input.files[0]) {
-    var reader = new FileReader();
+        function readURL(input) {
+            if (input.files && input.files[0]) {
+                var reader = new FileReader();
 
-    reader.onload = function(e) {
-        $('.preview-formFile').attr('src', e.target.result);
-    }
+                reader.onload = function(e) {
+                    $('.preview-formFile').attr('src', e.target.result);
+                }
 
-    reader.readAsDataURL(input.files[0]);
-}
-}
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
 
-$("#formFile").change(function() {
-readURL(this);
-});
-});
+        $("#formFile").change(function() {
+            readURL(this);
+        });
+    });
 </script>
+
+
+@livewireScripts

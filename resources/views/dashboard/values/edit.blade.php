@@ -1,6 +1,6 @@
 @extends('dashboard.layouts.app')
 
-@section('title', transWord('تعديل قيمنا '))
+@section('title', transWord('خصائص المنتج'))
 
 @section('content')
     <!-- BEGIN: Content-->
@@ -15,9 +15,9 @@
                             <div class="breadcrumb-wrapper">
                                 <ol class="breadcrumb">
                                     <li class="breadcrumb-item"><a
-                                            href="{{ route('admin.ourValues.index') }}">{{ transWord('قيمنا') }}</a>
+                                            href="{{ route('admin.ourValues.index') }}">{{ transWord('خصائص المنتج') }}</a>
                                     </li>
-                                    <li class="breadcrumb-item"><a href="#">{{ transWord('تعديل قيمة ') }}</a>
+                                    <li class="breadcrumb-item"><a href="#">{{ transWord('تعديل خصائص المنتج') }}</a>
                                     </li>
                                 </ol>
                             </div>
@@ -32,7 +32,7 @@
                         <div class="col-12">
                             <div class="card">
                                 <div class="card-header">
-                                    <h2 class="card-title">{{ transWord('تعديل قيمة ') }}</h2>
+                                    <h2 class="card-title">{{ transWord('تعديل خصائص المنتج ') }}</h2>
                                 </div>
                                 <div class="card-body">
                                     <form class="form form-vertical"
@@ -42,12 +42,33 @@
                                         @csrf
                                         <div class="row">
                                             <input type="hidden" name="id" id="id" value="{{ $OurValue->id }}">
-
+                                            <div class="col-12">
+                                                <div class="form-group">
+                                                    <label for="product_id">{{ transWord('المنتجات') }}</label>
+                                                    <select class="form-control select_2" name="product_id" id="product_id"
+                                                        required>
+                                                        <option value="">{{ transWord('اختر') }}
+                                                        </option>
+                                                        @foreach ($products as $product)
+                                                            <option
+                                                                {{ old('product_id',$OurValue->product_id) == $product->id ? 'selected' : '' }}
+                                                                value="{{ $product->id }}">{{ $product->name }}
+                                                            </option>
+                                                        @endforeach
+                                                    </select>
+                                                    @error('product_id')
+                                                        <span class="alert alert-danger">
+                                                            <small class="errorTxt">{{ $message }}</small>
+                                                        </span>
+                                                    @enderror
+                                                </div>
+                                            </div>
                                             <div class="col-6">
                                                 <div class="form-group">
                                                     <label for="title_ar">{{ transWord('الأسم بالعربية') }}</label>
                                                     <input type="text" id="title_ar" class="form-control"
-                                                        name="title_ar" value="{{ old('title_ar', $OurValue->title_ar) }}" />
+                                                        name="title_ar"
+                                                        value="{{ old('title_ar', $OurValue->title_ar) }}" />
                                                     @error('title_ar')
                                                         <span class="alert alert-danger">
                                                             <small class="errorTxt">{{ $message }}</small>
@@ -60,7 +81,8 @@
                                                 <div class="form-group">
                                                     <label for="title_en">{{ transWord('الأسم بالإنجليزية') }}</label>
                                                     <input type="text" id="title_en" class="form-control"
-                                                        name="title_en" value="{{ old('title_en', $OurValue->title_en) }}" />
+                                                        name="title_en"
+                                                        value="{{ old('title_en', $OurValue->title_en) }}" />
                                                     @error('title_en')
                                                         <span class="alert alert-danger">
                                                             <small class="errorTxt">{{ $message }}</small>
@@ -68,31 +90,7 @@
                                                     @enderror
                                                 </div>
                                             </div>
-                                            <div class="col-6">
-                                                <div class="form-group">
-                                                    <label for="desc_ar">{{ transWord('العنوان بالعربية') }}</label>
-                                                    <input type="text" id="desc_ar" class="form-control" name="desc_ar"
-                                                        value="{{ old('desc_ar', $OurValue->desc_ar) }}" />
-                                                    @error('desc_ar')
-                                                        <span class="alert alert-danger">
-                                                            <small class="errorTxt">{{ $message }}</small>
-                                                        </span>
-                                                    @enderror
-                                                </div>
-                                            </div>
 
-                                            <div class="col-6">
-                                                <div class="form-group">
-                                                    <label for="desc_en">{{ transWord('العنوان بالإنجليزية') }}</label>
-                                                    <input type="text" id="desc_en" class="form-control" name="desc_en"
-                                                        value="{{ old('desc_en', $OurValue->desc_en) }}" />
-                                                    @error('desc_en')
-                                                        <span class="alert alert-danger">
-                                                            <small class="errorTxt">{{ $message }}</small>
-                                                        </span>
-                                                    @enderror
-                                                </div>
-                                            </div>
                                             <div class="col-12">
                                                 <div class="form-group">
                                                     <label for="formFile"

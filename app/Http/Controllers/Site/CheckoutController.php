@@ -2,15 +2,22 @@
 
 namespace App\Http\Controllers\site;
 
+use DateTime;
+use DateTimeZone;
 use App\Models\City;
+use App\Models\User;
+use App\Models\Order;
 use App\Models\Payment;
 use App\Models\Governorate;
 use Illuminate\Http\Request;
+use App\Traits\PaymentsMethod;
 use App\Services\PaymobService;
 use App\Http\Controllers\Controller;
+use App\Notifications\OrdersNotifiction;
 
 class CheckoutController extends Controller
 {
+    use PaymentsMethod;
     protected $paymobService;
 
     public function __construct(PaymobService $paymobService)
@@ -21,10 +28,12 @@ class CheckoutController extends Controller
 
     public function index()
     {
+
         //  $payments = Payment::all();
         $cities = City::all();
         $governorates = Governorate::all();
         $payments = Payment::where('is_active', 1)->get();
+
         $cart = auth()->user()->cart;
 
         return view('site.checkout.index', compact('cart', 'cities', 'governorates', 'payments'));
@@ -32,103 +41,108 @@ class CheckoutController extends Controller
 
     public function store(Request $request)
     {
-        // $request->validate([
-        //     'address_id' => 'required|integer',
-        //     'phone' => 'required',
-        //     'name' => 'required',
-        //     'email' => 'required|email',
-        //     'total_price' => 'required|numeric',
-        //     'price_before_discount' => 'required|numeric',
-        //     'tax' => 'nullable|numeric',
-        //     'payment_method' => 'required',
-        // ]);
+        $payment = Payment::where('id', $request->puy)->first();
 
         $cart = $this->getCart();
         $address = $this->getAddress($request->address_id);
-
-        if (!$cart || !$address) {
-            return redirect()->back()->withErrors('Unable to process the order.');
+        if ($address->governorate->tax == 0 || $address->governorate->tax == null) {
+            return redirect()->back()->with('error', transWord('Please select a city with a tax'));
         }
+        if (!$cart || !$address || !$payment) {
+            return redirect()->back()->with('error', transWord('Unable to process the order. Please try again'));
+        }
+        $this->updateCart($cart, $request, $address, $payment);
+        if ($payment->is_cash == 1) {
 
-        $this->updateCart($cart, $request, $address);
+            // Set the timezone to Egypt time
+            //     $dateTime->setTimezone(new DateTimeZone('Africa/Cairo'));
 
+            // Format the DateTime object to the desired format
+
+
+            $cart->update([
+                'status' => 'pending',
+                'payment_id' => $payment->id,
+                'type' => 'order',
+                'payment_method' => 'cash',
+                'created_at' => now(),
+                'type_order' => 'user',
+            ]);
+            User::role('admin')->first()->notify(new OrdersNotifiction($cart));
+
+            return redirect()->route('site.checkout.accepte', $cart->id)->with('success', transWord('Order has been placed successfully'));
+            //  return view('site.profile.orders_success', compact('order'));
+
+            // return redirect()->route('site.orders')->with('success', transWord('Order has been placed successfully'));
+        }
         $orderData = $this->prepareOrderData($cart, $request);
         $order = $this->paymobService->createOrder($orderData);
 
         $paymentKeyData = $this->preparePaymentKeyData($orderData, $request, $address, $order);
         $paymentKey = $this->paymobService->createPaymentKey($paymentKeyData);
 
-        return redirect($this->paymobService->getIframeUrl($paymentKey['token']));
+        return redirect($this->paymobService->getIframeUrl($paymentKey['token'], $payment->PAYMOB_IFRAME_ID));
     }
 
-    private function getCart()
+    public function callback(Request $request)
     {
-        return auth()->user()->cart;
+        $data = $request->all();
+
+        if (!$this->isValidHmac($data)) {
+            return $this->handlePaymentFailure();
+        }
+
+        return $this->processPaymentStatus($data);
     }
 
-    private function getAddress($addressId)
+    public function tax(Request $request)
     {
-        return auth()->user()->address()->find($addressId);
-    }
+        $address = $this->getAddress($request->address_id);
+        $gov = Governorate::find($address->governorate_id);
+        $order = $this->getCart();
+        $order->update([
+            'tax' => $gov->tax
 
-    private function updateCart($cart, $request, $address)
-    {
-        $cart->update([
-            'address_id' => $request->address_id,
-            'phone' => $request->phone,
-            'name' => $request->name,
-            'email' => $request->email,
-            'total_price' => $request->total_price,
-            'price_before_discount' => $request->price_before_discount,
-            'tax' => $request->tax ?? 20,
-            'payment_method' => $request->payment_method,
-            'address' => $address->street,
-            'city' => $address->city->name,
-            'governorate' => $address->governorate->name,
         ]);
+        return response()->json(['tax' => $gov->tax, 'message' => transWord('tax updated successfully')]);
     }
 
-    private function prepareOrderData($cart, $request)
+    public function merchant(Request $request)
     {
-        $items = $cart->orderItems->map(function ($item) {
-            return [
-                'name' => $item->product_name,
-                'amount_cents' => $item->price * 100,
-                'quantity' => $item->quantity,
-            ];
-        })->toArray();
+$payment = Payment::where('id', $request->puy)->first();
 
-        return [
-            'delivery_needed' => false,
-            'amount_cents' => $cart->price_before_discount, // Consider fetching this from $cart or calculating dynamically
-            'currency' => 'EGP',
-            'merchant_order_id' => uniqid(),
-            'items' => $items,
-        ];
+        $cart = $this->getCart();
+        $address = $this->getAddress($request->address_id);
+        if ($address->governorate->tax == 0 || $address->governorate->tax == null) {
+            return redirect()->back()->with('error', transWord('Please select a city with a tax'));
+        }
+        if (!$cart || !$address ) {
+            return redirect()->back()->with('error', transWord('Unable to process the order. Please try again'));
+        }
+        $this->updateCart($cart, $request, $address, $payment);
+        if ($payment->is_cash == 1) {
+
+            $cart->update([
+                'status' => 'pending',
+               // 'payment_id' => $payment->id,
+                'type' => 'order',
+                'payment_method' => 'cash',
+                'created_at' => now(),
+                'type_order' => 'merchant',
+            ]);
+            User::role('admin')->first()->notify(new OrdersNotifiction($cart));
+
+            return redirect()->route('site.checkout.accepte', $cart->id)->with('success', transWord('Order has been placed successfully'));
+            //  return view('site.profile.orders_success', compact('order'));
+
+            // return redirect()->route('site.orders')->with('success', transWord('Order has been placed successfully'));
+        }
     }
 
-    private function preparePaymentKeyData($orderData, $request, $address, $order)
+    public function accepte($order_id)
     {
-        return [
-            'amount_cents' => $orderData['amount_cents'],
-            'currency' => 'EGP',
-            'order_id' => $order['id'],
-            'billing_data' => [
-                'apartment' => 'NA',
-                'floor' => 'NA',
-                'email' => $request->email,
-                'first_name' => $request->name,
-                'street' => $address->street,
-                'building' => 'NA',
-                'phone_number' => $request->phone,
-                'shipping_method' => 'NA',
-                'postal_code' => 'NA',
-                'city' => $address->city->name,
-                'country' => $address->governorate->name,
-                'last_name' => $request->name,
-                'state' => 'NA',
-            ],
-            'integration_id' => $this->paymobService->getIntegrationId(),
-        ];
+
+        $order = auth()->user()->orders()->where('id', $order_id)->first();
+        return view('site.profile.orders_success', compact('order'));
     }
 }

@@ -178,7 +178,7 @@
 
 .remove-mune {
   position: absolute;
-  top: 30px;
+  top: 15px;
   right: 30px;
 }
 
@@ -212,7 +212,7 @@
   position: absolute;
   top: 50%;
   transform: translateY(-50%);
-  width: 100%;
+  width: 98%;
   transition: all 0.2s linear;
 
   transition-delay: 0.6s;
@@ -285,4 +285,18 @@
 .menu_responsive.active .element_menu_responsive ul li:nth-of-type(9) {
   transition-delay: 2s;
   opacity: 1;
+}
+
+@media (max-widht: 425px){
+    .remove-mune span::before {
+        content: "";
+        height: 2px;
+        background-color: #54595f;
+        position: absolute;
+        top: 50%;
+        transform: translateY(-50%);
+        width: 104%;
+        transition: all 0.2s linear;
+        transition-delay: 0.6s;
+    }
 }

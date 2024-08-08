@@ -28,6 +28,7 @@
     @seo
 
     @include('site.layouts.style')
+    @livewireStyles
 
 
 

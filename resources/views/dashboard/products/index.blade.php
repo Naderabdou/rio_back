@@ -1,6 +1,13 @@
 @extends('dashboard.layouts.app')
 
 @section('title', transWord('المنتجات'))
+@push('css')
+    <style>
+        .badge:empty {
+            display: inline;
+        }
+    </style>
+@endpush
 
 @section('content')
     <!-- BEGIN: Content-->
@@ -82,6 +89,7 @@
                                             <th>{{ transWord('وصف المنتج') }}</th>
                                             <th>{{ transWord('اسم الماركه') }}</th>
                                             <th>{{ transWord('اسم القسم') }}</th>
+                                            <th>{{ transWord('الالوان') }}</th>
                                             <th>{{ transWord('صور') }}</th>
                                             <th>{{ transWord('الحاله') }}</th>
                                             <th>{{ __('models.actions') }}</th>
@@ -96,6 +104,16 @@
                                                 <td>{{ Str::limit(strip_tags($product?->desc), 15) }}</td>
                                                 <td>{{ $product->brand?->name }}</td>
                                                 <td>{{ $product?->category?->name }}</td>
+                                                <td>
+                                                    @if ($product->details)
+                                                        @foreach ($product->details->color as $color)
+                                                            <span class="badge badge-primary"
+                                                                style="background-color:{{ $color }}"></span>
+                                                        @endforeach
+                                                    @else
+                                                        <span class="badge badge-danger">{{ transWord('لا يوجد الوان') }}</span>
+                                                    @endif
+                                                </td>
                                                 <td><a href="{{ route('admin.product_images.create', $product?->id) }}">
                                                         <img src="{{ $product->image_path }}" width="100px"
                                                             height="100px">
@@ -221,7 +239,7 @@
                                                                             <b>{{ transWord('وصف') }} : </b>
                                                                         </div>
                                                                         <div class="col-lg-7">
-                                                                            {{ strip_tags($product->desc) }}
+                                                                            {!! strip_tags($product->desc) !!}
                                                                         </div>
 
                                                                     </div>
@@ -291,7 +309,15 @@
                                                                         </div>
 
                                                                     </div>
+                                                                    <div class="row">
+                                                                        <div class="col-lg-5">
+                                                                            <b>{{ transWord('ٍسعر الكرتونه') }} : </b>
+                                                                        </div>
+                                                                        <div class="col-lg-7">
+                                                                            {{ $product->list_price }}
+                                                                        </div>
 
+                                                                    </div>
 
 
 
@@ -302,13 +328,49 @@
                                                                             <b>{{ transWord('تفاصيل المنتج') }} : </b>
                                                                         </div>
                                                                         <div class="col-lg-7">
-                                                                            @foreach ($product->details as $detail)
+
+                                                                            @if ($product->details == null)
                                                                                 <span
-                                                                                    class="badge badge-primary">{{ $detail->key }}</span>
+                                                                                    class="badge badge-danger">{{ transWord('لا يوجد تفاصيل') }}
+                                                                                </span>
+                                                                            @else
+                                                                                <span
+                                                                                    class="badge badge-primary">{{ transWord('ابعاد المنتج') }}</span>
                                                                                 :
                                                                                 <span
-                                                                                    class="badge badge-success">{{ $detail->value }}</span>
-                                                                            @endforeach
+                                                                                    class="badge badge-success">{{ $product->details->dimensions_product }}</span>
+
+                                                                                <br>
+
+                                                                                <span
+                                                                                    class="badge badge-primary">{{ transWord('العدد في الكرتونة') }}</span>
+                                                                                :
+                                                                                <span
+                                                                                    class="badge badge-success">{{ $product->details->num_carton }}</span>
+
+                                                                                <br>
+                                                                                <span
+                                                                                    class="badge badge-primary">{{ transWord('ابعاد الكرتونه') }}</span>
+                                                                                :
+                                                                                <span
+                                                                                    class="badge badge-success">{{ $product->details->dimensions_carton }}</span>
+
+                                                                                <br>
+
+                                                                                <span
+                                                                                    class="badge badge-primary">{{ transWord('حجم الكرتونه') }}</span>
+                                                                                :
+                                                                                <span
+                                                                                    class="badge badge-success">{{ $product->details->size_carton }}</span>
+
+                                                                                <br>
+
+                                                                                <span
+                                                                                    class="badge badge-primary">{{ transWord('وزن الكرتونه') }}</span>
+                                                                                :
+                                                                                <span
+                                                                                    class="badge badge-success">{{ $product->details->weight_carton }}</span>
+                                                                            @endif
 
                                                                         </div>
 

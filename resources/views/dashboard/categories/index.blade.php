@@ -46,7 +46,7 @@
                             <div class="card">
                                 <table class="datatables-basic table">
                                     <thead>
-                                        <tr>
+                                        <tr >
                                             <th>#</th>
                                             <th>{{ transWord('الصورة') }}</th>
                                             <th>{{ transWord('الاسم') }}</th>
@@ -54,9 +54,9 @@
                                             <th>{{ transWord('الإجراءات') }}</th>
                                         </tr>
                                     </thead>
-                                    <tbody>
+                                    <tbody id="tableBodyCategory">
                                         @foreach ($categories as $category)
-                                            <tr>
+                                            <tr class="tableRow" data-id="{{ $category->id }}">
                                                 <td>{{ $loop->iteration }}</td>
                                                 <td><img src="{{ $category->image_path }}" width="50px" height="50px">
                                                 </td>
@@ -90,6 +90,49 @@
     </div>
     <!-- END: Content-->
     @push('js')
+    <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.10.3/jquery-ui.min.js"></script>
+
+        <script>
+            $(document).ready(function() {
+
+                $("#tableBodyCategory").sortable({
+                    items: "tr",
+                    cursor: 'move',
+                    opacity: 0.6,
+                    update: function() {
+                        sendOrderToServer();
+                    }
+                });
+
+                function sendOrderToServer() {
+                    var ids = [];
+                    var token = $('meta[name="csrf-token"]').attr('content');
+
+                    $('tr.tableRow').each(function(index, element) {
+                        ids.push({
+                            id: $(this).attr('data-id'),
+                            position: index + 1
+                        });
+                    });
+                    $.ajax({
+                        type: "POST",
+                        dataType: "json",
+                        url: "{{ route('admin.category-reorder') }}",
+                        data: {
+                            ids: ids,
+                            _token: token
+                        },
+                        success: function(response) {
+                            if (response.status == "success") {
+                                console.log(response);
+                            } else {
+                                console.log(response);
+                            }
+                        }
+                    });
+                }
+            });
+        </script>
         <script src="{{ asset('dashboard/app-assets/js/custom/custom-delete.js') }}"></script>
     @endpush
 @endsection

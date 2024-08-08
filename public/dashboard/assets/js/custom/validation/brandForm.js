@@ -15,6 +15,7 @@ $(document).ready(function () {
             name_ar: {
                 required: true,
                 minlength: 3,
+                maxlength: 255,
                 noSpecialChars: true,
                 remote: {
                     url:  window.brandsUrl,
@@ -40,6 +41,7 @@ $(document).ready(function () {
             name_en: {
                 required: true,
                 minlength: 3,
+                maxlength: 255,
                 noSpecialChars: true,
                 remote: {
                     url:  window.brandsUrl,
@@ -81,6 +83,7 @@ $(document).ready(function () {
             name_ar: {
                 required: true,
                 minlength: 3,
+                maxlength: 255,
                 noSpecialChars: true,
                 remote: {
                     url:  window.brandsUrl,
@@ -111,6 +114,7 @@ $(document).ready(function () {
             name_en: {
                 required: true,
                 minlength: 3,
+                maxlength: 255,
                 noSpecialChars: true,
                 remote: {
                     url:  window.brandsUrl,

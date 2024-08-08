@@ -9,16 +9,67 @@
 @section('content')
 
     <!-- start app ====
-                                                ===============================
-                                                ================================
-                                                ============== --
-                                                -->
+                                                                                                                                                                            ===============================
+                                                                                                                                                                            ================================
+                                                                                                                                                                            ============== --
+                                                                                                                                                                            -->
     <main id="app">
         <!-- start hero -->
         <section class="hero">
             <div class="main-container">
+                {{-- <div class="modal fade vidoe-open" id="exampleModalCenter" tabindex="-1" role="dialog"
+                    aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-centered" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <object id="object_video" data="" type="">
+                                    <video width="50%" height="50%" controls>
+                                        <source id="video_src" src="" type="video/mp4">
+                                    </video>
+                                </object>
+                            </div>
+
+                        </div>
+                    </div>
+                </div> --}}
+                <!-- Modal -->
+                <div class="modal fade vidoe-open" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel"
+                    aria-hidden="true">
+                    <div class="modal-dialog modal-lg">
+                        <div class="modal-content" id="model-content-remove">
+                            <div class="modal-fotm-aosh">
+                                <div class="logo-aosh">
+
+                                    <div id="object_video" type="">
+                                        <video id="video-model-slider" width="50%" height="50%" controls>
+                                            <source id="video_src" src="" type="video/mp4">
+                                        </video>
+                                    </div>
+
+                                </div>
+
+
+
+
+
+
+
+
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {{-- model --}}
+
+
                 <div class="row align-items-center">
-                    <div class="col-lg-6">
+                    <div class="col-lg-6 p-l-85 p-l-sm-res">
                         <div class="text-hero">
                             <h3>{{ transWord('خصومات تصل ل 20%') }}</h3>
                             <h1>
@@ -27,7 +78,9 @@
                             </h1>
                             <div class="btn-hero">
                                 <a href="{{ route('site.products') }}" class="ctm-btn">{{ transWord('تسوق الان') }}</a>
-                                <a href="" class="ctm-btn2"><img src="{{ asset('site/images/Simplification.png') }}"
+
+                                <a target="__blank" href="{{ url(asset('storage/' . getSetting('catlog_company'))) }}"
+                                    class="ctm-btn2"><img src="{{ asset('site/images/Simplification.png') }}"
                                         alt="">
                                     {{ transWord('كتالوج الشركة') }}
                                 </a>
@@ -35,11 +88,65 @@
                         </div>
                     </div>
                     <div class="col-lg-6">
-                        <div class="img-hero">
+
+                        <div class="owl-carousel owl-theme" id="main-slider">
+                            @forelse ($sliders as  $slider)
+                                <div class="item">
+
+                                    {{-- Tee video viewer --}}
+
+
+
+
+                                    <div class="img-hero">
+                                        @if ($slider->type == 'image')
+                                            <object data="{{ $slider->image_path }}" type="">
+                                                <img src="{{ $slider->image_path }}" alt="">
+                                            </object>
+                                        @else
+                                            <div class="slider-img">
+                                                <img src="{{ $slider->image_video_path }}" alt="">
+                                                <a data-video="{{ $slider->video_path }}" href=""
+                                                    data-toggle="modal" class="icon" data-target=".vidoe-modal"
+                                                    data-dismiss="modal">
+                                                    <i class="fa-solid fa-play"></i>
+                                                </a>
+                                                {{-- <div class="icon" data-toggle="modal" data-target="#exampleModalLong"> <i
+                                                        class="fa-solid fa-play"></i> </div> --}}
+                                            </div>
+
+                                            <!-- Modal -->
+                                            <!-- Button trigger modal -->
+                                            {{-- <button type="button" class="btn btn-primary" data-toggle="modal"
+                                                data-target="#exampleModalCenter">
+                                                Launch demo modal
+                                            </button> --}}
+                                        @endif
+
+
+                                    </div>
+
+                                </div>
+                            @empty
+                                <div class="item">
+
+                                    <div class="img-hero">
+                                        <object data="{{ asset('storage/' . getSetting('slider_image')) }}" type="">
+                                            <img src="{{ asset('storage/' . getSetting('slider_image')) }}" alt="">
+                                        </object>
+                                    </div>
+
+                                </div>
+                            @endforelse
+
+
+                        </div>
+
+                        {{-- <div class="img-hero">
                             <object data="{{ asset('storage/' . getSetting('slider_image')) }}" type="">
                                 <img src="{{ asset('storage/' . getSetting('slider_image')) }}" alt="">
                             </object>
-                        </div>
+                        </div> --}}
                     </div>
                 </div>
             </div>
@@ -95,33 +202,66 @@
                         @forelse ($products->where('has_offer',1) as $offer)
                             <div class="item">
                                 <div class="sub-product">
-                                    <a href="product-details">
+                                    <a href="{{ route('site.products.show', $offer->id) }}">
                                         <div class="img-sub-product">
                                             <img src="{{ $offer->image_path }}" alt="">
                                         </div>
 
+
                                         <div class="text-sub-product">
-                                            <h2>{{ $offer->name }}</h2>
+                                            <h2 class="product_name">{{ $offer->name }}</h2>
                                             <p>{{ $offer->sub_title }}</p>
+
+                                            @php
+                                                $isMerchant = auth()->check() && auth()->user()->hasRole('merchant'); // Assuming hasRole() is a method you've defined or comes from a package like Spatie's Laravel Permission.
+                                                $displayPrice = $isMerchant ? $offer->list_price : $offer->total_price;
+                                                $currency = transWord('جنية');
+                                            @endphp
+
                                             <div class="product-price">
-                                                <h3>EGP {{ $offer->price }} </h3>
-                                                {{-- <h4> EGP {{ $products->price_after_discount }} </h4> --}}
-                                                {{-- <h4> {{ $product->price_after_discount ?? $product->price }} EGP </h4> --}}
-                                                <h4> {{ $offer->price_after_discount ?? 0 }} EGP </h4>
-
-                                                <div class="offer-price"> {{ $offer->discount ?? 0 }}% OFF</div>
-
+                                                <h3>{{ $displayPrice }} {{ $currency }}</h3>
+                                                @if (!$isMerchant && $offer->discount)
+                                                    <h4>{{ $offer->price }} {{ $currency }}</h4>
+                                                    <div class="offer-price">{{ $offer->discount }}
+                                                        {{ transWord('ج.م') }}</div>
+                                                @endif
                                             </div>
+                                            @if ($isMerchant)
+                                                <p>{{ transWord('هذا السعر للكرتونة') }}</p>
+                                            @endif
                                         </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                                         <div style="background-color: {{ $offer->label_color }}"
                                             class="discount sub-tools"> {{ $offer->label }} </div>
 
                                     </a>
-                                    <div class="btns-product">
+                                    <div class="btns-product btns-product-offer">
+
+
+
+                                        <div class="shareLinks-{{ $offer->id }} main-share-links "
+                                            style="display: none;">
+                                            {!! Share::page(route('site.products.show', $offer->id))->facebook()->twitter()->linkedin()->whatsapp()->telegram() !!}
+                                        </div>
+
                                         <a href="{{ route('site.products.show', $offer->id) }}"
                                             class="ctm-btn3 w-100">{{ transWord('مشاهدة المنتج') }}</a>
                                         <a href="{{ route('site.cart.store') }}"
-                                            class="{{ auth()->user() ? 'btn-cart' : 'auth_login' }}"
+                                            class="{{ auth()->user() ? 'btn-cart' : 'auth_login btn-cart' }}"
                                             data-id="{{ $offer->id }}">
                                             <svg width="32" height="33" viewBox="0 0 32 33" fill="none"
                                                 xmlns="http://www.w3.org/2000/svg">
@@ -138,13 +278,25 @@
                                                     stroke="#333333" stroke-width="1.8" stroke-miterlimit="10"
                                                     stroke-linecap="round" stroke-linejoin="round" />
                                                 <path d="M12 11.1667H28" stroke="#333333" stroke-width="1.8"
-                                                    stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round" />
+                                                    stroke-miterlimit="10" stroke-linecap="round"
+                                                    stroke-linejoin="round" />
                                             </svg>
                                         </a>
+
+                                        <a href="javascript:void(0);" class="btn_share" data-id="{{ $offer->id }}">
+                                            <i class="bi bi-share"></i>
+                                        </a>
+
                                     </div>
                                 </div>
                             </div>
                         @empty
+                            <div>
+                                <div class="notFound">
+                                    <img src="{{ asset('site/images/not.png') }}">
+                                    <h2>{{ transWord('لايوجد عروض في الوقت الحالي') }} </h2>
+                                </div>
+                            </div>
                         @endforelse
 
 
@@ -152,7 +304,7 @@
                 </div>
 
                 <div class="text-center mt-4">
-                    <a class="ctm-btn" href="{{ route('site.products') }}">{{ transWord('المزيد') }} </a>
+                    <a class="ctm-btn" href="{{ route('site.offers.products') }}">{{ transWord('المزيد') }} </a>
                 </div>
             </div>
         </section>
@@ -167,7 +319,7 @@
                 <div class="owl-carousel owl-theme " id="categories">
                     @forelse ($categories as $category)
                         <div class="item">
-                            <a href="{{ route('site.products') }}">
+                            <a href="{{ route('site.products.category',$category->id) }}">
                                 <div class="sub-categories-index">
                                     <div class="img-categories-index">
                                         <img src="{{ $category->image_path }}" alt="">
@@ -224,18 +376,53 @@
                                         <img src="{{ $product->image_path }}" alt="">
                                     </div>
 
-                                    <div class="text-sub-product">
 
-                                        <h2>{{ $product->name }}</h2>
+
+                                    <div class="text-sub-product">
+                                        <h2 class="product_name">{{ $product->name }}</h2>
                                         <p>{{ $product->sub_title }}</p>
+
+                                        @php
+                                            $isMerchant = auth()->check() && auth()->user()->hasRole('merchant'); // Assuming hasRole() is a method you've defined or comes from a package like Spatie's Laravel Permission.
+                                            $displayPrice = $isMerchant ? $product->list_price : $product->total_price;
+                                            $currency = transWord('جنية');
+                                        @endphp
+
+                                        <div class="product-price">
+                                            <h3>{{ $displayPrice }} {{ $currency }}</h3>
+                                            @if (!$isMerchant && $product->discount)
+                                                <h4>{{ $product->price }} {{ $currency }}</h4>
+                                                <div class="offer-price">{{ $product->discount }}
+                                                    {{ transWord('ج.م') }}</div>
+                                            @endif
+                                        </div>
+                                        @if ($isMerchant)
+                                            <p>{{ transWord('هذا السعر للكرتونة') }}</p>
+                                        @endif
                                     </div>
+
+
+
+
+
+
+
+
+
                                 </a>
                                 <div class="btns-product">
+
+
+
+                                    <div class="shareLinksProduct-{{ $product->id }} main-share-links"
+                                        style="display: none;">
+                                        {!! Share::page(route('site.products.show', $product->id))->facebook()->twitter()->linkedin()->whatsapp()->telegram() !!}
+                                    </div>
                                     <a href="{{ route('site.products.show', $product->id) }}"
                                         class="ctm-btn3 w-100">{{ transWord('مشاهدة المنتج') }}</a>
 
                                     <a href="{{ route('site.cart.store') }}"
-                                        class="{{ auth()->user() ? 'btn-cart' : 'auth_login' }}"
+                                        class="{{ auth()->user() ? 'btn-cart' : 'auth_login btn-cart' }}"
                                         data-id="{{ $product->id }}">
                                         <svg width="32" height="33" viewBox="0 0 32 33" fill="none"
                                             xmlns="http://www.w3.org/2000/svg">
@@ -254,6 +441,11 @@
                                             <path d="M12 11.1667H28" stroke="#333333" stroke-width="1.8"
                                                 stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round" />
                                         </svg>
+                                    </a>
+
+                                    <a href="javascript:void(0);" class="btn_share_product"
+                                        data-id="{{ $product->id }}">
+                                        <i class="bi bi-share"></i>
                                     </a>
                                 </div>
                             </div>
@@ -293,7 +485,7 @@
                                 <div class="text-banner">
                                     <h3>{{ $banner->title }}</h3>
                                     <h2 style="color: {{ $banner->color['color_title'] }}">{{ $banner->sub_title }}</h2>
-                                    <a href="{{ route('site.products') }}"
+                                    <a href="{{ route('site.products.show', $banner->product_id) }}"
                                         style="background-color: {{ $banner->color['color_btn'] }}" class="ctm-btn">
                                         {{ transWord('تسوق الان ') }}</a>
                                 </div>
@@ -321,6 +513,7 @@
         <!-- end banner  -->
 
 
+
         <section class="aboutus-index">
             <div class="main-container h-100">
                 <div class="row align-items-center h-100">
@@ -331,7 +524,7 @@
                                 {{ getSetting('home_about_desc', app()->getLocale()) }}
 
                             </p>
-                            <a href="{{ route('site.aboutUs') }}" class="ctm-btn">{{ transWord('أقرأ المزيد') }}</a>
+                            <a href="{{ route('site.aboutUs') }}" class="ctm-btn center-btn" >{{ transWord('أقرأ المزيد') }}</a>
                         </div>
                     </div>
                     <div class="col-lg-5">
@@ -355,14 +548,23 @@
     </main>
 
     <!-- end app ====
-                                                =============================
-                                                ==================================
-                                                ==================== -->
+                                                                                                                                                                            =============================
+                                                                                                                                                                            ==================================
+                                                                                                                                                                            ==================== -->
 
 @endsection
 @push('js')
     <script>
         $(document).ready(function() {
+            $('.btn_share').click(function() {
+                var id = $(this).data('id');
+
+                $('.shareLinks-' + id).toggle();
+            });
+            $(document).on('click', '.btn_share_product', function() {
+                var id = $(this).data('id');
+                $('.shareLinksProduct-' + id).toggle();
+            });
             // $('.btn-cart').click(function(e) {
             //     e.preventDefault();
             //     var id = $(this).data('id');
@@ -399,6 +601,16 @@
                 e.preventDefault();
                 var filter = $(this).attr('id');
                 $('.home-filter').removeClass('active');
+                $('.product-result').hide();
+
+                // Add a spinner
+                $('.product-result').parent().append(
+                    `<div class="spinner" style="display: flex; justify-content: center; align-items: center; position: reletive; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(255, 255, 255, 0.5); z-index: 1050;">
+<div class="spinner-border text-primary" style="width: 3rem; height: 3rem;" role="status">
+<span class="sr-only">Loading...</span>
+</div>
+</div>`
+                );
                 $.ajax({
                     url: "{{ route('site.homefilter') }}",
                     type: 'GET',
@@ -406,11 +618,45 @@
                         filter: filter
                     },
                     success: function(data) {
+                        $('.product-result').show();
+                        $('.spinner').remove();
                         $('.product-result').html(data);
                         $("#" + filter).addClass('active');
                     }
                 });
             });
+
+            $(document).on('click', '.icon', function(e) {
+                e.preventDefault();
+                var video = $(this).data('video');
+                console.log(video);
+                var videoElement = $('#video-model-slider').get(0); // Get the native DOM video element
+
+                $('#video-model-slider').find('source').attr('src', video);
+                // $('#object_video').attr('data', video);
+                videoElement.load(); // Important to reload the video element to apply the new source
+                videoElement.play(); // Optionally, auto-play the new video
+
+                $('.vidoe-open').modal('show');
+                // $('.vidoe-open').find('iframe').attr('src', video);
+
+            });
+
+            $('.vidoe-open').on('click', function(e) {
+
+                $('.vidoe-open').modal('hide');
+
+                var videoElement = $('#video-model-slider').get(0); // Get the native DOM video element
+                if (videoElement) { // Check if the video element exists
+                    videoElement.pause(); // Pause the video
+                    $('#video-model-slider').find('source').attr('src', ''); // Clear the video source
+                    //$('#object_video').attr('data', ''); // Clear the video source
+                    //  videoElement.load(); // Reload the video element to apply changes
+                } else {
+                    console.error('Video element not found');
+                }
+            });
+
         });
     </script>
 @endpush

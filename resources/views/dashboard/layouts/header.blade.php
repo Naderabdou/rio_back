@@ -15,6 +15,7 @@
     <title> {{ getSetting('name_website_ar') }} | @yield('title') </title>
     <link rel="stylesheet" href="https://unpkg.com/dropzone@5/dist/min/dropzone.min.css" type="text/css" />
     @include('dashboard.layouts.style')
+    @livewireStyles
 
 </head>
 <!-- END: Head-->

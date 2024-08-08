@@ -21,13 +21,15 @@ class SliderRequest extends FormRequest
      */
     public function rules(): array
     {
+
         switch (request()->method()) {
             case 'POST':
 
                 return [
-                    'image'    => 'required|image',
-
-
+                    'type'=>'required|in:image,video',
+                    'image'    => 'required_if:type,image|image',
+                    'video'    => 'required_if:type,video|file',
+                    'image_video'   => 'required_if:type,video|file',
                 ];
                 break;
 
@@ -35,7 +37,11 @@ class SliderRequest extends FormRequest
 
 
                 return [
+
+                    'type'=>'required|in:image,video',
                     'image'    => 'nullable|image',
+                    'video'    => 'nullable|file',
+                    'image_video'   => 'nullable|file',
 
                 ];
                 break;

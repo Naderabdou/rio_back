@@ -21,11 +21,12 @@ class OurValueRequest extends FormRequest
      */
     public function rules(): array
     {
+
         return [
-            'desc_en'  => 'required|min:3|string',
-            'desc_ar'  => 'required|min:3|string',
-            'title_ar' => request()->method() === 'POST' ? 'required|string|min:3|max:255|unique:our_values,title_ar' : 'required|string|min:3|max:255|unique:our_values,title_ar,' . $this->route('ourValue'),
-            'title_en' =>  request()->method() === 'POST' ? 'required|string|min:3|max:255|unique:our_values,title_en' : 'required|string|min:3|max:255|unique:our_values,title_en,' . $this->route('ourValue'),
+            'product_id' => 'required|array|min:1',
+            'product_id.*' => 'required|integer|exists:products,id',
+            'title_ar' =>  'required|string|min:3|max:255',
+            'title_en' =>  'required|string|min:3|max:255',
             'icon' => request()->method() === 'POST' ? 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048' : 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
         ];
     }

@@ -29,7 +29,7 @@ class CouponController extends Controller
 
     public function edit(Coupon $coupon)
     {
-        
+
         return view('dashboard.coupons.edit', compact('coupon'));
     }
 
@@ -38,6 +38,14 @@ class CouponController extends Controller
         $coupon->update($request->validated());
         return redirect()->route('coupons.index')->with('success', 'Coupon updated successfully');
     }
+
+    public function destroy(Request $request)
+    {
+        $Coupon = Coupon::findorFail($request->id);
+        $Coupon->delete();
+        return response()->json();
+    }
+
     public function changeStatus(Request $request)
     {
         $Coupon = Coupon::findorFail($request->id);

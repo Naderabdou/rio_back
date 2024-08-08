@@ -36,8 +36,11 @@ class MailNewsBlog implements ShouldQueue
             'message' => "يوجد مقال جديد تم نشره",
             'link' => route('site.blog.show', $this->blog->id),
         ];
-        foreach ($subscribes as $subscribe) {
-            Mail::to($subscribe->email)->send(new BlogNewMail($data));
-        }
+
+        $subscribes->chunk(50, function ($subscribesChunk) use ($data) {
+            foreach ($subscribesChunk as $subscribe) {
+                Mail::to($subscribe->email)->send(new BlogNewMail($data));
+            }
+        });
     }
 }

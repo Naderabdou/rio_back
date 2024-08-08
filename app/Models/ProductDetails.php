@@ -11,18 +11,22 @@ class ProductDetails extends Model
 
     protected $guarded = [];
 
+    protected $casts = [
+        'color' => 'array',
+    ];
+
     public function product()
     {
         return $this->belongsTo(Product::class);
     }
 
-    public function getKeyAttribute()
-    {
-        return $this->attributes['key_' . app()->getLocale()];
-    } // end getTitleAttribut
+    // public function getKeyAttribute()
+    // {
+    //     return $this->attributes['key_' . app()->getLocale()];
+    // } // end getTitleAttribut
 
-    public function getValueAttribute()
-    {
-        return $this->attributes['value_' . app()->getLocale()];
-    } // end getTitleAttribut
+    // public function getValueAttribute()
+    // {
+    //     return $this->attributes['value_' . app()->getLocale()];
+    // } // end getTitleAttribut
 }

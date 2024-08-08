@@ -1,20 +1,22 @@
 <?php
 
-use App\Jobs\SendMultiMail;
-use App\Mail\SendMailMarkting;
-// use Stevebauman\Location\Facades\Location;
-use Illuminate\Support\Facades\Mail;
-use App\Mail\WeHelp;
-use App\Models\Notification;
-use App\Servicies\Notify;
 use Carbon\Carbon;
-use AmrShawky\LaravelCurrency\Facade\Currency;
-use App\Jobs\SendEmailGifts;
-use App\Jobs\sendMailSubscribe;
+use App\Mail\WeHelp;
+// use Stevebauman\Location\Facades\Location;
 use App\Mail\BondMail;
-use Illuminate\Http\Request;
 use Twilio\Rest\Client;
+use App\Servicies\Notify;
+use App\Jobs\SendMultiMail;
+use App\Mail\ResetPassword;
+use App\Jobs\SendEmailGifts;
+use App\Models\Notification;
+use Illuminate\Http\Request;
+use App\Mail\SendMailMarkting;
+use App\Jobs\sendMailSubscribe;
 use Illuminate\Support\Facades\App;
+use Illuminate\Support\Facades\Mail;
+use App\Notifications\ForgetPassword;
+use AmrShawky\LaravelCurrency\Facade\Currency;
 
 /*curr
 |--------------------------------------------------------------------------
@@ -83,14 +85,14 @@ function transWord($word, $locale = null)
     // Check if the translation already exists for the given word and locale
     if (isset($translations[$locale][$word])) {
         $translatedWord = $translations[$locale][$word];
-    } else {
-        // If not found, translate the word
-        $translateClient = new \Stichoza\GoogleTranslate\GoogleTranslate();
-        $translatedWord = $translateClient->setSource(null)->setTarget($locale)->translate($word);
+    // } else {
+    //     // If not found, translate the word
+    //     $translateClient = new \Stichoza\GoogleTranslate\GoogleTranslate();
+    //     $translatedWord = $translateClient->setSource(null)->setTarget($locale)->translate($word);
 
-        // Save the translated word to the JSON file
-        $translations[$locale][$word] = $translatedWord;
-        file_put_contents($translationsFile, json_encode($translations, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE));
+    //     // Save the translated word to the JSON file
+    //     $translations[$locale][$word] = $translatedWord;
+    //     file_put_contents($translationsFile, json_encode($translations, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE));
     }
 
     return $translatedWord;
@@ -109,3 +111,16 @@ function getCount(string $model)
 
     return $count;
 }
+// send code to mail
+function SendCode($email, $code,$name)
+{
+
+    $data = [
+        'code'  => $code,
+        'name'  => $name
+    ];
+
+    Mail::to($email)->send(new ResetPassword($data));
+
+    return true;
+} // end of send code

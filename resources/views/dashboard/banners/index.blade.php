@@ -50,7 +50,7 @@
                                             <th>#</th>
                                             <th>{{ transWord('الاسم') }}</th>
                                             <th>{{ transWord('العنوان') }}</th>
-                                            <th>{{ transWord('الالوان') }}</th>
+                                            {{-- <th>{{ transWord('الالوان') }}</th> --}}
                                             <th>{{ transWord('الصوره') }}</th>
                                             {{-- <th>{{ transWord(' صورة') }}</th> --}}
 
@@ -64,8 +64,8 @@
                                                 <td>{{ $banner->title }}</td>
                                                 <td>{{ $banner->sub_title }}</td>
 
-                                                {{-- <td>{{ $banner->color }}</td> --}}
-                                                <td>
+
+                                                {{-- <td>
                                                     <span class="badge badge-pill badge-light"
                                                         style="color: {{ $banner->color['color_title'] }}">
                                                         {{ transWord('لون الاسم') }}
@@ -80,14 +80,9 @@
                                                         style="color: {{ $banner->color['color_btn'] }}">
                                                         {{ transWord('لون الزر') }}
                                                     </span>
-                                                    {{-- @foreach ($banner->color as $key => $color)
-                                                        <span class="badge badge-pill badge-light" style="color: {{ $color }}">
-                                                            dsfdsfsd
-                                                        </span>
 
-                                                    @endforeach --}}
 
-                                                </td>
+                                                </td> --}}
 
 
 

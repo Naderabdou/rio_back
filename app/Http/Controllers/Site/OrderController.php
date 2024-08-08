@@ -10,8 +10,8 @@ class OrderController extends Controller
 
     public function index()
     {
-        $orders = auth()->user()->orders()->where('status', '!=', 'completed')->get();
-        
+        $orders = auth()->user()->orders()->where('status', '!=', 'completed')->latest()->get();
+
         return view('site.profile.orders', compact('orders'));
     }
 
@@ -24,10 +24,34 @@ class OrderController extends Controller
 
     public function filter(Request $request)
     {
+        if ($request->filter == 'pending')
+            $orders = auth()->user()->orders()->where('status', '!=', 'completed')->latest()->get();
+        else {
 
-        $orders = auth()->user()->orders()->where('status', $request->filter)->get();
+            $orders = auth()->user()->orders()->where('status', 'completed')->  latest()->get();
+        }
+
 
 
         return view('site.components.orderFilter', compact('orders'))->render();
     }
+
+    public function notifiy(){
+
+        $user = auth()->user();
+        $user->unreadNotifications->markAsRead();
+        return redirect()->back();
+    }
+
+    public function notifiyRead($id, $order_id){
+
+        $user = auth()->user(); // Get the currently authenticated user
+        $user->unreadNotifications->where('id', $id)->first()->markAsRead() ;
+
+        return redirect()->route('site.orders.show', $order_id);
+
+
+    }
+
+
 }

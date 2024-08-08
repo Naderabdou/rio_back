@@ -15,22 +15,26 @@ $(document).ready(function () {
             title_ar: {
                 required: true,
                 minlength: 3,
-                noSpecialChars: true,
+                maxlength: 255,
+
             },
             title_en: {
                 required: true,
                 minlength: 3,
-                noSpecialChars: true,
+                maxlength: 255,
+
             },
             sub_title_en: {
                 required: true,
                 minlength: 3,
-                noSpecialChars: true,
+                maxlength: 255,
+
             },
             sub_title_ar: {
                 required: true,
                 minlength: 3,
-                noSpecialChars: true,
+                maxlength: 255,
+
             },
             color_title: {
                 required : true,
@@ -46,8 +50,10 @@ $(document).ready(function () {
                 required: true,
                 accept: "image/png, image/jpeg, image/svg+xml",
                 filesize: 1048576
-            }
-
+            },
+            product_id: {
+                required: true,
+            },
 
         },
 
@@ -67,22 +73,25 @@ $(document).ready(function () {
             title_ar: {
                 required: true,
                 minlength: 3,
-                noSpecialChars: true,
+                maxlength: 255,
             },
             title_en: {
                 required: true,
                 minlength: 3,
-                noSpecialChars: true,
+                maxlength: 255,
+
             },
             sub_title_en: {
                 required: true,
                 minlength: 3,
-                noSpecialChars: true,
+                maxlength: 255,
+
             },
             sub_title_ar: {
                 required: true,
                 minlength: 3,
-                noSpecialChars: true,
+                maxlength: 255,
+
             },
             color_title: {
                 required : true,
@@ -98,7 +107,11 @@ $(document).ready(function () {
 
                 accept: "image/png, image/jpeg, image/svg+xml",
                 filesize: 1048576
-            }
+            },
+            product_id: {
+                required: true,
+            },
+
 
 
         },

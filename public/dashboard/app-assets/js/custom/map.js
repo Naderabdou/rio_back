@@ -86,12 +86,12 @@ function initAutocomplete() {
 
             title: $("#address").val(),
 
-            draggable: true
+           // draggable: true
         });
-        markerEdit.addListener('dragend', function() {
-            $("input[name='lat']").val(marker.getPosition().lat());
-            $("input[name='lng']").val(marker.getPosition().lng());
-        });
+        // markerEdit.addListener('dragend', function() {
+        //     $("input[name='lat']").val(marker.getPosition().lat());
+        //     $("input[name='lng']").val(marker.getPosition().lng());
+        // });
 
         const input = document.getElementById("address");
 

@@ -25,7 +25,7 @@ class AuthController extends Controller
         if (Auth::check()) {
             return response()->json(['message' => transWord('Logged in successfully'), 'user' => Auth::user()]);
         } else {
-            return response()->json(['message' => transWord('بيانات الدخول خطاء')], 422);
+            return response()->json(['message' => transWord('بيانات الدخول خطأ')], 422);
         }
     }
 

@@ -13,12 +13,12 @@ class CartController extends Controller
     {
         $cart = auth()->user()->cart()->wherehas('orderItems')->first();
 
+
         return view('site.cart.index', compact('cart'));
     }
 
     public function store(Request $request)
     {
-
         $product = Product::findorFail($request->id);
 
 
@@ -50,26 +50,30 @@ class CartController extends Controller
                 'type' => 'error'
             ]);
         }
+        $price = auth()->user()->hasRole('merchant') ? $product->list_price : $product->total_price;
 
         $item = $cart->orderItems()->create([
             'product_id' => $product->id,
-            'price' => $product->totalPrice,
+            'price' => $price,
+            // 'price' => $product->totalPrice,
             'product_name' => $product->name,
-            'quantity' => 1,
+            'quantity' => $request->quantity ?? 1,
 
 
         ]);
+
         // dd($request->quantity);
-        $totalPrice = $cart->price_before_discount + $product->totalPrice ;
+        //  $totalPrice = $cart->price_before_discount + ($product->totalPrice * $item->quantity); // 900.5
+        $totalPrice = $cart->total_price + ($price * $item->quantity); // 900.5
         $cart->update([
-            'total_price' => $cart->total_price + $product->totalPrice,
-            'discount' => $cart->discount + $product->discount,
+            'total_price' => $totalPrice, //900.5
+            // 'discount' => $cart->discount + $product->discount,
 
-            'price_before_discount' => $totalPrice,
+            'price_before_discount' => $totalPrice, //901
 
         ]);
 
-            return view('site.components.addCart',compact('item'))->render();
+        return view('site.components.addCart', compact('item'))->render();
 
         // return response()->json([
         //     'message' => transWord('تمت الاضافة بنجاح'),
@@ -82,83 +86,131 @@ class CartController extends Controller
     public function update(Request $request)
     {
 
-        $item = auth()->user()->cart->orderItems()->find($request->id);
-        $oldprice = $item->price; //50
-        $oldQuentity = $item->quantity; //2
-        $totalOldPrice = $oldprice * $oldQuentity; //100
-        $totalNewPrice = $oldprice * $request->quantity; //150
-        $totalcart = auth()->user()->cart->price_before_discount; //200
-        $total =  $totalcart - $totalOldPrice + $totalNewPrice;
 
-        $item->update([
-            'quantity' => $request->quantity
+
+        //news
+        // Ensure the requested quantity is at least 1
+        $validatedQuantity = max(1, $request->quantity);
+
+        // Retrieve the cart and the item
+        $cart = auth()->user()->cart;
+        $item = $cart->orderItems()->find($request->id);
+
+        // Calculate the difference in quantity
+        $quantityDifference = $validatedQuantity - $item->quantity;
+
+        // Calculate the total price and discount price differences
+        $totalPriceNew = $item->price * $quantityDifference;
+
+        $totalDiscountPriceDifference = auth()->user()->hasRole('merchant') || $item->products->discount === null
+            ? $totalPriceNew
+            : $item->products->price_after_discount * $quantityDifference;
+
+        // dd($totalDiscountPriceDifference);
+        // Update the item quantity
+
+        // Recalculate the cart's total price and price before discount
+        $TotalPrice = $cart->total_price + $totalPriceNew;
+        $PriceBeforeDiscount = $cart->price_before_discount + $totalDiscountPriceDifference;
+
+        $item->update(['quantity' => $validatedQuantity]);
+        // Update the cart
+        $cart->update([
+            'total_price' => $PriceBeforeDiscount,
+            'price_before_discount' => $PriceBeforeDiscount,
         ]);
 
-        $cart = auth()->user()->cart->update([
-            'total_price' => $totalNewPrice,
-            // 'price_before_discount' => $total,
-        ]);
-       return response()->json([
+        // Prepare the response data
+        $responseData = [
             'message' => transWord('تم التعديل بنجاح'),
             'type' => 'success',
             'id' => $item->id,
-            'total' => $item->quantity * $item->price,
-            'quantity' => $item->quantity,
-            'price' => $item->price * ($request->quantity - $oldQuentity),
-        ]);
+            'total_price' => $validatedQuantity * $item->price,
+            'total_cart_price' => $TotalPrice,
+            'total_cart_discount' => $PriceBeforeDiscount,
+            'quantity' => $validatedQuantity,
+        ];
 
 
-
-        // if($request->quantity <=0){
-        //     $request->quantity = 1;
-
-        // }
-        // $item->update([
-        //     'quantity' => $request->quantity
-        // ]);
-        // $cart = auth()->user()->cart->update([
-        //     'price_before_discount' =>$total,
-        // ]);
-
-        // return response()->json([
-        //     'message' => transWord('تم التعديل بنجاح'),
-        //     'type' => 'success',
-        //     'id' => $item->id,
-        //     'total' => $item->quantity * $item->price,
-        //     'quantity' => $item->quantity,
-        //     'price' => $item->price * ($request->quantity - $old),
-        // ]);
+        // Return the JSON response
+        return response()->json($responseData);
     }
 
     public function destroy($id)
     {
+        // Find the item in the user's cart
         $item = auth()->user()->cart->orderItems()->find($id);
 
-        $total = auth()->user()->cart->price_before_discount - ($item->price * $item->quantity);
-        auth()->user()->cart->update([
-            'price_before_discount' => $total,
+        // Calculate the old total price of the item
+        $oldTotalPrice = $item->price * $item->quantity;
+
+        // Determine the price after discount if applicable
+        $effectivePrice = $item->products->discount ? $item->products->price_after_discount : $item->products->price;
+
+        // Calculate the total discount amount for the item
+        $totalDiscountAmount = $effectivePrice * $item->quantity;
+
+        // Retrieve the user's cart
+        $cart = auth()->user()->cart;
+
+        // Calculate the new total and price before discount for the cart
+        $newTotalPrice = $cart->total_price - $oldTotalPrice;
+        $newPriceBeforeDiscount = $cart->price_before_discount - $totalDiscountAmount;
+
+        // Update the cart with the new totals
+        $cart->update([
+            'price_before_discount' => $newPriceBeforeDiscount,
+            'total_price' => $newTotalPrice,
         ]);
+
+        // Delete the item from the cart
         $item->delete();
+        if ($cart->orderItems()->count() == 0) {
 
-      //  return redirect()->back()->with('success', transWord('تم الحذف بنجاح'));
+            $cart->delete();
+        }
+        //  return redirect()->back()->with('success', transWord('تم الحذف بنجاح'));
 
-      return view('site.components.addCart',compact('item'))->render();
-
+        return view('site.components.addCart', compact('item'))->render();
     }
 
     public function destroyIndex($id)
     {
+        // Find the item in the user's cart
         $item = auth()->user()->cart->orderItems()->find($id);
 
-        $total = auth()->user()->cart->price_before_discount - ($item->price * $item->quantity);
-        auth()->user()->cart->update([
-            'price_before_discount' => $total,
+        // Calculate the old total price of the item
+        $oldTotalPrice = $item->price * $item->quantity;
+
+        // Determine the price after discount if applicable
+        $effectivePrice = $item->products->discount ? $item->products->price_after_discount : $item->products->price;
+
+        // Calculate the total discount amount for the item
+        $totalDiscountAmount = $effectivePrice * $item->quantity;
+
+        // Retrieve the user's cart
+        $cart = auth()->user()->cart;
+
+        // Calculate the new total and price before discount for the cart
+        $newTotalPrice = $cart->total_price - $oldTotalPrice;
+        $newPriceBeforeDiscount = $cart->price_before_discount - $totalDiscountAmount;
+
+        // Update the cart with the new totals
+        $cart->update([
+            'price_before_discount' => $newPriceBeforeDiscount,
+            'total_price' => $newTotalPrice,
         ]);
         $item->delete();
+        if ($cart->orderItems()->count() == 0) {
 
-       return redirect()->back()->with('success', transWord('تم الحذف بنجاح'));
+            $cart->delete();
+        }
+        // Delete the item from the cart
 
-    //   return view('site.components.addCart',compact('item'))->render();
+
+        return redirect()->back()->with('success', transWord('تم الحذف بنجاح'));
+
+        //   return view('site.components.addCart',compact('item'))->render();
 
     }
 
@@ -187,6 +239,8 @@ class CartController extends Controller
         $cart->update([
             'coupon_code' => $request->code,
             'coupon_value' => $coupon->value,
+            // 'total_price' => $cart->total_price - $coupon->value,
+            // 'price_before_discount' => $cart->price_before_discount - $coupon->value,
 
         ]);
 

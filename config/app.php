@@ -70,7 +70,7 @@ return [
     |
     */
 
-    'timezone' => 'UTC',
+    'timezone' => 'africa/cairo',
 
     /*
     |--------------------------------------------------------------------------
@@ -172,6 +172,7 @@ return [
         App\Providers\RouteServiceProvider::class,
         App\Providers\RepositoriesServiceProvider::class,
         Spatie\Permission\PermissionServiceProvider::class,
+            // Jorenvh\Share\Providers\ShareServiceProvider::class,
     ])->toArray(),
 
     /*
@@ -187,6 +188,7 @@ return [
 
     'aliases' => Facade::defaultAliases()->merge([
         // 'Example' => App\Facades\Example::class,
+            // 'Share' => Jorenvh\Share\ShareFacade::class,
     ])->toArray(),
 
 ];

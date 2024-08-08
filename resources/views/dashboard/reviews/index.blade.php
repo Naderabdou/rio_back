@@ -25,14 +25,14 @@
                 <div class="content-header-right text-md-right col-md-3 col-12 d-md-block d-none">
                     <div class="form-group breadcrumb-right">
                         <div class="dropdown">
-                            <button class="btn-icon btn btn-primary btn-round btn-sm dropdown-toggle" type="button"
+                            {{-- <button class="btn-icon btn btn-primary btn-round btn-sm dropdown-toggle" type="button"
                                 data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i
-                                    data-feather="grid"></i></button>
-                            <div class="dropdown-menu dropdown-menu-right"><a class="dropdown-item"
+                                    data-feather="grid"></i></button> --}}
+                            {{-- <div class="dropdown-menu dropdown-menu-right"><a class="dropdown-item"
                                     href="{{ route('admin.reviews.create') }}"><i class="mr-1"
                                         data-feather="circle"></i><span class="align-middle">{{ transWord('اضافه تقيم') }}
                                     </span></a>
-                            </div>
+                            </div> --}}
                         </div>
                     </div>
                 </div>
@@ -48,8 +48,10 @@
                                         <tr>
                                             <th>#</th>
                                             <th>{{ transWord('الاسم') }}</th>
+                                            <th>{{ transWord('اسم المنتج') }}</th>
                                             <th>{{ transWord('التقيم') }}</th>
-                                            <th>{{ transWord(' صورة') }}</th>
+                                            <th>{{ transWord('التعليق') }}</th>
+                                            <th>{{ transWord('تفعيل التعليق') }}</th>
 
                                             <th>{{ transWord('الإجراءات') }}</th>
                                         </tr>
@@ -58,18 +60,34 @@
                                         @foreach ($reviews as $review)
                                             <tr>
                                                 <td>{{ $loop->iteration }}</td>
-                                                <td>{{ $review->name }}</td>
+                                                <td>{{ $review->user->name }}</td>
+                                                <td>{{ $review->product->name }}</td>
+                                                <td>{{ $review->rating }}</td>
+                                                <td>{{ $review->review }}</td>
 
-                                                <td>{{ $review->desc ?? '-' }}</td>
 
-                                                <td><img src="{{ $review->image_path }}" width="50px" height="50px">
+                                                <td>
+
+                                                    <div class="custom-control custom-switch">
+                                                        <input type="checkbox"
+                                                            class="custom-control-input change_review_status"
+                                                            data-id="{{ $review->id }}"
+                                                            data-url="{{ route('admin.reviews.changeStatus') }}"
+                                                            id="customSwitch1{{ $review->id }}"
+                                                            {{ $review->is_active == '1' ? 'checked' : '' }}>
+                                                        <label class="custom-control-label"
+                                                            for="customSwitch1{{ $review->id }}"></label>
+                                                    </div>
+                                                </td>
+
+
                                                 </td>
 
                                                 <td class="text-center">
                                                     <div class="btn-group" role="group" aria-label="Second group">
-                                                        <a href="{{ route('admin.reviews.edit', $review->id) }}"
+                                                        {{-- <a href="{{ route('admin.reviews.edit', $review->id) }}"
                                                             class="btn btn-sm btn-primary"><i
-                                                                class="fa-solid fa-pen-to-square"></i></a>
+                                                                class="fa-solid fa-pen-to-square"></i></a> --}}
                                                         <a href="{{ route('admin.reviews.destroy', $review->id) }}"
                                                             data-id="{{ $review->id }}"
                                                             class="btn btn-sm btn-danger item-delete"><i
@@ -91,5 +109,72 @@
     <!-- END: Content-->
     @push('js')
         <script src="{{ asset('dashboard/app-assets/js/custom/custom-delete.js') }}"></script>
+        <script>
+            $(document).on('change', '.change_review_status', function(e) {
+
+                e.preventDefault();
+                var id = $(this).data('id');
+                var url = $(this).data('url');
+                var This = $(this);
+                const Toast2 = Swal.mixin({
+
+                    showConfirmButton: false,
+                    timer: 4000,
+                    timerProgressBar: true,
+                    didOpen: (toast) => {
+                        toast.addEventListener('mouseenter', Swal.stopTimer)
+                        toast.addEventListener('mouseleave', Swal.resumeTimer)
+                    }
+                });
+
+                const Toast = Swal.mixin({
+
+                    showCancelButton: true,
+                    showConfirmButton: true,
+                    cancelButtonColor: '#888',
+                    confirmButtonColor: '#d6210f',
+                    confirmButtonText: 'نعم',
+                    cancelButtonText: 'لا',
+                    timerProgressBar: true,
+                    didOpen: (toast) => {
+                        toast.addEventListener('mouseenter', Swal.stopTimer)
+                        toast.addEventListener('mouseleave', Swal.resumeTimer)
+                    }
+                })
+
+                $.ajax({
+                    type: 'GET',
+                    url: url,
+                    data: {
+                        id: id,
+                    },
+                    dataType: 'json',
+                    success: function(result) {
+
+                        const Toast = Swal.mixin({
+                            toast: true,
+                            position: 'top-start',
+                            showConfirmButton: false,
+                            timer: 4000,
+                            timerProgressBar: true,
+                            didOpen: (toast) => {
+                                toast.addEventListener('mouseenter', Swal.stopTimer)
+                                toast.addEventListener('mouseleave', Swal.resumeTimer)
+                            }
+                        })
+
+                        Toast.fire({
+                            icon: 'success',
+                            title: "تم تغيير الحالة بنجاح"
+                        })
+
+
+
+                    } // end of success
+
+                }); // end of ajax
+
+            });
+        </script>
     @endpush
 @endsection

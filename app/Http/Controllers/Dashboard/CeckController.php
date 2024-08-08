@@ -2,11 +2,13 @@
 
 namespace App\Http\Controllers\Dashboard;
 
+use App\Models\User;
 use App\Models\OurValue;
+use App\Models\OurProgram;
 use Illuminate\Http\Request;
 use App\Models\CommitteeCategory;
 use App\Http\Controllers\Controller;
-use App\Models\OurProgram;
+use Illuminate\Support\Facades\Hash;
 
 class CeckController extends Controller
 {
@@ -99,6 +101,14 @@ class CeckController extends Controller
 
         return $this->checkRecordExists('Membership', 'email', $request->email, $request, 'البريد الاكتروني موجود بالفعل');
     }
+    public function email(Request $request)
+    {
+        return $this->checkRecordExists('User', 'email', $request->email, $request, 'البريد الاكتروني موجود بالفعل');
+    }
+    public function phone(Request $request)
+    {
+        return $this->checkRecordExists('User', 'phone', $request->phone, $request, 'رقم الهاتف موجود بالفعل');
+    }
     public function checkPhoneMembership(Request $request)
     {
 
@@ -130,6 +140,32 @@ class CeckController extends Controller
             return $this->checkRecordExists('Payment', 'name_en', $request->name_en, $request, 'اسم الدفع بالانجليزي مستخدم بالفعل');
         }
     }
+
+    public function password(Request $request)
+    {
+        if (Hash::check($request->old_password, auth()->user()->password)) {
+            return true;
+        } else {
+            return response()->json(['message' => 'كلمة المرور القديمة غير صحيحة']);
+        }
+    }
+
+
+    public function passwordMerchants(Request $request)
+    {
+        $user = User::role('merchant')->findOrFail($request->id);
+        if (Hash::check($request->old_password, $user->password)) {
+            return true;
+        } else {
+            return response()->json(['message' => 'كلمة المرور القديمة غير صحيحة']);
+        }
+    }
+
+    public function productCode(Request $request)
+    {
+        return $this->checkRecordExists('Product', 'code_product', $request->code_product, $request, 'كود المنتج مستخدم بالفعل');
+    }
+
 
 
 

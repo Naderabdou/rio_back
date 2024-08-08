@@ -3,7 +3,7 @@
     <div class="navbar-header">
         <ul class="nav navbar-nav flex-row">
             <li class="nav-item mr-auto">
-                <a class="navbar-brand" href="{{ url('/') }}">
+                <a target="__blank" class="navbar-brand" href="{{ url('/') }}">
                     <img src="{{ url('storage/' . getSetting('logo')) }}" width="150px" alt="">
                 </a>
 
@@ -42,12 +42,7 @@
                     <span class="menu-title text-truncate">{{ transWord('المميزات') }}</span>
                 </a>
             </li>
-            <li class="nav-item {{ areActiveRoutes(['admin.ourValues.index', 'admin.ourValues.edit']) }}">
-                <a class="d-flex align-items-center" href="{{ route('admin.ourValues.index') }}">
-                    <i class="fas fa-heart"></i>
-                    <span class="menu-title text-truncate">{{ transWord('قيمنا') }}</span>
-                </a>
-            </li>
+
             <li class="nav-item {{ areActiveRoutes(['admin.brands.index', 'admin.brands.edit']) }}">
                 <a class="d-flex align-items-center" href="{{ route('admin.brands.index') }}">
                     <i class="fas fa-tags"></i>
@@ -59,6 +54,12 @@
                 <a class="d-flex align-items-center" href="{{ route('admin.products.index') }}">
                     <i class="fas fa-box-open"></i>
                     <span class="menu-title text-truncate">{{ transWord('المنتجات') }}</span>
+                </a>
+            </li>
+            <li class="nav-item {{ areActiveRoutes(['admin.ourValues.index', 'admin.ourValues.edit']) }}">
+                <a class="d-flex align-items-center" href="{{ route('admin.ourValues.index') }}">
+                    <i class="fas fa-heart"></i>
+                    <span class="menu-title text-truncate">{{ transWord('خصائص المنتج') }}</span>
                 </a>
             </li>
             <li class="nav-item {{ areActiveRoutes(['admin.banners.index', 'admin.banners.edit']) }}">
@@ -82,6 +83,13 @@
             </li>
 
 
+            <li class="nav-item {{ areActiveRoutes(['admin.governorates.index', 'admin.governorates.edit']) }}">
+                <a class="d-flex align-items-center" href="{{ route('admin.governorates.index') }}">
+                    <i class="fas fa-map-marker-alt"></i>
+                    <span class="menu-title text-truncate">{{ transWord('اسعار الشحن') }}</span>
+                </a>
+            </li>
+
 
 
 
@@ -95,27 +103,27 @@
                 </li> --}}
 
 
-            {{-- <li class="nav-item {{ areActiveRoutes(['admin.sliders.index', 'admin.sliders.edit']) }}">
-                    <a class="d-flex align-items-center" href="{{ route('admin.sliders.index') }}">
-                        <i class="fa-solid fa-images"></i>
-                        <span class="menu-title text-truncate">{{ transWord('الاسليدر') }}</span>
-                    </a>
-                </li> --}}
-
-
-
-
-            <li class="nav-item {{ areActiveRoutes(['admin.blogs.index', 'admin.blogs.edit']) }}">
-                <a class="d-flex align-items-center" href="{{ route('admin.blogs.index') }}">
-                    <i class="fas fa-blog"></i>
-                    <span class="menu-title text-truncate">{{ transWord(' المدونه') }}</span>
+            <li class="nav-item {{ areActiveRoutes(['admin.sliders.index', 'admin.sliders.edit']) }}">
+                <a class="d-flex align-items-center" href="{{ route('admin.sliders.index') }}">
+                    <i class="fa-solid fa-images"></i>
+                    <span class="menu-title text-truncate">{{ transWord('الاسليدر') }}</span>
                 </a>
             </li>
 
-            <li class="nav-item {{ areActiveRoutes(['admin.partners.index', 'admin.partners.edit']) }}">
-                <a class="d-flex align-items-center" href="{{ route('admin.partners.index') }}">
-                    <i class="fas fa-handshake"></i>
-                    <span class="menu-title text-truncate">{{ transWord(' الشركاء') }}</span>
+
+
+
+            <li class="nav-item {{ areActiveRoutes(['admin.merchants.index', 'admin.merchants.edit']) }}">
+                <a class="d-flex align-items-center" href="{{ route('admin.merchants.index') }}">
+                    <i class="fas fa-store"></i>
+                    <span class="menu-title text-truncate">{{ transWord(' التجار') }}</span>
+                </a>
+            </li>
+
+            <li class="nav-item {{ areActiveRoutes(['admin.reviews.index', 'admin.reviews.edit']) }}">
+                <a class="d-flex align-items-center" href="{{ route('admin.reviews.index') }}">
+                    <i class="fas fa-star"></i>
+                    <span class="menu-title text-truncate">{{ transWord(' التقيمات') }}</span>
                 </a>
             </li>
             <li class="nav-item {{ areActiveRoutes(['admin.orders.index', 'admin.orders.edit']) }}">
@@ -124,16 +132,22 @@
                     <span class="menu-title text-truncate">{{ transWord(' طلبات المنتجات') }}</span>
                 </a>
             </li>
+            <li class="nav-item {{ areActiveRoutes(['admin.order-merchants.index', 'admin.order-merchants.edit']) }}">
+                <a class="d-flex align-items-center" href="{{ route('admin.order-merchants.index') }}">
+                    <i class="fas fa-shopping-cart"></i>
+                    <span class="menu-title text-truncate">{{ transWord('طلبات المنتجات التجار') }}</span>
+                </a>
+            </li>
 
 
 
-
+            {{--
             <li class="nav-item {{ areActiveRoutes(['admin.subscribe.index', 'admin.subscribe.edit']) }}">
                 <a class="d-flex align-items-center" href="{{ route('admin.subscribe.index') }}">
                     <i class="fas fa-rss"></i>
                     <span class="menu-title text-truncate">{{ transWord(' الاشتركات') }}</span>
                 </a>
-            </li>
+            </li> --}}
 
 
 

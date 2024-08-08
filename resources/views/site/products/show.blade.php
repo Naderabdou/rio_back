@@ -81,7 +81,18 @@
                                     </div>
                                 </div>
                                 <div class="btns-share">
-                                    <a href=""> <i class="bi bi-share"></i></a>
+
+                                    <a href="javascript:void(0);" onclick="toggleShareLinks();"> <i
+                                            class="bi bi-share"></i></a>
+
+
+                                    <div id="shareLinks" style="display: none;">
+                                        {!! Share::page(route('site.products.show', $product->id))->facebook()->twitter()->linkedin()->whatsapp()->telegram() !!}
+                                    </div>
+
+
+
+
                                     {{-- <a href=""> <i class="bi bi-heart"></i> </a> --}}
                                     <a href="" data-url="{{ route('site.add.favorite') }}"
                                         data-id="{{ $product->id }}"
@@ -91,19 +102,24 @@
                                 </div>
                             </div>
 
+
+                            @php
+                                $isMerchant = auth()->check() && auth()->user()->hasRole('merchant'); // Assuming hasRole() is a method you've defined or comes from a package like Spatie's Laravel Permission.
+                                $displayPrice = $isMerchant ? $product->list_price : $product->total_price;
+                                $currency = transWord('جنية');
+                            @endphp
+
                             <div class="product-price">
-                                <h3> {{ $product->price }} EGP </h3>
-                                {{-- @if ($product->discount)
-                                <h4> {{ $product->price_after_discount  }} EGP </h4>
-                                <div class="offer-price"> {{ $product->discount ?? 0 }}% OFF</div>
-                                @endif --}}
-                                {{-- <h4> {{ $product->price_after_discount ?? $product->price }} EGP </h4> --}}
-                                <h4> {{ $product->price_after_discount ?? 0 }} EGP </h4>
-                                <div class="offer-price"> {{ $product->discount ?? 0 }}% OFF</div>
+                                <h3>{{ $displayPrice }} {{ $currency }}</h3>
+                                @if (!$isMerchant && $product->discount)
+                                    <h4>{{ $product->price }} {{ $currency }}</h4>
+                                    <div class="offer-price">{{ $product->discount }}
+                                        {{ transWord('ج.م') }}</div>
+                                @endif
                             </div>
 
                             <p>
-                                {{ strip_tags($product->desc) }}
+                                {!! $product->desc !!}
                             </p>
 
                             <div class="btns-product-details">
@@ -112,26 +128,29 @@
                                     <input type="text" id="required-quantity" value="1" />
                                     <span class="minus"> <i class="bi bi-dash"></i> </span>
                                 </div>
-                                <a href="{{ route('site.cart.store') }}" data-id="{{ $products->id }}"
-                                    class="{{ auth()->user() ? 'btn-cart ctm-btn' : 'auth_login ctm-btn' }}">
 
-                                    <a class="ctm-btn"> <img src="{{ asset('site/images/icon/shopping-cart-w.svg') }}"  alt="">{{ transWord('اضف للسلة') }}</a>
+                                <a class="ctm-btn {{ auth()->user() ? 'btn_cart_form' : 'auth_login btn_cart_form' }}"
+                                    data-id="{{ $product->id }}" href="{{ route('site.cart.store') }}"> <img
+                                        src="{{ asset('site/images/icon/shopping-cart-w.svg') }}"
+                                        alt="">{{ transWord('اضف للسلة') }}</a>
                             </div>
 
 
                             <div class="features-product">
-                                <div class="sub-features-product">
-                                    <img src="{{ asset('site/images/f5.png') }}" alt="">
-                                    <h2>{{ transWord('تسوق آمن') }}</h2>
-                                </div>
-                                <div class="sub-features-product">
-                                    <img src="{{ asset('site/images/f6.png') }}" alt="">
-                                    <h2>{{ transWord('الدفع عند الاستلام') }}</h2>
-                                </div>
-                                <div class="sub-features-product">
-                                    <img src="{{ asset('site/images/f7.png') }}" alt="">
-                                    <h2>{{ transWord('تسوق آمن') }}</h2>
-                                </div>
+                                @forelse ($product->values as $value)
+                                    <div class="sub-features-product">
+                                        <img src="{{ $value->icon_path }}" alt="">
+                                        <h2>{{ $value->title }}</h2>
+                                    </div>
+                                @empty
+
+                                    <div class="sub-features-product">
+
+                                        <h2>{{ transWord('لا يوجد خصائص لهذا المنتج') }}</h2>
+                                    </div>
+                                @endforelse
+
+
                             </div>
                         </div>
                     </div>
@@ -140,7 +159,7 @@
                         <div class="sub-details ">
                             <h2>{{ transWord('نظرة عامة') }}</h2>
                             <p>
-                                {{ strip_tags($product->desc) }}
+                                {!! $product->desc !!}
                             </p>
                         </div>
                     </div>
@@ -148,49 +167,91 @@
                         <div class="sub-details">
                             <h2>{{ transWord('مواصفات المنتج') }}</h2>
                             <ul>
-                                @forelse ($product->details as $details)
-                                    <li> {{ $details->key }} <span> {{ $details->value }} </span></li>
+                                @if ($product->details)
+                                    <li> {{ transWord('كود المنتج') }} <span> {{ $product->code_product }} </span></li>
+                                    <li> {{ transWord('ابعاد المنتج') }} <span>
+                                            {{ $product->details->dimensions_product }} </span></li>
+                                    <li class="li-colors"> {{ transWord('الالوان') }}
+                                        <div class="colors-span">
+                                            @foreach ($product->details->color as $color)
+                                                <span style="color: {{ $color }}; display: inline-block;"> <i
+                                                        class="fas fa-circle"></i></span>
+                                            @endforeach
+                                        </div>
+                                    </li>
+                                    @if (auth()->check() && auth()->user()->hasRole('merchant'))
+                                    <li>{{ transWord('العدد في الكرتونه') }}
+                                        <span>{{ $product->details->num_carton }}</span>
+                                    </li>
+                                    <li>{{ transWord('ابعاد الكرتونه') }}
+                                        <span>{{ $product->details->dimensions_carton }}</span>
+                                    </li>
+                                    <li>{{ transWord('حجم الكرتونة') }} <span>{{ $product->details->size_carton }}</span>
+                                    </li>
+                                    <li>{{ transWord('وزن الكرتونة') }}
+                                        <span>{{ $product->details->weight_carton }}</span>
+                                    </li>
+                                    @endif
+
+                                @else
+                                    <li> {{ transWord('لا يوجد موصفات لهذا المنتج') }} </li>
+                                @endif
+
+
+                                {{-- @forelse ($product->details as $details)
+
                                 @empty
                                     <li> {{ transWord('لا يوجد موصفات لهذا المنتج') }} </li>
-                                @endforelse
+                                @endforelse --}}
 
                             </ul>
                         </div>
                     </div>
                     <div class="col-lg-12">
-                        <div class="comments-details">
+                        <div class="comments-details" id="rate_user">
                             <h2>{{ transWord('التقييمات والتعليقات') }}</h2>
-                            @forelse ( $reviews as $review )
-                                <div class="sub-comments-details">
-                                    <div class="img-comments-details">
-                                        <img src="{{ $review->user?->image_path }}" alt="">
-                                    </div>
+                            <div class="list">
 
-                                    <div class="text-comments-details">
-                                        <h2> {{ $review->user->name }}</h2>
-                                        <div class="rate">
 
-                                            @for ($i = 1; $i <= 5; $i++)
-                                                @if ($i <= $review->rating)
-                                                    <span class="fa fa-star checked"></span>
-                                                @else
-                                                    <span class="fa fa-star"></span>
-                                                @endif
-                                            @endfor
-                                            <i>({{ $review->rating }})</i>
+                                @forelse ( $reviews as $review )
+                                    <div class="sub-comments-details">
+                                        <div class="img-comments-details">
+                                            <img src="{{ $review->user?->image_path }}" alt="">
                                         </div>
-                                        <p>
-                                            {{ $review->review }}
-                                        </p>
+
+                                        <div class="text-comments-details">
+                                            <h2 class="rate_name"> {{ $review->user->name }}</h2>
+                                            <div class="rate">
+
+                                                @for ($i = 1; $i <= 5; $i++)
+                                                    @if ($i <= $review->rating)
+                                                        <span class="fa fa-star checked"></span>
+                                                    @else
+                                                        <span class="fa fa-star"></span>
+                                                    @endif
+                                                @endfor
+                                                <i>({{ $review->rating }})</i>
+                                            </div>
+                                            <p>
+                                                {{ $review->review }}
+                                            </p>
+                                        </div>
                                     </div>
-                                </div>
 
-                            @empty
-                                <div class="sub-comments-details">
-                                    <h2>{{ transWord('لا يوجد تعليقات') }}</h2>
-                                </div>
-                            @endforelse
+                                @empty
 
+                                    <div class="sub-comments-details">
+                                        <h2>{{ transWord('لا يوجد تعليقات') }}</h2>
+                                        <div style="display:none" class="not_rate">null</div>
+
+                                    </div>
+                                @endforelse
+
+
+                            </div>
+                            @if ($reviews->count() > 0)
+                                <ul class="pagination custom-pagination"></ul>
+                            @endif
 
 
                         </div>
@@ -200,7 +261,7 @@
 
                         </div> --}}
                         <form action="{{ route('site.reviews.store') }}" method="post"
-                            id="{{ auth()->user() ? 'form_reviews' : 'auth_login' }}">
+                            class="{{ auth()->user() ? 'form_reviews' : 'auth_login' }}">
                             @csrf
                             <div class="add-form-comments">
                                 <div class="input-form w-100">
@@ -253,18 +314,29 @@
                                                         <h2>{{ $products->name }}</h2>
                                                         <p>{{ $products->sub_title }}</p>
                                                         <div class="product-price">
-                                                            <h3>EGP {{ $products->price }} </h3>
-                                                            {{-- <h4> EGP {{ $products->price_after_discount }} </h4> --}}
-                                                            {{-- <h4> {{ $product->price_after_discount ?? $product->price }} EGP </h4> --}}
-                                                            <h4> {{ $products->price_after_discount ?? $products->price }}
-                                                                EGP </h4>
+                                                            <h3> {{ $products->total_price }} {{ transWord('جنية') }}
+                                                            </h3>
+                                                            @if ($products->discount)
+                                                                <h4> {{ $products->discount ?? $products->price }}
+                                                                    {{ transWord('جنية') }}
+                                                                </h4>
 
-                                                            <div class="offer-price"> {{ $products->discount ?? 0 }}% OFF
-                                                            </div>
+                                                                <div class="offer-price"> {{ $products->discount ?? 0 }}
+                                                                    {{ transWord('ج.م') }}
+                                                                </div>
+                                                            @endif
+
                                                         </div>
                                                     </div>
                                                 </a>
-                                                <div class="btns-product">
+                                                <div class="btns-product btns-product-offer">
+
+
+
+                                                    <div class="shareLinksRe-{{ $products->id }} main-share-links"
+                                                        style="display: none;">
+                                                        {!! Share::page(route('site.products.show', $product->id))->facebook()->twitter()->linkedin()->whatsapp()->telegram() !!}
+                                                    </div>
                                                     <a href="{{ route('site.products.show', $products->id) }}"
                                                         class="ctm-btn3 w-100">
                                                         {{ transWord('مشاهدة المنتج') }}
@@ -294,6 +366,8 @@
                                                                 stroke-linejoin="round" />
                                                         </svg>
                                                     </a>
+                                                    <a href="javascript:void(0);" class="btn_share"
+                                                        data-id="{{ $products->id }}"> <i class="bi bi-share"></i></a>
                                                 </div>
                                             </div>
                                         </div>
@@ -317,8 +391,40 @@
 
 
 
+        {{--
+        <div class="modal fade share-modal" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel"
+            aria-hidden="true">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <div class="modal-fotm-aosh">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true"> <i class="bi bi-x-circle"></i></span>
+                        </button>
+                        <div class="logo-aosh">
+                            <a href="{{ route('site.home') }}">
+                                <object data="{{ asset('site/images/logo.svg') }}" type="">
+                                    <img src="{{ asset('site/images/logo.svg') }}" alt="">
+                                </object>
+                            </a>
+                        </div>
 
 
+
+
+
+                        <div class="form-aosh">
+
+                            {!! Share::page(route('site.products.show', $product->id), $product->name)->facebook()->twitter()->linkedin()->whatsapp()->telegram() !!}
+
+                        </div>
+
+
+
+
+                    </div>
+                </div>
+            </div>
+        </div> --}}
 
 
 
@@ -327,10 +433,67 @@
 @endsection
 @push('js')
     <script src="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.8.1/slick.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/list.js/2.3.1/list.min.js"></script>
 
     <script>
         // add top favoret
         $(document).ready(function() {
+            $('.btn_share').click(function() {
+                var id = $(this).data('id');
+
+                $('.shareLinksRe-' + id).toggle();
+            });
+            $('.btn_cart_form').click(function(e) {
+                e.preventDefault();
+                var id = $(this).data('id');
+                var url = $(this).attr('href');
+                var quantity = $('#required-quantity').val();
+
+                $.ajax({
+                    url: url,
+                    type: 'GET',
+                    data: {
+                        id: id,
+                        quantity: quantity
+                    },
+                    success: function(data) {
+
+
+
+                        if (data.type == 'error') {
+                            Swal.fire({
+                                icon: 'error',
+                                title: `<h5> ${data.message}</h5> `,
+                                showConfirmButton: false,
+                                timer: 1500
+                            });
+                            return;
+
+                        }
+                        Swal.fire({
+                            icon: 'success',
+                            title: "<h5> {{ transWord('تم الاضافة بنجاح') }} </h5>",
+                            showConfirmButton: false,
+                            timer: 1500
+                        });
+                        // if (data.type == 'success') {
+                        //     setTimeout(() => {
+                        //         location.reload();
+
+                        //     }, 1000);
+                        // }
+
+
+                        $('#add_cart').html(data);
+                        let count = $('.title-cart-header').data('count');
+                        $('#count_cart').text(count);
+
+                        // $('#order_emty').hide();
+                        // $('.cart_count').text(data.cart_count);
+                        // $('.cart_count').show();
+                    }
+                });
+            });
 
             $(".add_to_favorite").click(function(e) {
                 e.preventDefault();
@@ -363,7 +526,8 @@
 
                             Swal.fire({
                                 icon: 'success',
-                                title: response.message,
+                                html: '<h4>' + response.message +
+                                    '</h4>', // Example of adding an HTML tag
                                 showConfirmButton: false,
                                 timer: 1500
                             })
@@ -426,6 +590,26 @@
             })
 
         });
+
+        function toggleShareLinks() {
+            $('#shareLinks').toggle();
+        }
+
+
+        @if ($reviews->count() > 0)
+
+            function initializeListJS() {
+                var options = {
+                    valueNames: ['rate_name'],
+                    page: 6,
+                    pagination: true
+                };
+                var addressList = new List('rate_user', options);
+            }
+
+            // Initialize List.js on page load
+            initializeListJS();
+        @endif
     </script>
 @endpush
 

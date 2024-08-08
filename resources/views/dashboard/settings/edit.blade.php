@@ -47,7 +47,7 @@
 
                                             @foreach ($settings as $setting)
                                                 @if ($setting->type == 'file')
-                                                    @if (  $setting->key == 'question_image')
+                                                    @if ($setting->key == 'question_image')
                                                         <div class="col-md-12">
                                                             <div class="form-group">
                                                                 <label class="form-label"
@@ -55,6 +55,32 @@
                                                                 <input type="file" id="{{ $setting->key }}"
                                                                     name="{{ $setting->key }}"
                                                                     accept="image/png, image/jpeg, image/jpg , image/svg+xml"
+                                                                    class="form-control image" aria-label="Name"
+                                                                    aria-describedby="basic-addon-name" require />
+                                                                <div class="">
+                                                                    @if ($errors->has($setting->key))
+                                                                        <span class="help-block">
+                                                                            <strong
+                                                                                style="color: red;">{{ $errors->first($setting->key) }}</strong>
+                                                                        </span>
+                                                                    @endif
+                                                                </div>
+                                                            </div>
+                                                            <div class="form-group prev">
+                                                                <img src="{{ url('storage/' . $setting->value) }}"
+                                                                    style="width: 100px"
+                                                                    class="img-thumbnail preview-{{ $setting->key }}"
+                                                                    alt="">
+                                                            </div>
+                                                        </div>
+                                                    @elseif($setting->key == 'policy_shapping' || $setting->key == 'policy_return' || $setting->key == 'catlog_company')
+                                                        <div class="col-md-4">
+                                                            <div class="form-group">
+                                                                <label class="form-label"
+                                                                    for="price_from">{{ transWord($setting->neckname) }}</label>
+                                                                <input type="file" id="{{ $setting->key }}"
+                                                                    name="{{ $setting->key }}"
+                                                                    accept="application/pdf"
                                                                     class="form-control image" aria-label="Name"
                                                                     aria-describedby="basic-addon-name" require />
                                                                 <div class="">
@@ -123,7 +149,8 @@
                                                     <div class="col-md-6">
                                                         <div class="form-group">
                                                             <label class="form-label"
-                                                                for="title">{{ transWord($setting->neckname) }} </label>
+                                                                for="title">{{ transWord($setting->neckname) }}
+                                                            </label>
                                                             <input type="{{ $setting->type }}" id="{{ $setting->key }}"
                                                                 name="{{ $setting->key }}" value="{{ $setting->value }}"
                                                                 class="form-control image" aria-label="Name"
@@ -142,7 +169,8 @@
                                                     <div class="col-md-6">
                                                         <div class="form-group">
                                                             <label class="form-label"
-                                                                for="title">{{ transWord($setting->neckname) }} </label>
+                                                                for="title">{{ transWord($setting->neckname) }}
+                                                            </label>
                                                             <input type="{{ $setting->type }}" id="{{ $setting->key }}"
                                                                 name="{{ $setting->key }}" value="{{ $setting->value }}"
                                                                 class="form-control image" aria-label="Name"
@@ -163,8 +191,8 @@
                                                             <label class="form-label"
                                                                 for="title">{{ transWord($setting->neckname) }}
                                                             </label>
-                                                            <textarea name="{{ $setting->key }}" class="form-control " name="{{ $setting->key }}"
-                                                                id="{{ $setting->key }}" cols="30" rows="10" require>{{ $setting->value }}</textarea>
+                                                            <textarea name="{{ $setting->key }}" class="form-control " name="{{ $setting->key }}" id="{{ $setting->key }}"
+                                                                cols="30" rows="10" require>{{ $setting->value }}</textarea>
                                                             <div class="">
                                                                 @if ($errors->has('title'))
                                                                     <span class="help-block">

@@ -25,4 +25,11 @@ class ForgetPassword extends FormRequest
             'email' => 'required|email|exists:users,email',
         ];
     }
+
+    public function messages(): array
+    {
+        return [
+            'email.required' => transWord('The email field is required.'),
+        ];
+    }
 }

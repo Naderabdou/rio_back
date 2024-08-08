@@ -13,22 +13,26 @@ $(document).ready(function () {
             question_ar: {
                 required: true,
                 minlength: 3,
+                maxlength: 255,
             },
             question_en: {
                 required: true,
                 minlength: 3,
+                maxlength: 255,
 
             },
 
             answer_ar: {
                 required: true,
                 minlength: 3,
+                maxlength: 255,
 
 
             },
             answer_en: {
                 required: true,
                 minlength: 3,
+                maxlength: 255,
 
             },
 
@@ -57,23 +61,28 @@ $(document).ready(function () {
             question_ar: {
                 required: true,
                 minlength: 3,
+                maxlength: 255,
+
 
             },
             question_en: {
                 required: true,
                 minlength: 3,
+                maxlength: 255,
 
             },
 
             answer_ar: {
                 required: true,
                 minlength: 3,
+                maxlength: 255,
 
 
             },
             answer_en: {
                 required: true,
                 minlength: 3,
+                maxlength: 255,
 
             },
 

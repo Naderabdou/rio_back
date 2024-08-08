@@ -75,9 +75,9 @@
                                                         <option value="fixed"
                                                             @if (old('type') == 'fixed') selected @endif>
                                                             {{ transWord('ثابت') }}</option>
-                                                        <option value="percentage"
+                                                        {{-- <option value="percentage"
                                                             @if (old('type') == 'percentage') selected @endif>
-                                                            {{ transWord('نسبة') }}</option>
+                                                            {{ transWord('نسبة') }}</option> --}}
                                                     </select>
                                                     @error('type')
                                                         <span class="alert alert-danger">

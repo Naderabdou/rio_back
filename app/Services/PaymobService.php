@@ -21,7 +21,7 @@ class PaymobService
         $this->apiKey = env('PAYMOB_API_KEY');
         $this->integrationId = env('PAYMOB_INTEGRATION_ID');
         $this->iframeId = env('PAYMOB_IFRAME_ID');
-        $this->hmacSecret = env('PAYMOB_HMAC');
+        $this->hmacSecret = env('PAYMOB_HMAC_SECRET');
     }
 
     public function authenticate()
@@ -55,13 +55,23 @@ class PaymobService
 
         return json_decode($response->getBody()->getContents(), true);
     }
-    public function getIframeUrl($paymentKey)
+    public function getIframeUrl($paymentKey,$iframeId)
     {
-        return "https://accept.paymobsolutions.com/api/acceptance/iframes/{$this->iframeId}?payment_token={$paymentKey}";
+        return "https://accept.paymobsolutions.com/api/acceptance/iframes/{$iframeId}?payment_token={$paymentKey}";
     }
 
     public function getIntegrationId()
     {
         return $this->integrationId;
+    }
+
+    public function getIframeId()
+    {
+        return $this->iframeId;
+    }
+
+    public function getHmacSecret()
+    {
+        return $this->hmacSecret;
     }
 }

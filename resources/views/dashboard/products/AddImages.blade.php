@@ -1,7 +1,9 @@
 @extends('dashboard.layouts.app')
 
 @section('title', transWord('اضافة صور المنتج'))
-
+@push('css')
+    <link rel="stylesheet" href="https://unpkg.com/dropzone@5/dist/min/dropzone.min.css" type="text/css" />
+@endpush
 @section('content')
     <!-- BEGIN: Content-->
     <div class="app-content content ">
@@ -45,9 +47,10 @@
 
                                     </form>
 
-                                   <a href="{{ route('admin.products.index') }}">
-                                    <button type="submit" value="{{ transWord('حفظ') }}" class="btn btn-primary mt-2"> {{ transWord('حفظ') }}g</button>
-                                </a>
+                                    <a href="{{ route('admin.products.index') }}">
+                                        <button type="submit" value="{{ transWord('حفظ') }}" class="btn btn-primary mt-2">
+                                            {{ transWord('حفظ') }}g</button>
+                                    </a>
 
 
 
@@ -101,6 +104,8 @@
     <!-- END: Content-->
 
     @push('js')
+        <script src="https://unpkg.com/dropzone@5/dist/min/dropzone.min.js"></script>
+
         <script src="{{ asset('dashboard/assets/js/custom/validation/scrapForm.js') }}"></script>
         <script src="{{ asset('dashboard/app-assets/js/custom/preview-image.js') }}"></script>
         <script src="{{ asset('dashboard/app-assets/js/custom/custom-delete.js') }}"></script>

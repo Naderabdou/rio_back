@@ -1,6 +1,6 @@
 @extends('dashboard.layouts.app')
 
-@section('title', transWord('المميزات'))
+@section('title', transWord('خصائص المنتج'))
 
 @section('content')
     <!-- BEGIN: Content-->
@@ -15,7 +15,7 @@
                             <div class="breadcrumb-wrapper">
                                 <ol class="breadcrumb">
                                     <li class="breadcrumb-item"><a
-                                            href="{{ route('admin.features.index') }}">{{ transWord('المميزات') }}</a>
+                                            href="{{ route('admin.ourValues.index') }}">{{ transWord('خصائص المنتج') }}</a>
                                     </li>
                                 </ol>
                             </div>
@@ -29,9 +29,9 @@
                                 data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i
                                     data-feather="grid"></i></button>
                             <div class="dropdown-menu dropdown-menu-right"><a class="dropdown-item"
-                                    href="{{ route('admin.features.create') }}"><i class="mr-1"
+                                    href="{{ route('admin.ourValues.create') }}"><i class="mr-1"
                                         data-feather="circle"></i><span
-                                        class="align-middle">{{ transWord('اضافه ميزة') }}
+                                        class="align-middle">{{ transWord('اضافه خصائص المنتج') }}
                                     </span></a>
                             </div>
                         </div>
@@ -48,29 +48,29 @@
                                     <thead>
                                         <tr>
                                             <th>#</th>
-                                            <th>{{ transWord('اسم الميزة') }}</th>
-                                            <th>{{ transWord('وصف الميزة') }}</th>
+                                            <th>{{ transWord('اسم') }}</th>
+                                            <th>{{ transWord('اسم المنتج') }}</th>
                                             <th>{{ transWord(' صورة') }}</th>
 
                                             <th>{{ transWord('الإجراءات') }}</th>
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        @foreach ($features as $feature)
+                                        @foreach ($OurValue as $feature)
                                         <tr>
                                                 <td>{{ $loop->iteration }}</td>
                                                 <td>{{ $feature->title }}</td>
+                                                <td>{{ $feature->product->name }}</td>
 
-                                                <td>{{ $feature->desc  ?? '-'  }}</td>
 
                                                 <td><img src="{{  $feature->icon_path  }}" width="50px" height="50px"></td>
 
                                                 <td class="text-center">
                                                     <div class="btn-group" role="group" aria-label="Second group">
-                                                        <a href="{{ route('admin.features.edit', $feature->id) }}"
+                                                        <a href="{{ route('admin.ourValues.edit', $feature->id) }}"
                                                             class="btn btn-sm btn-primary"><i
                                                                 class="fa-solid fa-pen-to-square"></i></a>
-                                                        <a href="{{ route('admin.features.destroy', $feature->id) }}"
+                                                        <a href="{{ route('admin.ourValues.destroy', $feature->id) }}"
                                                             data-id="{{ $feature->id }}"
                                                             class="btn btn-sm btn-danger item-delete"><i
                                                                 class="fa-solid fa-trash-can"></i></a>

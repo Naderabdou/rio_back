@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Dashboard;
 
 use App\Models\Category;
+use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Storage;
 use App\Http\Requests\Dashboard\CategoryRequest;
@@ -11,8 +12,25 @@ class CategoryController extends Controller
 {
     public function index()
     {
-        $categories = Category::all();
+        $categories = Category::orderBy('sort')->get();
+
         return view('dashboard.categories.index', compact('categories'));
+    }
+
+    public function reorder(Request $request)
+    {
+        //  return $request->all();
+        $categories = Category::all();
+
+        foreach ($categories as $category) {
+
+            foreach ($request->ids as $id) {
+                if ($id['id'] == $category->id) {
+                    $category->update(['sort' => $id['position']]);
+                }
+            }
+        }
+        return response()->json(['success' => 'تم الترتيب بنجاح']);
     }
 
     public function create()

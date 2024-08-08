@@ -26,7 +26,7 @@ class BrandController extends Controller
 
 
         Brand::create($data);
-        return redirect()->route('admin.brands.index')->with('success', trans('تم اضافه البراند بنجاح'));
+        return redirect()->route('admin.brands.index')->with('success', trans('تم اضافه ماده التصنيع بنجاح'));
     }
 
     public function edit($id)
@@ -41,7 +41,7 @@ class BrandController extends Controller
         $data = $request->validated();
 
         $brand->update($data);
-        return redirect()->route('admin.brands.index')->with('success', transWord('تم تعديل البراند بنجاح'));
+        return redirect()->route('admin.brands.index')->with('success', transWord('تم تعديل  ماده التصنيع  بنجاح'));
     }
 
     public function destroy($id)

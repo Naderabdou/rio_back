@@ -102,4 +102,22 @@ class AuthController extends Controller
             return redirect()->back()->with('error', __('models.pass_error'));
         }
     }
+    //saveTokenFirebase
+
+    public function saveTokenFirebase(Request $request)
+    {
+
+     //   dd($request->all());
+
+        $user = Auth::user();
+        $user->firebase_tokens()->where('device_id', $user->id)->delete();
+
+        // Store the new token
+        $user->firebase_tokens()->create([
+            'device_id' => $user->id,
+            'token_firebase' => request()->token,
+        ]);
+        $user->updateUserDevice();
+        return response()->json(['message' => 'Token saved successfully']);
+    }
 }

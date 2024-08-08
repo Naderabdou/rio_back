@@ -21,6 +21,7 @@ $(document).ready(function () {
             title_en: {
                 required: true,
                 minlength: 3,
+                maxlength: 255,
                 noSpecialChars: true,
                 remote: {
                     url: window.Urlfeatures,
@@ -46,6 +47,8 @@ $(document).ready(function () {
             title_ar: {
                 required: true,
                 minlength: 3,
+                maxlength: 255,
+
                 noSpecialChars: true,
                 remote: {
                     url: window.Urlfeatures,
@@ -71,13 +74,17 @@ $(document).ready(function () {
             desc_ar: {
                 required: true,
                 minlength: 3,
-                noSpecialChars: true
+                noSpecialChars: true,
+                maxlength: 255,
+
 
             },
             desc_en: {
                 required: true,
                 minlength: 3,
-                noSpecialChars: true
+                noSpecialChars: true,
+                maxlength: 255,
+
 
             },
         },
@@ -102,6 +109,8 @@ $(document).ready(function () {
             title_en: {
                 required: true,
                 minlength: 3,
+                maxlength: 255,
+
                 noSpecialChars: true,
                 remote: {
                     url: window.Urlfeatures,
@@ -131,6 +140,8 @@ $(document).ready(function () {
             title_ar: {
                 required: true,
                 minlength: 3,
+                maxlength: 255,
+
                 noSpecialChars: true,
                 remote: {
                     url: window.Urlfeatures,
@@ -160,12 +171,16 @@ $(document).ready(function () {
             desc_ar: {
                 required: true,
                 minlength: 3,
+                maxlength: 255,
+
                 noSpecialChars: true
 
             },
             desc_en: {
                 required: true,
                 minlength: 3,
+                maxlength: 255,
+
                 noSpecialChars: true
 
             },

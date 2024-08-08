@@ -263,7 +263,26 @@ class SettingTableSeeder extends Seeder
 
 
 
+            [
+                'key'      => 'policy_shapping',
+                'neckname' => 'ملف سياسبة الشحن',
+                'type'     => 'file',
+                'value'    => 'setting/shapping.pdf',
+            ],
 
+            [
+                'key'      => 'policy_return',
+                'neckname' => 'ملف سياسة الاسترجاع',
+                'type'     => 'file',
+                'value'    => 'setting/return.pdf',
+            ],
+
+            [
+                'key'      => 'catlog_company',
+                'neckname' => 'ملف كتالوج الشركة',
+                'type'     => 'file',
+                'value'    => 'setting/catlog.pdf',
+            ],
 
 
 

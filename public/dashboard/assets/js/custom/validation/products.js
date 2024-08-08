@@ -6,6 +6,18 @@ $(document).ready(function () {
     $.validator.addMethod('filesize', function (value, element, param) {
         return this.optional(element) || (element.files[0].size <= param)
     }, window.filesize);
+    $.validator.addMethod("discountedPrice", function (value, element) {
+        var discount = $("#discount").val();
+        return discount ? value !== '' : true;
+    }, window.price_after);
+    $.validator.addMethod("discountedPriceComp", function (value, element, params) {
+
+        var priceValue = $('#price').val();
+
+        var discountPrice = Number(value);
+
+        return discountPrice <= Number(priceValue);
+    }, window.discountPrice);
 
 
 
@@ -94,34 +106,77 @@ $(document).ready(function () {
             price_after_discount: {
                 // required: true,
                 number: true,
+                discountedPrice: true,
+                discountedPriceComp: {
+
+                    originalPrice: $('#price').val()
+                }
+
+
+
+
 
             },
-            stock: {
+            list_price: {
+                required: true,
+                number: true,
+            },
+
+            code_product: {
+                required: true,
+                minlength: 3,
+                maxlength: 6,
+                remote: {
+                    url: window.urlCode,
+                    type: "post",
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                    },
+                    data: {
+                        code_product: function () {
+                            return $("#code_product").val();
+                        }
+                    },
+                    dataFilter: function (data) {
+
+                        var json = JSON.parse(data);
+                        if (json.message) {
+                            return "\"" + json.message + "\"";
+                        }
+                        return true;
+                    }
+                }
+
+            },
+            dimensions_product: {
+                required: true,
+                minlength: 3,
+
+            },
+            dimensions_carton: {
+                required: true,
+                minlength: 3,
+
+            },
+            num_carton: {
                 required: true,
                 number: true,
 
             },
-            'key_ar[]': {
-                minlength: 2,
-                noSpecialChars: true,
-
+            size_carton: {
+                required: true,
 
             },
-            'key_en[]': {
-                minlength: 2,
-
-                noSpecialChars: true,
+            weight_carton: {
+                required: true,
 
             },
-            'value_ar[]': {
+            'color[]': {
+                required: true,
 
-                noSpecialChars: true,
-            }
-            ,
-            'value_en[]': {
 
-                noSpecialChars: true,
             }
+
 
 
         },
@@ -214,40 +269,81 @@ $(document).ready(function () {
                 required: true,
                 number: true,
             },
-            discount: {
+            list_price: {
                 required: true,
+                number: true,
+            },
+            discount: {
                 number: true,
 
             },
             price_after_discount: {
+                number: true,
+                discountedPrice: true,
+                discountedPriceComp: {
+                    originalPrice: $('#price').val()
+                }
+
+            },
+            code_product: {
+                required: true,
+                minlength: 3,
+                maxlength: 6,
+                remote: {
+                    url: window.urlCode,
+                    type: "post",
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                    },
+                    data: {
+                        code_product: function () {
+                            return $("#code_product").val();
+                        },
+                        id: function () {
+                            return $("#id").val(); // assuming the ID of the record is stored in a field with the ID "id"
+                        }
+                    },
+
+                    dataFilter: function (data) {
+
+                        var json = JSON.parse(data);
+                        if (json.message) {
+                            return "\"" + json.message + "\"";
+                        }
+                        return true;
+                    }
+                }
+
+            },
+            dimensions_product: {
+                required: true,
+                minlength: 3,
+
+            },
+            dimensions_carton: {
+                required: true,
+                minlength: 3,
+
+            },
+            num_carton: {
                 required: true,
                 number: true,
 
             },
-            stock: {
+            size_carton: {
                 required: true,
-                number: true,
 
             },
-            'key_ar[]': {
-                minlength: 2,
-                noSpecialChars: true,
-
+            weight_carton: {
+                required: true,
 
             },
-            'key_en[]': {
-                minlength: 2,
-                noSpecialChars: true,
+            'color[]': {
+                required: true,
 
-            },
-            'value_ar[]': {
 
-                noSpecialChars: true,
             }
-            ,
-            'value_en[]': {
-                noSpecialChars: true,
-            }
+
 
 
         },

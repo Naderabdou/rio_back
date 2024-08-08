@@ -16,15 +16,22 @@ class Order extends Model
     use HasFactory;
     protected $guarded = [];
 
-
+    public function getTotalPrice()
+    {
+        $total = $this->price_before_discount + $this->tax;
+        if ($this->coupon_code) {
+            $total -= $this->coupon_value;
+        }
+        return $total;
+    }
 
     public function getDateAttribute($date)
     {
 
-       if ($this->attributes['created_at'] == null) {
+        if ($this->attributes['created_at'] == null) {
             return null;
         }
-        $dateFromat = Carbon::createFromFormat('Y-m-d H:i:s', $this->attributes['created_at']);
+        $dateFromat = Carbon::createFromFormat('Y-m-d H:i:s', $this->attributes['created_at'], 'Africa/Cairo');
 
         // Get the current app locale
         $locale = app()->getLocale();
@@ -81,8 +88,6 @@ class Order extends Model
 
         // Use `translatedFormat()` to get a translated date string
         return $dateFromat->translatedFormat($format);
-
-
     }
     public function getProcessingAtAttribute($date)
     {

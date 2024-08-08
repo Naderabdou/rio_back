@@ -28,4 +28,13 @@ class CheckCodeRequest extends FormRequest
             'email' => 'required|email|exists:users,email',
         ];
     }
+
+    public function messages(): array
+    {
+        return [
+            'code.required' => transWord('The code field is required.'),
+            'code.size' => transWord('The code must be 4 digits.'),
+            'code' => transWord('The code must be 4 digits.'),
+        ];
+    }
 }

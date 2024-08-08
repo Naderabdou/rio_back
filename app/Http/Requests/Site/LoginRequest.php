@@ -27,4 +27,11 @@ class LoginRequest extends FormRequest
             'password' => 'required|string',
         ];
     }
+    public function messages(): array
+    {
+        return [
+            'emailOrPhone.required' => transWord('The email or phone field is required.'),
+            'password.required' => transWord('The password field is required.'),
+        ];
+    }
 }

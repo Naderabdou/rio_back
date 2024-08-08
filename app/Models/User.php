@@ -6,6 +6,7 @@ namespace App\Models;
 use id;
 use App\Models\Order;
 use App\Models\Favorite;
+use App\Models\FirebaseToken;
 use Laravel\Sanctum\HasApiTokens;
 use Spatie\Permission\Traits\HasRoles;
 use Illuminate\Notifications\Notifiable;
@@ -56,9 +57,16 @@ class User extends Authenticatable
 
 
 
+
     public function firebase_tokens()
     {
         return $this->hasMany(FirebaseToken::class, 'user_id', 'id');
+    }
+
+
+    public function hasRole($role): bool
+    {
+        return $this->getRoleNames()->first() === $role;
     }
 
     public function updateUserDevice()
@@ -86,14 +94,14 @@ class User extends Authenticatable
             'code' => $this->activationCode(),
         ]);
 
-       //  sendMail($this->code, $this->email, $this->name);
+        SendCode($this->email, $this->code, $this->name);
 
         return true;
     }
 
     private function activationCode()
     {
-        return 1234; //for testing
+        // return 1234; //for testing
         return mt_rand(1111, 9999);
     }
 
@@ -104,10 +112,11 @@ class User extends Authenticatable
 
     public function getImagePathAttribute()
     {
-        return asset('storage/' . $this->image);
+        return $this->image != null ? asset('storage/' . $this->image) : asset('site/images/user2.png');
     }
 
-    public function favorites(){
+    public function favorites()
+    {
 
         return $this->hasMany(Favorite::class, 'user_id', 'id');
     }
@@ -122,14 +131,11 @@ class User extends Authenticatable
     // }
     public function cart()
     {
-        return $this->hasOne(Order::class ,'user_id','id')->where('type', 'cart');
+        return $this->hasOne(Order::class, 'user_id', 'id')->where('type', 'cart');
     }
 
     public function orders()
     {
         return $this->hasMany(Order::class, 'user_id', 'id')->where('type', 'order');
     }
-
-
-
 }

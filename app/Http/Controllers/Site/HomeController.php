@@ -11,6 +11,7 @@ use Illuminate\Http\Request;
 use App\Models\ProductDetails;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
+use App\Models\Slider;
 
 class HomeController extends Controller
 {
@@ -18,10 +19,11 @@ class HomeController extends Controller
     {
         $features = Feature::latest()->get();
         $products = Product::where('is_active', 1)->take(6)->get();
-        $categories = Category::latest()->get();
+        $categories = Category::orderBy('sort')->get();
         $banners = Banner::latest()->get();
+        $sliders = Slider::latest()->get();
 
-        return view('site.home', compact('features', 'products', 'categories', 'banners'));
+        return view('site.home', compact('features', 'products', 'categories', 'banners', 'sliders'));
     }
 
     public function lang($lang)
@@ -33,6 +35,12 @@ class HomeController extends Controller
 
     public function productFilter(Request $request)
     {
+        $request->validate([
+            'amount' => 'required|min:10'
+        ], [
+            'amount.required' => 'هذا الحقل مطلوب',
+            'amount.min' => 'يجب ان يكون الحد الادنى 10'
+        ]);
         $array = ['most-sale' , 'new' , 'all'];
         if (!in_array($request->filter , $array)) {
             return redirect()->route('site.home');

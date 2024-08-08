@@ -21,10 +21,12 @@ class AppServiceProvider extends ServiceProvider
     public function boot(): void
     {
         view()->composer('site.layouts.navbar', function ($view) {
-            $view->with('categories', Category::latest()->get());
+            $view->with('categories', Category::orderBy('sort')->get());
 
         });
 
-     
+      
+
+
     }
 }

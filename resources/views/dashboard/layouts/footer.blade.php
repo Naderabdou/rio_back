@@ -14,7 +14,7 @@
         </span>
 
         <span class="float-md-right fs-5 d-none d-md-block">
-            <a target="_blank" href="https://jaadara.com/">
+            <a target="__blank" target="_blank" href="https://jaadara.com/">
                 {{ __('models.made_with') }}
                 <i data-feather="heart"></i>
                 {{ __('models.jadara') }}

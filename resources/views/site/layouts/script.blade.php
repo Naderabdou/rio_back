@@ -15,6 +15,7 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.2/additional-methods.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script src="{{ asset('site/js/auth.js') }}"></script>
+
 @if (app()->getLocale() == 'ar')
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.2/localization/messages_ar.min.js"></script>
 @else
@@ -73,9 +74,12 @@
             'acceptMessageVideo' => transWord('The type must be mp4'),
 
             'passwordConfirmationMessage' => transWord('The password and confirmation password do not match'),
-            'phoneMinLengthMessage' => transWord('The phone must be at least 10 numbers'),
-            'phoneMaxLengthMessage' => transWord('The phone must be at most 14 numbers'),
+            'phoneMinLengthMessage' => transWord('The phone must be at least 11 numbers'),
+            'phoneMaxLengthMessage' => transWord('The phone must be at most 11 numbers'),
             'stringMessage' => transWord('يجب ان يحتوي علي حروف فقط'),
+            'passwordConfirmMessage' => transWord('The password and confirmation password do not match'),
+            'fullname' => transWord('يجب ادخال الاسم الثلاثي'),
+            'egyptPhone' => transWord('Please specify a valid Egyptian phone number and start with 010 , 012 , 011 , 015'),
         ];
     @endphp
 
@@ -105,12 +109,14 @@
             return this.optional(element) || /^[\u0600-\u06FFa-zA-Z\s]+$/i.test(value);
         }, window.stringMessage);
 
-
+        $.validator.addMethod("egyptPhone", function(value, element) {
+            return this.optional(element) || /^(?:\+2)?0(15|10|12|11)[0-9]{8}$/.test(value);
+        }, window.egyptPhone);
 
         $.validator.addMethod("fullname", function(value, element) {
             var words = value.split(' ');
             return this.optional(element) || /^[\u0600-\u06FFa-zA-Z-' ]+$/.test(value) && words
-                .length >= 4;
+                .length >= 2;
         }, window.fullname);
 
 
@@ -123,7 +129,9 @@
                     required: true,
                     minlength: 2,
                     noSpecialChars: true,
-                    string: true
+                    string: true,
+                    fullname: true
+
                 },
 
                 email: {
@@ -133,9 +141,10 @@
                 },
                 phone: {
                     required: true,
+                    egyptPhone: true,
+                    phone_type: true,
                     minlength: 10,
                     maxlength: 15,
-                    phone_type: true,
                 },
                 message: {
                     required: true,
@@ -169,12 +178,12 @@
 
 
             submitHandler: function(form) {
-                $('.ctm-btn').prop('disabled', true);
+                $('#contact_btn').prop('disabled', true);
                 // Hide the button
-                $('.ctm-btn').hide();
+                $('#contact_btn').hide();
 
                 // Add a spinner
-                $('.ctm-btn').parent().append(
+                $('#contact_btn').parent().append(
                     `<div class="spinner-border text-primary" style="width: 3rem; height: 3rem;" role="status">
                 <span class="sr-only">Loading...</span>
                 </div>
@@ -199,24 +208,24 @@
                             showConfirmButton: false,
                             timer: 2000
                         });
-                        $('.ctm-btn').prop('disabled', false);
+                        $('#contact_btn').prop('disabled', false);
 
 
                         // Show the button
-                        $('.ctm-btn').show();
+                        $('#contact_btn').show();
 
                         // Remove the spinner
-                        $('.ctm-btn').next('.spinner-border').remove();
+                        $('#contact_btn').next('.spinner-border').remove();
 
                     },
                     error: function(data) {
-                        $('.ctm-btn').prop('disabled', false);
+                        $('#contact_btn').prop('disabled', false);
 
                         // Show the button
-                        $('.ctm-btn').show();
+                        $('#contact_btn').show();
 
                         // Remove the spinner
-                        $('.ctm-btn').next('.spinner-border').remove();
+                        $('#contact_btn').next('.spinner-border').remove();
                         $('.error-message').text('');
                         var errors = data.responseJSON.errors;
                         $.each(errors, function(field, messages) {
@@ -230,16 +239,18 @@
             },
         });
 
-        $('.btn-cart').click(function(e) {
+        $(document).on('click', '.btn-cart', function(e) {
             e.preventDefault();
             var id = $(this).data('id');
             var url = $(this).attr('href');
-            console.log(url, id);
+
+
             $.ajax({
                 url: url,
                 type: 'GET',
                 data: {
-                    id: id
+                    id: id,
+
                 },
                 success: function(data) {
 
@@ -270,7 +281,7 @@
 
 
                     $('#add_cart').html(data);
-                    let count =  $('.title-cart-header').data('count');
+                    let count = $('.title-cart-header').data('count');
                     $('#count_cart').text(count);
 
                     // $('#order_emty').hide();
@@ -319,8 +330,33 @@
         // });
     })
 </script>
+<script>
+    //    $('#togglePassword').on('click', function() {
+    //     const passwordField = $('#password');
+    //     const icon = $(this).find('i');
+    //     if (passwordField.attr('type') === 'password') {
+    //         passwordField.attr('type', 'text');
+    //         icon.removeClass('fa-eye').addClass('fa-eye-slash');
+    //     } else {
+    //         passwordField.attr('type', 'password');
+    //         icon.removeClass('fa-eye-slash').addClass('fa-eye');
+    //     }
+    // });
 
+    $('.toggle-password').on('click', function() {
+        const passwordField = $(this).siblings('input');
+        const icon = $(this).find('i');
+        if (passwordField.attr('type') === 'password') {
+            passwordField.attr('type', 'text');
+            icon.removeClass('fa-eye').addClass('fa-eye-slash');
+        } else {
+            passwordField.attr('type', 'password');
+            icon.removeClass('fa-eye-slash').addClass('fa-eye');
+        }
+    });
+</script>
 @stack('js')
 
 <script src="{{ asset('site/js/otp.js') }}"></script>
 <script src="{{ asset('site/js/custom.js') }}"></script>
+@livewireScripts

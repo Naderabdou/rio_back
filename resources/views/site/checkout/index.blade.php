@@ -30,7 +30,10 @@
 
 
             <section class="puyment-page mr-section">
-                <form action="{{ route('site.checkout.store') }}" method="POST" id="form_checkout">
+
+                <form
+                    action="{{ auth()->user()->hasRole('merchant') ? route('site.checkout.merchant') : route('site.checkout.store') }}"
+                    method="POST" id="form_checkout">
                     @csrf
                     <div class="main-container">
                         <div class="row row-gap">
@@ -49,7 +52,8 @@
                                     </h2>
                                     <div class="title-select-puyment">
                                         <div class="input-form arrow-select">
-                                            <select class="form-select form-control address_id" name="address_id">
+                                            <select class="form-select form-control address_id" name="address_id"
+                                                id="address_tax">
                                                 <option selected disabled value=""> {{ transWord('اختر عنوان') }}
                                                 </option>
 
@@ -118,17 +122,26 @@
 
                                     <div class="chosse-puyment">
                                         <h2>{{ transWord('طرق الدفع') }}</h2>
+                                        @php
+                                            $isMerchant = auth()->user()->hasRole('merchant');
+                                        @endphp
+
                                         @foreach ($payments as $payment)
-                                            <div class="input-puyment">
-                                                <input type="radio" name="puy" id="puy-1" value="{{ $payment->name_en }}">
-                                                <label for="puy-1">
-                                                    <img src="{{ $payment->image_path }}" alt="">
-                                                    <div class="text-chosse-puyment">
-                                                        <h3>{{ $payment->name }}</h3>
-                                                    </div>
-                                                </label>
-                                            </div>
+                                            @if (!$isMerchant || ($isMerchant && $payment->is_cash == 1))
+                                                {{-- Assuming 'Cash' identifies the cash payment method --}}
+                                                <div class="input-puyment">
+                                                    <input type="radio" name="puy" id="puy-{{ $payment->id }}"
+                                                        value="{{ $payment->id }}">
+                                                    <label for="puy-{{ $payment->id }}">
+                                                        <img src="{{ $payment->image_path }}" alt="">
+                                                        <div class="text-chosse-puyment">
+                                                            <h3>{{ $payment->name }}</h3>
+                                                        </div>
+                                                    </label>
+                                                </div>
+                                            @endif
                                         @endforeach
+
 
 
                                     </div>
@@ -142,11 +155,12 @@
                                         @foreach ($cart->orderItems as $itmes)
                                             <div class="sub-product-payment">
                                                 <div class="img-product-payment">
-                                                    <img src="{{ $itmes->products->image_path }}" alt="">
+                                                    <img src="{{ $itmes?->products?->image_path }}" alt="">
                                                 </div>
                                                 <div class="text-product-payment">
                                                     <h3>{{ $itmes->product_name }}</h3>
-                                                    <p>{{ transWord('الكمية') }} {{ $itmes->quantity }} <span> EGP
+                                                    <p>{{ transWord('الكمية') }} {{ $itmes->quantity }} <span>
+                                                            {{ transWord('جنية') }}
                                                             {{ $itmes->price }} </span></p>
                                                 </div>
                                             </div>
@@ -155,24 +169,38 @@
 
                                     </div>
 
-                                    <ul>
+                                    <ul class="ul_cart">
                                         <li> {{ transWord('المجموع الفرعي') }} ( {{ $cart->orderItems->count() }}
-                                            {{ transWord('منتجات') }}) <span> EGP {{ $cart->price_before_discount }}
-                                            </span>
+                                            {{ transWord('منتجات') }})
+                                            <span> <span class="total_val">{{ $cart->price_before_discount }}
+                                                    {{ transWord('جنية') }} </span> </span>
                                         </li>
-                                        <li> {{ transWord('رسوم الشحن') }}<span id="tax">EGP 20 </span></li>
+
+
+                                        {{-- <li> {{ transWord('رسوم الشحن') }}<span id="tax">{{ transWord('جنية') }}
+                                                20 </span></li> --}}
                                         @if ($cart->coupon_code)
                                             <li> {{ transWord('الخصم المكتسب') }}<span
                                                     class="coupon">{{ $cart->coupon_value }}
-                                                    EGP
+                                                    {{ transWord('جنية') }}
                                                 </span></li>
+                                            {{-- <input type="hidden" name="coupon_value" value="{{ $cart->coupon_value  }}"> --}}
                                         @endif
                                     </ul>
                                     <div class="total-cart">
-                                        <h3> {{ transWord('الاجمالي') }} <span>EGP <span
-                                                    class="totel_tax">{{ $cart->coupon_code ? $cart->price_before_discount + 20 - $cart->coupon_value : $cart->price_before_discount + 20 }}</span>
-                                            </span></h3>
+                                        <h3> {{ transWord('الاجمالي') }}
+                                            <span>
+                                                <span
+                                                    class="totel_tax">{{ $cart->coupon_code ? $cart->price_before_discount - $cart->coupon_value : $cart->price_before_discount }}
+
+                                                </span>
+                                                {{ transWord('جنية') }}
+                                            </span>
+                                        </h3>
                                     </div>
+
+                                    {{-- <input type="hidden" name="tax_value" id="tax_value" value=""> --}}
+
 
                                     <button type="submit" class="ctm-btn w-100">{{ transWord('اتمام طلبك') }}</button>
                                 </div>
@@ -272,10 +300,10 @@
                             );
                             $.each(data, function(key, value) {
                                 @if (app()->getLocale() == 'ar')
-                                    $('.city_id').append('<option value="' + key +
+                                    $('.city_id').append('<option value="' + value.id +
                                         '">' + value.name_ar + '</option>');
                                 @else
-                                    $('.city_id').append('<option value="' + key +
+                                    $('.city_id').append('<option value="' + value.id +
                                         '">' + value.name_en + '</option>');
                                 @endif
 
@@ -284,6 +312,53 @@
                     });
                 }
             });
+
+            $(".address_store").validate({
+
+
+                rules: {
+                    // Define validation rules for your form fields here
+                    street: {
+                        required: true,
+                        minlength: 2,
+
+                    },
+
+                    governorate_id: {
+                        required: true,
+
+                    },
+                    city_id: {
+                        required: true,
+
+                    },
+
+                    // Add more fields as needed
+                },
+
+
+
+
+
+                errorElement: "span",
+                errorLabelContainer: ".errorTxt",
+
+
+                submitHandler: function(form) {
+                    $('.ctm-btn').prop('disabled', true);
+                    // Hide the button
+                    $('.ctm-btn').hide();
+
+                    // Add a spinner
+                    $('.ctm-btn').parent().append(
+                        `<div class="spinner-border text-primary" style="width: 3rem; height: 3rem;" role="status">
+                    <span class="sr-only">Loading...</span>
+                    </div>
+                `
+                    );
+                    form.submit();
+                }
+            })
 
             // $(document).on('submit', '#form_checkout', function(e) {
             //     e.preventDefault();
@@ -319,15 +394,18 @@
                     },
                     phone: {
                         required: true,
-                        minlength: 10,
-                        maxlength: 15,
+                        egyptPhone: true,
+                        minlength: 11,
+                        maxlength: 13,
                         phone_type: true,
                     },
 
                     additional_phone: {
                         required: true,
-                        minlength: 10,
-                        maxlength: 15,
+                        egyptPhone: true,
+
+                        minlength: 11,
+                        maxlength: 13,
                         phone_type: true,
                     },
                     address_id: {
@@ -362,67 +440,50 @@
                 submitHandler: function(form) {
                     form.submit();
                 },
-                // submitHandler: function(form) {
-                //     $('.ctm-btn').prop('disabled', true);
-                //     // Hide the button
-                //     $('.ctm-btn').hide();
 
-                //     // Add a spinner
-                //     $('.ctm-btn').parent().append(
-                //         `<div class="spinner-border text-primary" style="width: 3rem; height: 3rem;" role="status">
-            //         <span class="sr-only">Loading...</span>
-            //         </div>
-            //             `
-                //     );
-
-
-                //     var formData = new FormData(form);
-                //     let url = form.action;
-                //     $.ajax({
-                //         url: url,
-                //         method: 'POST',
-                //         data: formData,
-                //         processData: false,
-                //         contentType: false,
-                //         success: function(data) {
-
-                //             form.reset();
-                //             Swal.fire({
-                //                 icon: 'success',
-                //                 title: `<h5> ${data.success}</h5> `,
-                //                 showConfirmButton: false,
-                //                 timer: 2000
-                //             });
-                //             $('.ctm-btn').prop('disabled', false);
-
-
-                //             // Show the button
-                //             $('.ctm-btn').show();
-
-                //             // Remove the spinner
-                //             $('.ctm-btn').next('.spinner-border').remove();
-
-                //         },
-                //         error: function(data) {
-                //             $('.ctm-btn').prop('disabled', false);
-
-                //             // Show the button
-                //             $('.ctm-btn').show();
-
-                //             // Remove the spinner
-                //             $('.ctm-btn').next('.spinner-border').remove();
-                //             $('.error-message').text('');
-                //             var errors = data.responseJSON.errors;
-                //             $.each(errors, function(field, messages) {
-                //                 var errorMessage = messages.join(', ');
-                //                 $('#' + field + '_error').text(
-                //                     errorMessage);
-                //             });
-                //         },
-                //     });
-
-                // },
             });
+
+            $('#address_tax').on('change', function() {
+                if ($('.shipping-fee').length > 0) {
+                    var tax = parseInt($('#tax').text());
+
+                    var total = parseInt($('.totel_tax').text()) - tax;
+                    $('.totel_tax').text(total);
+                    $('.shipping-fee').remove();
+                }
+
+                var address_id = $(this).val();
+                $.ajax({
+                    url: "{{ route('site.checkout.tax') }}",
+                    type: "POST",
+                    data: {
+                        address_id: address_id,
+                        _token: "{{ csrf_token() }}"
+                    },
+                    success: function(data) {
+                        // $('#tax_value').val(data.tax);
+
+                        var shippingFeeLabel = `{{ transWord('رسوم الشحن') }}`;
+                        var currencyLabel = `{{ transWord('جنية') }}`;
+                        var value = data.tax
+                        if (value == null) {
+                            value = 0;
+                        }
+                        $('.ul_cart').append(
+                            `<li class="shipping-fee">${shippingFeeLabel}<span id="tax"> ${value} ${currencyLabel}  </span></li>`
+                        );
+                        var total = parseFloat($('.totel_tax').text()) + parseFloat(value);
+                        $('.totel_tax').text(total.toFixed(
+                            1)); // Assuming you want to round to 2 decimal places
+
+                        // var total = parseInt($('.totel_tax').text()) + parseInt(value);
+                        // $('.totel_tax').text(total);
+                    }
+                });
+            });
+
+
+
         });
     </script>
 @endpush

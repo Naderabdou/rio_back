@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Dashboard;
 use App\Models\Payment;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Storage;
 use App\Http\Requests\Dashboard\PaymentRequest;
 
 class PaymentController extends Controller
@@ -44,7 +45,7 @@ class PaymentController extends Controller
         if ($request->hasFile('image')) {
 
             if ($payment->image) {
-                Storage::disk('public')->delete($payment->icon);
+                Storage::disk('public')->delete($payment->image);
             }
             $data['image'] = $request->file('image')->store('payments', 'public');
         }

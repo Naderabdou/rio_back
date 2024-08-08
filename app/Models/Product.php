@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Models\Brand;
 use App\Models\Category;
+use App\Models\OurValue;
 use App\Models\OrderItems;
 use App\Models\ProductImages;
 use App\Models\ProductDetails;
@@ -54,7 +55,7 @@ class Product extends Model
 
     public function details()
     {
-        return $this->hasMany(ProductDetails::class, 'product_id', 'id');
+        return $this->hasOne(ProductDetails::class, 'product_id', 'id');
     }
 
     public function getNameAttribute()
@@ -96,7 +97,7 @@ class Product extends Model
 
     public function getImagePathAttribute()
     {
-        return asset('storage/' . $this->image);
+        return asset('storage/' . $this->image) ?? '';
     }
 
 
@@ -130,6 +131,11 @@ class Product extends Model
        }else{
            return $this->price;
        }
+    }
+
+    public function values()
+    {
+        return $this->hasMany(OurValue::class, 'product_id', 'id');
     }
 
 

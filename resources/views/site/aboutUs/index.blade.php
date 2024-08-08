@@ -10,8 +10,9 @@
         <div class="main-container">
             <h2> {{ transWord('عن الشركة') }}</h2>
             <div class="breadcrumb-header">
-                <a href="{{ route('site.home') }}"> {{ transWord('الرئيسية') }} </a> <img src="images/icon/arrow.svg" alt=""> <span> {{ transWord('عن الشركة') }}
-                </span>
+                <a href="{{ route('site.home') }}"> {{ transWord('الرئيسية') }} </a>
+                <img src="{{ asset('site/images/icon/arrow.svg') }}" alt="">
+                 <span> {{ transWord('عن الشركة') }}</span>
             </div>
         </div>
     </div>

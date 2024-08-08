@@ -41,6 +41,29 @@
                                         @csrf
                                         <div class="row">
 
+
+                                            <div class="col-12">
+                                                <div class="form-group">
+                                                    <label for="product_id">{{ transWord('المنتجات') }}</label>
+                                                    <select class="form-control select_2" name="product_id"
+                                                        id="product_id" required>
+                                                        <option value="">{{ transWord('اختر') }}
+                                                        </option>
+                                                        @foreach ($products as $product)
+                                                            <option
+                                                                {{ old('product_id') == $product->id ? 'selected' : '' }}
+                                                                value="{{ $product->id }}">{{ $product->name }}
+                                                            </option>
+                                                        @endforeach
+                                                    </select>
+                                                    @error('product_id')
+                                                        <span class="alert alert-danger">
+                                                            <small class="errorTxt">{{ $message }}</small>
+                                                        </span>
+                                                    @enderror
+                                                </div>
+                                            </div>
+
                                             <div class="col-6">
                                                 <div class="form-group">
                                                     <label for="title_ar">{{ transWord('الأسم بالعربية') }}</label>

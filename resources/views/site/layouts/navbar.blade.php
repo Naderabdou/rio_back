@@ -10,12 +10,13 @@
                 </a>
             </div>
 
-            <div class="search-top-par">
+            {{-- <div class="search-top-par">
                 <form action="{{ route('site.products') }}">
                     <input type="text" placeholder="{{ transWord('البحث ..') }}" class="form-control" name="search">
                     <button> <img src="{{ asset('site/images/icon/search.svg') }}" alt=""></button>
                 </form>
-            </div>
+            </div> --}}
+            @livewire('search')
 
 
             <div class="btn-top-par">
@@ -92,6 +93,9 @@
                             </svg>
                             <span> {{ transWord('السلة') }} (<span id="count_cart">{{ auth()->user()?->cart?->orderItems?->count() ?? 0 }}</span>) </span> </a>
                     </div>
+
+                    @livewire('navbar-notify-web')
+
                 @endauth
                 <div class="menu-div">
                     <div class="content" id="times-ican">
@@ -154,7 +158,10 @@
                     <li><a href="{{ route('site.products') }}"> {{ transWord('منتجاتنا') }} </a></li>
                     <li><a href="{{ route('site.contactUs') }}">{{ transWord('تواصل معنا') }}</a></li>
 
-                    <li> <a href="{{ route('site.lang', app()->getLocale() == 'ar' ? 'en' : 'ar') }}">{{ app()->getLocale() === 'ar' ? 'en' : 'ar' }}
+                    <li> <a href="{{ route('site.lang', app()->getLocale() == 'ar' ? 'en' : 'ar') }}">
+                        {{-- {{ app()->getLocale() === 'ar' ? 'English' : 'عربي' }} --}}
+                        <img width="51px" height="37px" src=" {{ app()->getLocale() === 'ar' ? asset('site/images/united.png') : asset('site/images/flag.png') }}"
+                                alt="">
                         </a>
                     </li>
                 </ul>
@@ -164,9 +171,10 @@
                 <ul>
                     <li><a target="_blank" href="https://wa.me/{{ getSetting('whatsapp') }}"><i
                                 class="bi bi-whatsapp"></i></a></li>
-                    <li><a href="{{ getSetting('twitter') }}"><i class="bi bi-twitter-x"></i></a></li>
-                    <li><a href="{{ getSetting('instagram') }}"><i class="bi bi-instagram"></i></a></li>
-                    <li><a href="{{ getSetting('facebook') }}"><i class="bi bi-facebook"></i></a></li>
+                    <li><a target="_blank" href="{{ getSetting('twitter') }}"><i class="bi bi-twitter-x"></i></a></li>
+                    <li><a  target="_blank" href="{{ getSetting('instagram') }}"><i class="bi bi-instagram"></i></a></li>
+                    <li><a  target="_blank" href="{{ getSetting('facebook') }}"><i class="bi bi-facebook"></i></a></li>
+                    <li><a  target="_blank" href="{{ getSetting('tiktok') }}"><i class="bi bi-tiktok"></i></a></li>
                 </ul>
             </div>
         </div>

@@ -27,6 +27,12 @@ class SliderController extends Controller
         if ($request->hasFile('image')) {
             $data['image'] = $request->file('image')->store('sliders', 'public');
         }
+        if ($request->hasFile('video')) {
+            $data['video'] = $request->file('video')->store('sliders', 'public');
+        }
+        if ($request->hasFile('image_video')) {
+            $data['image_video'] = $request->file('image_video')->store('sliders', 'public');
+        }
 
         Slider::create($data);
 
@@ -44,11 +50,22 @@ class SliderController extends Controller
         $slider = Slider::findOrFail($id);
         $data = $request->validated();
         if ($request->hasFile('image')) {
-            if ($slider->image) {
-                Storage::disk('public')->delete($slider->image);
-            }
+            Storage::disk('public')->delete($slider->image);
             $data['image'] = $request->file('image')->store('sliders', 'public');
         }
+        if ($request->hasFile('video')) {
+
+            Storage::disk('public')->delete($slider->video);
+
+            $data['video'] = $request->file('video')->store('sliders', 'public');
+        }
+        if ($request->hasFile('image_video')) {
+
+            Storage::disk('public')->delete($slider->image_video);
+
+            $data['image_video'] = $request->file('image_video')->store('sliders', 'public');
+        }
+
 
         $slider->update($data);
 

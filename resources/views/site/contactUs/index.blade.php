@@ -1,5 +1,5 @@
 @extends('site.layouts.app')
-@section('title', transWord('عن الشركة'))
+@section('title', transWord('تواصل معنا'))
 
 @title(getSetting('seo_title', app()->getLocale()))
 @description(Str::limit(getSetting('desc_seo', app()->getLocale()), 160))
@@ -48,7 +48,7 @@
                                     <div class="col-lg-6">
                                         <div class="input-form">
                                             <input type="email" name="email"
-                                                placeholder="{{ transWord('البريد الاكتروني') }}" class="form-control">
+                                                placeholder="{{ transWord('البريد الالكتروني') }}" class="form-control">
                                         </div>
                                         @error('email')
                                             <span class="alert alert-danger">
@@ -91,7 +91,7 @@
                                     </div>
 
                                     <div class="col-lg-12">
-                                        <button class="ctm-btn"> {{ transWord('ارسال') }} </button>
+                                        <button class="ctm-btn" id="contact_btn"> {{ transWord('ارسال') }} </button>
                                     </div>
                                 </div>
                             </form>

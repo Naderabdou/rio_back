@@ -21,6 +21,7 @@ class AdderssRequest extends FormRequest
      */
     public function rules(): array
     {
+
         return [
             'governorate_id' => 'required|exists:governorates,id',
             'city_id' => 'required|exists:cities,id',

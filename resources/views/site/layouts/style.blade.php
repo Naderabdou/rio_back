@@ -18,5 +18,85 @@
 <link rel="stylesheet" href="{{ asset('site/css/footer.css') }}">
 <link rel="stylesheet" href="{{ asset('site/css/main.css') }}">
 <link rel="stylesheet" href="{{ asset('site/css/responsive.css') }}">
+@if (app()->getLocale() == 'ar')
 <link rel="stylesheet" href="{{ asset('site/css/ar.css') }}">
+@else
+<link rel="stylesheet" href="{{ asset('site/css/en.css') }}">
+@endif
 
+
+<style>
+
+    .toggle-password {
+        position: absolute;
+        top: 50%;
+
+        transform: translateY(-50%);
+        cursor: pointer;
+    }
+    .error {
+        color: red;
+    }
+
+    /* .social-buttons {
+        display: flex;
+        list-style-type: none;
+        padding: 0;
+    }
+
+    .social-buttons li {
+        display: inline-block;
+    } */
+
+    .social-button {
+        display: flex;
+        font-size: 15 !important;
+        align-items: center;
+        justify-content: center;
+    }
+
+    div#social-links ul {
+        display: flex;
+        justify-content: center;
+        gap: 10px;
+    }
+</style>
+
+
+<style>
+    .pagination li {
+        display: inline-block;
+        padding: 5px;
+    }
+
+    .custom-pagination {
+        display: flex;
+        list-style: none;
+        padding: 0;
+        justify-content: center;
+        margin-top: 20px;
+    }
+
+    .custom-pagination li {
+        margin: 0 5px;
+    }
+
+    .custom-pagination a {
+        background-color: #fff;
+        border: 1px solid  #B3B8B9        ;
+        border-radius: 50%;
+        width: 50px;
+        height: 50px;
+        color: #999999;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .custom-pagination a:hover,
+    .custom-pagination .active a {
+        border-color: var(--color-Primary2);
+        color: #fff;
+        background-color: var(--color-Primary2);
+    }
+</style>

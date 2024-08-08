@@ -2,6 +2,262 @@ body {
     text-align: left;
     direction: ltr;
 }
-  
+/* .top-par .main-container{
+    flex-direction: row-reverse;
+} */
+
+.search-top-par button
+{
+    left: 88%;
+}
+
+.search-top-par input {
+    background-color: var(--color-white);
+    border-color: var(--color-border);
+    text-align: left;
+    padding-left: 30px;
+}
+
+.search-top-par input::placeholder
+{
+    text-align: left;
+}
+
+.all-categories button i {
+    font-size: 22px;
+    transform: rotate(180deg);
+}
+
+.show-categories {
+    left: 101%;
+}
+
+.show-categories ul li a i{
+    transform: rotate(180deg);
+}
+
+.btn-all-categories::after{
+    right: 80%;
+}
+
+.btn-all-categories::before
+{
+    right: 75%;
+}
 
 
+
+.btn-all-categories span {
+    display: block;
+    position: relative;
+    left: 30px;
+}
+
+.btn-all-categories span::before {
+    right: 115%;
+    top: 76%;
+}
+
+.offers-products .owl-nav {
+    position: absolute;
+    top: -96px;
+    right: 0;
+    left: auto;
+}
+
+.breadcrumb-header img{
+    transform: rotate(180deg);
+}
+
+.puls-que::after{
+    left: auto;
+    right: 20px;
+}
+
+.puls-que::before
+{
+    left: auto;
+    right: 20px;
+}
+
+.arrow-select::after
+{
+    left: auto;
+    right: 18px;
+}
+
+.main-add-address .arrow-select::after{
+    left: auto;
+    right: 27px;
+}
+
+.btns-product-offer{
+    flex-direction: row-reverse;
+}
+
+.main-share-links {
+    right: 23px;
+    left: auto;
+}
+
+
+.input-form input::placeholder, .input-form textarea::placeholder {
+    text-align: left;
+}
+
+.copon-code button {
+    right: 10px;
+    left: auto;
+}
+
+.form-control::placeholder {
+    text-align: left;
+}
+
+@media (max-width: 1024px){
+    .btn-all-categories::after {
+        right: 80%;
+    }
+
+    .btn-all-categories span::before {
+        right: 115%;
+        top: 76%;
+    }
+
+    .search-top-par button {
+        left: 84% !important;
+    }
+
+    .btn-top-par a {
+        font-size: 13px;
+    }
+    .ctm-btn2 {
+        height: 50px;
+        text-align: center;
+        padding: 11px 11px;
+        display: inline-block;
+        min-width: 170px;
+        background-color: var(--color-Primary3);
+        border-radius: 30px;
+        color: var(--color-Primary1);
+        font-family: "font_medium";
+        transition: all 0.3s linear;
+    }
+
+    .ctm-btn3 {
+        padding: 11px 28px;
+    }
+
+    .main-share-links {
+        position: absolute;
+        left: auto;
+        bottom: 100px;
+        right: 0;
+    }
+
+    .title-address-order h2 {
+        font-size: 17px;
+    }
+
+    .text-aboutus-info p{
+        font-size: 16px;
+        line-height: 25px;
+    }
+
+    .categories-a-filter label {
+        font-size: 15px;
+    }
+
+    .rating label {
+        margin: 0 !important;
+        padding-top: 8px;
+        font-size: 18px;
+    }
+
+    .img-info-contectus {
+        width: 41px;
+        font-size: 22px;
+        color: var(--color-white);
+        border-radius: 50%;
+        background-color: var(--color-Primary2);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        height: 40px;
+    }
+
+}
+
+@media (max-width: 992px){
+    .search-mune button{
+        left: auto;
+        right: 7px;
+    }
+
+    .search-mune input::placeholder{
+        text-align: left;
+    }
+}
+
+@media (max-width: 768px){
+    .btn-all-categories span::before {
+        right: 105%;
+        top: 76%;
+    }
+
+    .btn-all-categories::after {
+        right: 78%;
+    }
+
+    .app-notify {
+        top: 15px !important;
+        left: 60px !important;
+        right: auto !important;
+}
+
+.form-control {
+    height: 60px;
+    border-radius: 35px;
+    padding-right: 15px;
+    padding-left: 10px;
+    background-color: #f5f5f5;
+    border: 1px solid #f5f5f5;
+}
+
+.rating label {
+    margin: 0 !important;
+    padding-top: 13px;
+    font-size: 14px;
+}
+
+
+
+.show-categories {
+    position: absolute;
+    opacity: 0;
+    top: 0;
+    left: 0%;
+    width: 100%;
+    pointer-events: none;
+    background: #fff;
+    min-height: 300px;
+    padding: 20px 0;
+    box-shadow: 0 0 4px #00000026;
+    border-radius: 16px;
+    transition: all 0.3s linear;
+}
+
+.show-categories.active{
+    transform: translateX(0);
+
+}
+
+}
+
+@media (max-width: 375px){
+    .btn-all-categories span::before {
+        right: 105%;
+        top: 76%;
+    }
+
+}

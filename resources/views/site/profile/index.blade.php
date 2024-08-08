@@ -62,6 +62,7 @@
                             <form action="{{ route('site.profile.update') }}" id="update_profile">
                                 @csrf
                                 <div class="form-my-account">
+                                    <input type="hidden" name="id" id="id" value="{{ $user->id }}">
                                     <div class="input-form">
                                         <input type="text" placeholder="{{ transWord('الاسم') }} " class="form-control"
                                             name="name" value="{{ $user->name }}">
@@ -69,20 +70,22 @@
 
 
                                     <div class="input-form">
-                                        <input type="email" name="email"
+                                        <input type="email" name="email" id="email"
                                             placeholder="{{ transWord('البريد الالكتروني') }}" class="form-control"
                                             value="{{ $user->email }}">
                                     </div>
 
                                     <div class="input-form">
-                                        <input type="tel" name="phone" placeholder="{{ transWORD('رقم الجوال') }}"
-                                            class="form-control" value="{{ $user->phone }}">
+                                        <input type="tel" name="phone" id="phone"
+                                            placeholder="{{ transWORD('رقم الجوال') }}" class="form-control"
+                                            value="{{ $user->phone }}">
                                     </div>
 
                                 </div>
 
                                 <div class="btn-form-my-account mt-4">
-                                    <button type="submit" class="ctm-btn"> {{ transWord('تحديث بياناتك') }}</button>
+                                    <button type="submit" class="ctm-btn" id="btn_update_profile">
+                                        {{ transWord('تحديث بياناتك') }}</button>
                                 </div>
                             </form>
                         </div>
@@ -95,7 +98,7 @@
 
 
         <!-- start modal aosh =============
-            ======================== -->
+                            ======================== -->
 
 
     </main>
@@ -103,7 +106,6 @@
 
 @push('js')
     <script>
-
         function setInputValue(name, value) {
             $('input[name="' + name + '"]').val(value);
         }
@@ -116,19 +118,75 @@
                     required: true,
                     minlength: 2,
                     noSpecialChars: true,
-                    string: true
+                    string: true,
+                    fullname: true
                 },
 
                 email: {
                     required: true,
                     minlength: 3,
-                    domain: true
+                    domain: true,
+                    remote: {
+                        url: $('#register_store').data('email'),
+                        type: "post",
+                        headers: {
+                            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                        },
+                        data: {
+                            email: function() {
+                                return $("#email").val();
+                            },
+                            id: function() {
+                                return $("#id")
+                                    .val(); // assuming the ID of the record is stored in a field with the ID "id"
+                            }
+                        },
+                        dataFilter: function(data) {
+
+                            var json = JSON.parse(data);
+                            if (json.message) {
+                                return "\"" + json.message + "\"";
+                            }
+                            return true;
+                        }
+
+
+                    }
                 },
                 phone: {
                     required: true,
                     minlength: 10,
                     maxlength: 15,
                     phone_type: true,
+                    egyptPhone: true,
+                    remote: {
+                        url: $('#register_store').data('phone'),
+                        type: "post",
+                        headers: {
+                            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                        },
+                        data: {
+                            phone: function() {
+                                return $("#phone").val();
+                            },
+                            id: function() {
+                                return $("#id")
+                                    .val(); // assuming the ID of the record is stored in a field with the ID "id"
+                            }
+
+
+                        },
+                        dataFilter: function(data) {
+
+                            var json = JSON.parse(data);
+                            if (json.message) {
+                                return "\"" + json.message + "\"";
+                            }
+                            return true;
+                        }
+
+
+                    }
                 },
 
                 // Add more fields as needed
@@ -152,12 +210,12 @@
 
 
             submitHandler: function(form) {
-                $('.ctm-btn').prop('disabled', true);
+                $('btn_update_profile').prop('disabled', true);
                 // Hide the button
-                $('.ctm-btn').hide();
+                $('#btn_update_profile').hide();
 
                 // Add a spinner
-                $('.ctm-btn').parent().append(
+                $('#btn_update_profile').parent().append(
                     `<div class="spinner-border text-primary" style="width: 3rem; height: 3rem;" role="status">
                 <span class="sr-only">Loading...</span>
                 </div>
@@ -190,24 +248,24 @@
                         });
 
                         $('')
-                        $('.ctm-btn').prop('disabled', false);
+                        $('#btn_update_profile').prop('disabled', false);
 
 
                         // Show the button
-                        $('.ctm-btn').show();
+                        $('#btn_update_profile').show();
 
                         // Remove the spinner
-                        $('.ctm-btn').next('.spinner-border').remove();
+                        $('#btn_update_profile').next('.spinner-border').remove();
 
                     },
                     error: function(data) {
-                        $('.ctm-btn').prop('disabled', false);
+                        $('#btn_update_profile').prop('disabled', false);
 
                         // Show the button
-                        $('.ctm-btn').show();
+                        $('#btn_update_profile').show();
 
                         // Remove the spinner
-                        $('.ctm-btn').next('.spinner-border').remove();
+                        $('#btn_update_profile').next('.spinner-border').remove();
                         $('.error-message').text('');
                         var errors = data.responseJSON.errors;
                         $.each(errors, function(field, messages) {
@@ -220,8 +278,5 @@
 
             },
         });
-
-
-
     </script>
 @endpush

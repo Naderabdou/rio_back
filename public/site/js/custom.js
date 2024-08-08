@@ -29,7 +29,7 @@ $(document).on('click', '.remove-cart-header', (function (e) {
         url: url,
         type: 'GET',
         success: function (data) {
-
+            console.log(data);
             $('#add_cart').html(data);
             let count = $('.title-cart-header').data('count');
             $('#count_cart').text(count);
@@ -51,11 +51,15 @@ $(".btn-cart-nav").click((e) => {
     $(".cart-header").toggleClass("active");
 });
 
-$(".close-cart-header").click((e) => {
+// $(".close-cart-header").click((e) => {
+//     e.preventDefault();
+//     $(".cart-header").removeClass("active");
+// });
+
+$(document).on('click', '.close-cart-header', (function (e) {
     e.preventDefault();
     $(".cart-header").removeClass("active");
-});
-
+}));
 
 $(".all-categories ul > li > button").click(function (e) {
     e.preventDefault();
@@ -145,7 +149,8 @@ if ($("#offers-products").length) {
         autoplayTimeout: 3500,
         autoplayHoverPause: false,
         rtl: true,
-        autoplay: false,
+        autoplay: true,
+        autoplayTimeout: 3000, // Autoplay interval in milliseconds
         autoplayHoverPause: true,
         dots: false,
         smartSpeed: 700,
@@ -206,16 +211,45 @@ if ($("#categories").length) {
 
 if ($("#banners").length) {
     $("#banners").owlCarousel({
+      loop: true,
+      margin: 10,
+      nav: false,
+      items: 6,
+      autoplayTimeout: 3500,
+      autoplayHoverPause: false,
+      rtl: true,
+      autoplay: false,
+      autoplayHoverPause: true,
+      dots: false,
+      smartSpeed: 700,
+      responsiveClass: true,
+      responsive: {
+        0: {
+          items: 1,
+        },
+        450: {
+          items: 1,
+        },
+        600: {
+          items: 2,
+        },
+      },
+    });
+  }
+
+if ($("#main-slider").length) {
+    $("#main-slider").owlCarousel({
         loop: true,
         margin: 10,
         nav: false,
-        items: 6,
+        items: 1,
         autoplayTimeout: 3500,
         autoplayHoverPause: false,
         rtl: true,
-        autoplay: false,
-        autoplayHoverPause: true,
-        dots: false,
+        autoplay: true,
+        autoplayTimeout: 3000, // Autoplay interval in milliseconds
+        autoplayHoverPause: false,
+        dots: true,
         smartSpeed: 700,
         responsiveClass: true,
         responsive: {
@@ -226,7 +260,7 @@ if ($("#banners").length) {
                 items: 1,
             },
             600: {
-                items: 2,
+                items: 1,
             },
         },
     });

@@ -31,7 +31,7 @@
                             <div class="dropdown-menu dropdown-menu-right"><a class="dropdown-item"
                                     href="{{ route('admin.sliders.create') }}"><i class="mr-1"
                                         data-feather="circle"></i><span
-                                        class="align-middle">{{ transWord('اضافه صوره اسليدر جديده') }}
+                                        class="align-middle">{{ transWord('اضافه  اسليدر جديده') }}
                                     </span></a>
                             </div>
                         </div>
@@ -61,9 +61,24 @@
                                                 </td>
 
 
+                                                @if ($slider->type == 'image')
+                                                    <td>
+                                                        <img src="{{ $slider->image_path }}" width="50px" height="50px">
+                                                    </td>
 
-                                                <td><img src="{{ $slider->image_path }}" width="50px" height="50px">
-                                                </td>
+                                                @elseif ($slider->type == 'video')
+
+                                                    <td>
+
+                                                        <video width="50%" height="50%" controls>
+                                                            <source src="{{ $slider->video_path }}" type="video/mp4">
+                                                        </video>
+                                                    </td>
+                                                @else
+                                                    <td>
+                                                        <img src="{{ $slider->image_path }}" width="50px" height="50px">
+                                                    </td>
+                                                @endif
 
                                                 <td class="text-center">
                                                     <div class="btn-group" role="group" aria-label="Second group">

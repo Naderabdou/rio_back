@@ -40,16 +40,22 @@ Route::middleware('localization')->group(function () {
         Route::middleware(['auth','role:admin'])->group(function () {
             //------------------- Dashboard Routes -------------------//
             Route::get('/', 'DashboardController@home')->name('home');
-            Route::get('/test', function () {
-                return view('welcome');
-            });
+
             //------------------- End Dashboard Routes -------------------//
 
 
 
             //------------------- Settings Routes -------------------//
             Route::resource('settings', 'SettingController');
-            //------------------- End Settings Routes -------------------//
+            //------------------- End Slider Routes -------------------//
+            Route::resource('sliders', 'SliderController');
+
+            //------------------- Merchant Routes -------------------//
+            Route::resource('merchants', 'MerchantController');
+            Route::get('merchant/change/status', 'MerchantController@changeStatus')->name('merchant.status');
+            Route::get('merchant/password/{id}', 'MerchantController@password')->name('merchant.password');
+            Route::post('merchant/update/password', 'MerchantController@passwordUpdate')->name('merchant.password.update');
+            //------------------- End Merchant Routes -------------------//
 
 
 
@@ -77,6 +83,8 @@ Route::middleware('localization')->group(function () {
 
             //-------------------- Categories Routes -------------------//
             Route::resource('categories', 'CategoryController');
+            Route::post('category/reorder', 'CategoryController@reorder')->name('category-reorder');
+
             //-------------------- End Categories Routes -------------------//
 
 
@@ -137,6 +145,10 @@ Route::middleware('localization')->group(function () {
             Route::resource('questions', 'QuestionController');
             //------------------- End Questions Routes -------------------//
 
+            //------------------- governorates Routes -------------------//
+            Route::resource('governorates', 'GovernorateController');
+            //------------------- End governorates Routes -------------------//
+
             //------------------- Products Routes -------------------//
             Route::resource('products', 'ProductController');
             Route::get('product/change/status', 'ProductController@changeStatus')->name('product.status');
@@ -151,8 +163,24 @@ Route::middleware('localization')->group(function () {
             //------------------- Orders Routes -------------------//
             Route::resource('orders', 'OrderController')->except(['create', 'store', 'edit', 'update']);
             Route::get('orders/change-status/{id}/{status}', 'OrderController@changeStatus')->name('orders.changeStatus');
+            Route::get('notifiy/read/all', 'OrderController@notifiy')->name('notifiy');
+            Route::get('notifiy/read/{id}/{order_id}', 'OrderController@notifiyRead')->name('notifiy.read');
             //------------------- End  Orders Routes -------------------//
 
+
+            //------------------- Order merchants Routes -------------------//
+            Route::resource('order-merchants', 'OrderMerchantController')->except(['create', 'store', 'edit']);
+            Route::get('order-merchants/change-status/{id}/{status}', 'OrderMerchantController@changeStatus')->name('order-merchants.changeStatus');
+            //------------------- End  Order merchants Routes -------------------//
+
+            //------------------- Reviews Routes -------------------//
+            Route::resource('reviews', 'ReviewController')->only(['index', 'destroy']);
+
+            Route::get('reviews/change-status', 'ReviewController@changeStatus')->name('reviews.changeStatus');
+            //------------------- End Reviews Routes -------------------//
+
+            //store.token
+            Route::post('store/token', 'AuthController@saveTokenFirebase')->name('store.token');
 
 
 
@@ -174,6 +202,11 @@ Route::middleware('localization')->group(function () {
         Route::post('check-IDMembership', 'CeckController@checkIDMembership')->name('check.IDMembership');
         Route::post('check-codeCoupons', 'CeckController@CodeCoupons')->name('check.codeCoupons');
         Route::post('check-paymentName', 'CeckController@paymentName')->name('check.paymentName');
+        Route::post('check-email', 'CeckController@email')->name('check.email');
+        Route::post('check-phone', 'CeckController@phone')->name('check.phone');
+        Route::post('check-password', 'CeckController@password')->name('check.password');
+        Route::post('check-password-merchants', 'CeckController@passwordMerchants')->name('check.password.merchants');
+        Route::post('check-productCode', 'CeckController@productCode')->name('check.productCode');
 
 
 
@@ -203,10 +236,17 @@ Route::namespace('Site')->name('site.')->middleware('lang')->group(function () {
 
     // ------------------- Products Routes -------------------//
     Route::get('products', 'ProductController@index')->name('products');
+    Route::get('products/offers', 'OfferController@index')->name('offers.products');
+    Route::get('products/offers/filter', 'OfferController@filter')->name('offers.products.filter');
+
+
+    Route::get('products/category/{id}', 'ProductController@product_category')->name('products.category');
+
     Route::get('products/filter', 'ProductController@filter')->name('products.filter');
    // Route::get('products/arrange', 'ProductController@arrange')->name('products.arrange');
    Route::get('products/search', 'ProductController@search')->name('products.search');
     Route::get('products/{id}', 'ProductController@show')->name('products.show');
+    Route::get('products/pagintions', 'ProductController@pagintions')->name('products.pagintions');
 
 
     //------------------- End Products Routes -------------------//
@@ -228,7 +268,8 @@ Route::namespace('Site')->name('site.')->middleware('lang')->group(function () {
         //-------------------- Profile Routes -------------------//
         Route::get('profile', 'ProfileController@index')->name('profile');
         Route::post('profile', 'ProfileController@update')->name('profile.update');
-        Route::post('profile/change-password', 'ProfileController@changePassword')->name('profile.changePassword');
+        Route::get('profile/change-password', 'ProfileController@changePassword')->name('profile.changePassword');
+        Route::post('profile/change-password/update', 'ProfileController@updatePassword')->name('profile.changePassword.update');
         //-------------------- End Profile Routes -------------------//
 
 
@@ -259,7 +300,15 @@ Route::namespace('Site')->name('site.')->middleware('lang')->group(function () {
 
         //--------------------- checkout Routes -------------------//
         Route::get('checkout', 'CheckoutController@index')->name('checkout');
-        Route::post('checkout', 'CheckoutController@store')->name('checkout.store');
+        Route::post('checkout/store', 'CheckoutController@store')->name('checkout.store');
+        Route::post('checkout/store/merchant', 'CheckoutController@merchant')->name('checkout.merchant');
+        Route::get('checkout/callback', 'CheckoutController@callback')->name('checkout.callback');
+        Route::post('checkout/tax/add', 'CheckoutController@tax')->name('checkout.tax');
+        Route::get('checkout/accepte/{order_id}', 'CheckoutController@accepte')->name('checkout.accepte');
+        // Route::get('order/pay', 'OrderController@pay')->name('order.pay');
+        // Route::get('order/pay', 'OrderController@pay')->name('order.pay');
+        Route::get('notifiy/web/read/all', 'OrderController@notifiy')->name('notifiy.web');
+        Route::get('notifiy/web/read/{id}/{order_id}', 'OrderController@notifiyRead')->name('notifiy.web.read');
         //-------------------- End checkout Routes -------------------//
 
 
@@ -287,7 +336,7 @@ Route::namespace('Site')->name('site.')->middleware('lang')->group(function () {
 
 
 Route::fallback(function () {
-    abort(404);
+    return redirect()->route('site.home');
 });
 // Route::get('login', function(){
 //     return redirect()->route('site.home');

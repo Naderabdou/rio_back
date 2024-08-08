@@ -29,4 +29,22 @@ class ProfileController extends Controller
 
       //  $user->update($data);
     }
+
+    public function updatePassword(Request $request)
+    {
+        $request->validate([
+            'password' => 'required|min:8|confirmed',
+        ]);
+
+        $user = auth()->user();
+        $user->update(['password' => bcrypt($request->password)]);
+
+        return response()-> json(['message' => transWord('Password updated successfully')]);
+    }
+
+    public function changePassword()
+    {
+        $user = auth()->user();
+        return view('site.profile.password', compact('user'));
+    }
 }

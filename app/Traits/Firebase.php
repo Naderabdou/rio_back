@@ -5,19 +5,19 @@ namespace App\Traits;
 trait Firebase
 {
 
-    public function sendFcmNotification($tokens, $data, $lang = 'ar' , $type)
+    public function sendFcmNotification($tokens, $data, $lang = 'ar')
     {
 
-        $SERVER_API_KEY = 'AAAAoxfrg6A:APA91bHUhfHC1_EJ1eLW5P2qTk3zTGQ2S7pMT-zZoTBRGgaAZ05VQBhGJY2ExoAGYHYi0q9ocwr_dq4toO8CzjdgsgpuWVzScz4FkYHC-zSg1m3WtNhp-S2Jd133YevpaPI5Kgb9_Sct	';
-      //  dd($data);
+        $SERVER_API_KEY = 'AAAAoxfrg6A:APA91bHUhfHC1_EJ1eLW5P2qTk3zTGQ2S7pMT-zZoTBRGgaAZ05VQBhGJY2ExoAGYHYi0q9ocwr_dq4toO8CzjdgsgpuWVzScz4FkYHC-zSg1m3WtNhp-S2Jd133YevpaPI5Kgb9_Sct';
+        //  dd($data);
 
         $data = [
             "registration_ids" => $tokens,
             "notification" => [
-                "title"    => 'تطبيق زاد',
-                "body"     => $this->getBody($data, $lang)  . '|||||||' . $type,
+                'title' => transWord('New Order') . ' #' . $data['order_number'],
+                'body' => transWord('You have a new order') . '' . $data['order_number'],
                 "mutable_content" => true,
-                'sound'    => 'nadernader',
+                'sound'    => true,
             ],
             // 'data'  => isset($data->url) ? $data->url : ''
         ];
@@ -38,7 +38,7 @@ trait Firebase
         curl_setopt($ch, CURLOPT_POSTFIELDS, $dataString);
         $response = curl_exec($ch);
 
-      //   dd($response);
+        //   dd($response);
     }
 
     public function getTitle(array $data, $local = 'ar')

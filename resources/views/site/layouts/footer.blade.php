@@ -10,19 +10,28 @@
                 <div class="element-footer">
                     <ul>
                         <li><a href="{{ route('site.aboutUs') }}">{{ transWord('من نحن') }}</a></li>
-                        <li><a href="products.html">{{ transWord('منتجاتنا') }}</a></li>
-                        <li><a href="">{{ transWord('سياسه الاسترجاع و الاستبدال') }}</a></li>
-                        <li><a href="">{{ transWord('سياسه الشحن') }}</a></li>
-                        <li><a href="contactus.html">{{ transWord('تواصل معنا') }}</a></li>
+                        <li><a href="{{ route('site.products') }}">{{ transWord('منتجاتنا') }}</a></li>
+                        <li><a target="__blank"
+                                href="{{ url(asset('storage/' . getSetting('policy_return'))) }}">{{ transWord('سياسه الاسترجاع و الاستبدال') }}</a>
+                        </li>
+                        <li><a target="__blank"
+                                href="{{ url(asset('storage/' . getSetting('policy_shapping'))) }}">{{ transWord('سياسه الشحن') }}</a>
+                        </li>
+                        <li><a href="{{ route('site.contactUs') }}">{{ transWord('تواصل معنا') }}</a></li>
                     </ul>
                 </div>
                 <div class="sco-media-f">
                     <ul>
                         <li><a target="_blank" href="https://wa.me/{{ getSetting('whatsapp') }}"><i
                                     class="bi bi-whatsapp"></i></a></li>
-                        <li><a href="{{ getSetting('twitter') }}"><i class="bi bi-twitter-x"></i></a></li>
-                        <li><a href="{{ getSetting('instagram') }}"><i class="bi bi-instagram"></i></a></li>
-                        <li><a href="{{ getSetting('facebook') }}"><i class="bi bi-facebook"></i></a></li>
+                        <li><a target="_blank" href="{{ getSetting('twitter') }}"><i class="bi bi-twitter-x"></i></a>
+                        </li>
+                        <li><a target="_blank" href="{{ getSetting('instagram') }}"><i class="bi bi-instagram"></i></a>
+                        </li>
+                        <li><a target="_blank" href="{{ getSetting('facebook') }}"><i class="bi bi-facebook"></i></a>
+                        </li>
+                        <li><a target="_blank" href="{{ getSetting('tiktok') }}"><i class="bi bi-tiktok"></i></a></li>
+
                     </ul>
                 </div>
             </div>
@@ -31,7 +40,7 @@
                     {{ transWord('كل الحقوق محفوظة') }} {{ getSetting('name_website', app()->getLocale()) }} &copy;
                     {{ date('Y') }}
                 </p>
-                <a href="https://jaadara.com/"> {{ transWord('صنع بكل حب ') }}<i class="bi bi-heart-fill"></i>
+                <a target="_blank" href="https://jaadara.com/"> {{ transWord('صنع بكل حب ') }}<i class="bi bi-heart-fill"></i>
                     {{ transWord('في معامل جدارة ') }}</a>
             </div>
 
@@ -95,6 +104,10 @@
                                         <div class="input-form">
                                             <input type="password" placeholder="{{ transWord('كلمة المرور') }}"
                                                 class="form-control" name="password">
+                                            <span class="toggle-password" class="toggle-password"
+                                                style="{{ app()->getLocale() === 'en' ? 'right: 22px;' : 'left: 22px;' }}">
+                                                <i class="fa fa-eye"></i>
+                                            </span>
                                             <div style="color: red" id="password_error" class="error-message"></div>
 
                                         </div>
@@ -112,8 +125,12 @@
 
                             </div>
                             {{-- register form --}}
-                            <div class="tab-pane fade" id="pills-profile" role="tabpanel" aria-labelledby="pills-lo">
-                                <form action="{{ route('site.register') }}" method="post" id="register_store">
+                            <div class="tab-pane fade" id="pills-profile" role="tabpanel"
+                                aria-labelledby="pills-lo">
+                                <form action="{{ route('site.register') }}" method="post" id="register_store"
+                                    data-email="{{ route('admin.check.email') }}"
+                                    data-phone="{{ route('admin.check.phone') }}">
+
                                     @csrf
                                     <div class="form-aosh">
                                         <div class="input-form">
@@ -124,30 +141,41 @@
                                         </div>
 
                                         <div class="input-form">
-                                            <input type="email" placeholder="{{ transWord('البريد الالكتروني') }}"
+                                            <input id="email" type="email"
+                                                placeholder="{{ transWord('البريد الالكتروني') }}"
                                                 class="form-control" name="email">
                                             <div style="color: red" id="email_error" class="error-message"></div>
 
                                         </div>
 
                                         <div class="input-form">
-                                            <input type="tel" placeholder="{{ transWord('رقم الهاتف') }}"
-                                                class="form-control" name="phone">
+                                            <input id="phone" type="tel"
+                                                placeholder="{{ transWord('رقم الهاتف') }}" class="form-control"
+                                                name="phone">
                                             <div style="color: red" id="phone_error" class="error-message"></div>
 
                                         </div>
 
                                         <div class="input-form">
-                                            <input type="password" placeholder="{{ transWord('كلمة المرور') }}"
-                                                class="form-control" name="password">
+                                            <input id="password" type="password"
+                                                placeholder="{{ transWord('كلمة المرور') }}" class="form-control"
+                                                name="password">
+                                            <span class="toggle-password" class="toggle-password"
+                                                style="{{ app()->getLocale() === 'en' ? 'right: 22px;' : 'left: 22px;' }}">
+                                                <i class="fa fa-eye"></i>
+                                            </span>
                                             <div style="color: red" id="password_error" class="error-message"></div>
 
                                         </div>
 
                                         <div class="input-form">
-                                            <input type="password" placeholder="{{ transWord('تأكيد كلمة المرور') }}"
+                                            <input id="password_confirmation" type="password"
+                                                placeholder="{{ transWord('تأكيد كلمة المرور') }}"
                                                 class="form-control" name="password_confirmation">
-
+                                            <span class="toggle-password" class="toggle-password"
+                                                style="{{ app()->getLocale() === 'en' ? 'right: 22px;' : 'left: 22px;' }}">
+                                                <i class="fa fa-eye"></i>
+                                            </span>
                                             <div style="color: red" id="password_confirmation_error"
                                                 class="error-message"></div>
 
@@ -156,11 +184,13 @@
                                         <div class="btn-aosh">
 
                                             <div class="input-check">
-                                                <input type="checkbox" id="check-1" name="check">
-                                                <label for="check-1">
+                                                <input type="checkbox" id="check-0" name="check">
+                                                <label for="check-0">
                                                     {{ transWord('أوافق على شروط وأحكام وسياسة خصوصيةRioplast') }}
                                                 </label>
-                                                <div style="color: red" id="check_error" class="error-message"></div>
+
+
+                                                {{-- <div style="color: red" id="check_error" class="error-message"></div> --}}
 
                                             </div>
                                             <button class="w-100 ctm-btn" id="reg_btn">{{ transWord('تسجيل') }}
@@ -334,6 +364,10 @@
                                 <div class="input-form">
                                     <input type="password" placeholder="{{ transWord('كلمة المرور') }}"
                                         class="form-control" name="password">
+                                    <span class="toggle-password" class="toggle-password"
+                                        style="{{ app()->getLocale() === 'en' ? 'right: 22px;' : 'left: 22px;' }}">
+                                        <i class="fa fa-eye"></i>
+                                    </span>
 
                                     <div style="color: red" class="password_error" class="error-message"></div>
 
@@ -341,6 +375,10 @@
                                 <div class="input-form">
                                     <input type="password" placeholder="{{ transWord('تأكيد كلمة المرور') }}"
                                         class="form-control" name="password_confirmation">
+                                    <span class="toggle-password" class="toggle-password"
+                                        style="{{ app()->getLocale() === 'en' ? 'right: 22px;' : 'left: 22px;' }}">
+                                        <i class="fa fa-eye"></i>
+                                    </span>
                                     <div style="color: red" class="password_confirmation_error"
                                         class="error-message"></div>
 
@@ -385,7 +423,7 @@
                         @forelse ($orderItems->orderItems as $item)
                             <li>
                                 <div class="img-product-cart-header">
-                                    <img src="{{ $item->products->image_path }}" alt="">
+                                    <img src="{{ $item?->products?->image_path }}" alt="">
                                 </div>
                                 <div class="text-product-cart-header">
                                     <h2> <span> {{ $item->product_name }}</span>
@@ -394,10 +432,9 @@
                                                 class="bi bi-trash"></i></button>
                                     </h2>
                                     <div>
-                                        <span class="quanti_cart"> {{ $item->quantity }}</span>
-                                        <div class="price-cart-header"> EGP {{ $item->price }} <span
-                                                class="old-price"> {{ $item->products->price_after_discount ?? 0 }}
-                                                EGP </span></div>
+                                        <span id="quanti_cart-{{ $item->id }}"> {{ $item->quantity }}</span>
+                                        <div class="price-cart-header"> {{ $item->price }} {{ transWord('جنية') }}
+                                        </div>
                                     </div>
                                 </div>
                             </li>
@@ -422,13 +459,15 @@
                 @if ($orderItems->orderItems->count() > 0)
                     <div class="btns-cart-header">
                         <div class="total-cart-header pb-3">
-                            <h2> {{ transWord('المجموع') }} <span class="totel_cart"> EGP {{ $orderItems->price_before_discount }}
+                            <h2> {{ transWord('المجموع') }} <span class="totel_cart">
+                                    {{ $orderItems->price_before_discount }} {{ transWord('جنية') }}
                                 </span>
                             </h2>
                         </div>
                         <a href="{{ route('site.cart') }}" class="w-100 mt-2 ctm-btn2">
                             {{ transWord('مشاهدة عربة التسوق') }}</a>
-                        <a href="puyment.html" class="w-100 mt-2 ctm-btn">{{ transWord('اتمام عملية الشراء') }}</a>
+                        <a href="{{ route('site.checkout') }}"
+                            class="w-100 mt-2 ctm-btn">{{ transWord('اتمام عملية الشراء') }}</a>
                     </div>
                 @endif
             @endif
@@ -446,21 +485,31 @@
         <div class="menu_responsive" id="menu-div">
 
             <div class="logo-menu">
-                <img src="images/logo.svg" alt="">
+                <img src="{{ asset('storage/' . getSetting('logo')) }}" alt="">
             </div>
-            <div class="search-mune">
+            {{-- <div class="search-mune">
                 <form action="">
                     <input type="text" placeholder="البحث .. " class="form-control" name="search">
                     <button> <img src="images/icon/search.svg" alt=""></button>
                 </form>
-            </div>
+            </div> --}}
+
+            @livewire('search-mobile')
             <div class="element_menu_responsive">
                 <ul>
-                    <li><a href="index.html">الرئيسية</a></li>
-                    <li><a href="aboutus.html"> عن الشركة</a></li>
-                    <li><a href="products.html"> منتجاتنا </a></li>
-                    <li><a href="contactus.html">تواصل معنا</a></li>
-                    <li><a href="">اللغة</a></li>
+                    <li><a href="{{ route('site.home') }}">{{ transWord('الرئيسية') }}</a></li>
+                    <li><a href="{{ route('site.aboutUs') }}"> {{ transWord('عن الشركة') }}</a></li>
+                    <li><a href="{{ route('site.products') }}">{{ transWord(' منتجاتنا ') }}</a></li>
+                    <li><a href="{{ route('site.contactUs') }}">{{ transWord('تواصل معنا') }}</a></li>
+                    <li>
+                        <a href="{{ route('site.lang', app()->getLocale() == 'ar' ? 'en' : 'ar') }}">
+                            {{-- {{ app()->getLocale() === 'ar' ? 'English' : 'عربي' }} --}}
+                            <img width="51px" height="37px"
+                                src=" {{ app()->getLocale() === 'ar' ? asset('site/images/united.png') : asset('site/images/flag.png') }}"
+                                alt="">
+                        </a>
+
+                    </li>
                 </ul>
             </div>
 

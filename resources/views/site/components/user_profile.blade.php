@@ -9,11 +9,14 @@
         <li><a href="{{ route('site.profile') }}" class="{{ isActiveRoute('site.profile') }}"> <img
                     src="{{ asset('site/images/icon/profile.svg') }}" alt="">
                 {{ transWord('حسابي') }} </a></li>
-        <li><a href="{{ route('site.orders') }}" class="{{ areActiveRoutes(['site.orders','site.orders.show']) }}"> <img src="{{ asset('site/images/icon/task-square.svg') }}"
-                    alt="">
+        <li><a href="{{ route('site.profile.changePassword') }}" class="{{ isActiveRoute('site.profile.changePassword') }}"> <img
+                    src="{{ asset('site/images/icon/profile.svg') }}" alt="">
+                {{ transWord('كلمه المرور') }} </a></li>
+        <li><a href="{{ route('site.orders') }}" class="{{ areActiveRoutes(['site.orders', 'site.orders.show']) }}">
+                <img src="{{ asset('site/images/icon/task-square.svg') }}" alt="">
                 {{ transWord('طلباتي') }}</a></li>
-        <li><a href="{{ route('site.address.index') }}" class="{{ isActiveRoute('site.address.index') }}"> <img src="{{ asset('site/images/icon/house.svg') }}"
-                    alt=""> {{ transWord('العناوين') }} </a>
+        <li><a href="{{ route('site.address.index') }}" class="{{ isActiveRoute('site.address.index') }}"> <img
+                    src="{{ asset('site/images/icon/house.svg') }}" alt=""> {{ transWord('العناوين') }} </a>
         </li>
         <li><a href="myacount.html" data-toggle="modal" data-target=".logout-modal"> <img
                     src="{{ asset('site/images/icon/logout.svg') }}" alt="">
@@ -23,19 +26,19 @@
 </div>
 
 <div class="modal fade logout-modal" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel"
-aria-hidden="true">
-<div class="modal-dialog modal-lg">
-    <div class="modal-content">
-        <div class="logout-page">
-            <div class="img-logout">
-                <img src="{{ asset('site/images/logout.png') }}" alt="">
-            </div>
-            <h2> {{ transWord('هل أنت متأكد من تسجيل الخروج') }}</h2>
-            <div class="btn-logout d-flex align-item-center justify-content-center">
-                <a href="{{ route('site.logout') }}" class="ctm-btn mx-2">{{ transWord('نعم') }}</a>
-                <a href=""  id="btn-close-model" class="ctm-btn2 mx-2">{{ transWord('لا') }}</a>
+    aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="logout-page">
+                <div class="img-logout">
+                    <img src="{{ asset('site/images/logout.png') }}" alt="">
+                </div>
+                <h2> {{ transWord('هل أنت متأكد من تسجيل الخروج') }}</h2>
+                <div class="btn-logout d-flex align-item-center justify-content-center">
+                    <a href="{{ route('site.logout') }}" class="ctm-btn mx-2">{{ transWord('نعم') }}</a>
+                    <a href="" id="btn-close-model" class="ctm-btn2 mx-2">{{ transWord('لا') }}</a>
+                </div>
             </div>
         </div>
     </div>
-</div>
 </div>

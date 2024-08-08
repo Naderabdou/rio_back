@@ -14,7 +14,8 @@
                         <div class="col-12">
                             <div class="breadcrumb-wrapper">
                                 <ol class="breadcrumb">
-                                    <li class="breadcrumb-item"><a href="{{ route('admin.partners.index') }}"> {{ transWord('الشركاء') }} </a>
+                                    <li class="breadcrumb-item"><a href="{{ route('admin.partners.index') }}">
+                                            {{ transWord('الشركاء') }} </a>
                                     </li>
                                     <li class="breadcrumb-item"><a href="#">{{ transWord('تعديل الشركاء ') }}</a>
                                     </li>
@@ -35,8 +36,8 @@
                                     <h2 class="card-title">{{ transWord('تعديل الشركاء ') }}</h2>
                                 </div>
                                 <div class="card-body">
-                                    <form class="form form-vertical" id="updateForm"
-                                        action="{{ route('admin.partners.update',$partner->id) }}" method="POST"
+                                    <form class="form form-vertical" id="UpdateOurValuesForm"
+                                        action="{{ route('admin.partners.update', $partner->id) }}" method="POST"
                                         enctype="multipart/form-data">
                                         @csrf
                                         @method('put')
@@ -46,28 +47,29 @@
 
                                             <div class="col-12">
                                                 <div class="form-group">
-                                                    <label for="formFile" class="form-label">{{ transWord('الصوره') }}</label>
+                                                    <label for="formFile"
+                                                        class="form-label">{{ transWord('الصوره') }}</label>
                                                     <input class="form-control image" type="file" id="formFile"
-                                                           name="image"  accept=".jpg,.jpeg,.png">
+                                                        name="image" accept=".jpg,.jpeg,.png">
                                                     @error('image')
-                                                    <span class="alert alert-danger">
+                                                        <span class="alert alert-danger">
                                                             <small class="errorTxt">{{ $message }}</small>
                                                         </span>
                                                     @enderror
                                                 </div>
                                                 <div class="form-group prev">
                                                     <img src="{{ $partner->image_path }}" style="width: 100px"
-                                                         class="img-thumbnail preview-formFile" alt="">
+                                                        class="img-thumbnail preview-formFile" alt="">
                                                 </div>
                                             </div>
 
                                             <div class="col-12">
                                                 <div class="form-group">
                                                     <label for="name_en">{{ transWord('اللينك') }}</label>
-                                                    <input type="text" id="name_en" class="form-control" name="link" required
-                                                           value="{{ old('link',$partner->link) }}" />
+                                                    <input type="text" id="name_en" class="form-control" name="link"
+                                                        required value="{{ old('link', $partner->link) }}" />
                                                     @error('link')
-                                                    <span class="alert alert-danger">
+                                                        <span class="alert alert-danger">
                                                             <small class="errorTxt">{{ $message }}</small>
                                                         </span>
                                                     @enderror
@@ -79,7 +81,8 @@
 
 
                                             <div class="col-12">
-                                                <button type="submit" class="btn btn-primary mr-1">{{ transWord('save') }}</button>
+                                                <button type="submit"
+                                                    class="btn btn-primary mr-1">{{ transWord('save') }}</button>
                                             </div>
                                         </div>
                                     </form>
@@ -96,10 +99,10 @@
 
     @push('js')
         <script src="{{ asset('dashboard/app-assets/js/custom/preview-image.js') }}"></script>
+        <script src="{{ asset('dashboard/assets/js/custom/validation/ourValuesForm.js') }}"></script>
 
 
         <script>
-
             $('.select2').select2({
                 dir: "rtl",
                 language: "ar",
@@ -108,7 +111,7 @@
                 width: '100%'
             });
 
-            $(document).on('click' , '.remove-btn' , function(e) {
+            $(document).on('click', '.remove-btn', function(e) {
                 e.preventDefault();
                 $(this).closest('.row').remove();
             });

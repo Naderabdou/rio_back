@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Dashboard;
 
 use App\Models\Banner;
+use App\Models\Product;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Storage;
@@ -18,7 +19,8 @@ class BannerController extends Controller
 
     public function create()
     {
-        return view('dashboard.banners.create');
+        $products = Product::where('is_active', 1)->get();
+        return view('dashboard.banners.create', compact('products'));
     }
 
     public function store(BannerRequest $request)
@@ -45,8 +47,10 @@ class BannerController extends Controller
 
     public function edit($id)
     {
+        $products = Product::where('is_active', 1)->get();
+
         $banner = Banner::findOrFail($id);
-        return view('dashboard.banners.edit', compact('banner'));
+        return view('dashboard.banners.edit', compact('banner', 'products'));
     }
 
     public function update(BannerRequest $request, $id)

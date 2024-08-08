@@ -20,7 +20,7 @@ class ReviewController extends Controller
         $data = $request->validated();
         $data['user_id'] = auth()->id();
         $review = ProductReviews::create($data);
-        return redirect()->back()->with('success',transWord('تم اضافة تقيمك بنجاح'));
+        return redirect()->back()->with('success',transWord('جاري مراجعة تقيمك'));
         // return response()->json(['success'=>transWord('تم اضافة تقيمك بنجاح'),'rating' => $review->rating , 'review'=>$review->review,'name'=>auth()->user()->name,'image'=>auth()->user()->image_path], 201);
 
 

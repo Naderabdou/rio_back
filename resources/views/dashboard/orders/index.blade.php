@@ -88,10 +88,10 @@
                                                         <span class="badge badge-success">
                                                             {{ transWord($order->status) }}
                                                         </span>
-                                                    @elseif ($order->status === 'declined')
-                                                        <span class="badge badge-warning">
+                                                    {{-- @elseif ($order->status === 'declined')
+                                                        <span class="badge badge-danger">
                                                             {{ transWord($order->status) }}
-                                                        </span>
+                                                        </span> --}}
                                                     @endif
                                                 </td>
                                                 <td class="text-center">
@@ -108,9 +108,10 @@
                                                                 {{ transWord('تغير الحالة') }}
                                                             </button>
                                                             <div class="dropdown-menu">
-                                                                <a class="dropdown-item"
-                                                                    href="{{ route('admin.orders.changeStatus', ['id' => $order->id, 'status' => 'pending']) }}">{{ transWord('Pending') }}</a>
-                                                                <a class="dropdown-item"
+                                                                {{-- <a class="dropdown-item"
+                                                                    href="{{ route('admin.orders.changeStatus', ['id' => $order->id, 'status' => 'pending']) }}">{{ transWord('Pending') }}</a> --}}
+                                                                <a
+                                                                 class="dropdown-item"
                                                                     href="{{ route('admin.orders.changeStatus', ['id' => $order->id, 'status' => 'pocessing']) }}">{{ transWord('Processing') }}</a>
                                                                 <a class="dropdown-item"
                                                                     href="{{ route('admin.orders.changeStatus', ['id' => $order->id, 'status' => 'shipped']) }}">{{ transWord('shipped') }}</a>
@@ -118,8 +119,8 @@
                                                                     href="{{ route('admin.orders.changeStatus', ['id' => $order->id, 'status' => 'driving']) }}">{{ transWord('Driving') }}</a>
                                                                 <a class="dropdown-item"
                                                                     href="{{ route('admin.orders.changeStatus', ['id' => $order->id, 'status' => 'completed']) }}">{{ transWord('Completed') }}</a>
-                                                                <a class="dropdown-item"
-                                                                    href="{{ route('admin.orders.changeStatus', ['id' => $order->id, 'status' => 'declined']) }}">{{ transWord('Declined') }}</a>
+                                                                {{-- <a class="dropdown-item"
+                                                                    href="{{ route('admin.orders.changeStatus', ['id' => $order->id, 'status' => 'declined']) }}">{{ transWord('Declined') }}</a> --}}
                                                             </div>
                                                         </div>
 

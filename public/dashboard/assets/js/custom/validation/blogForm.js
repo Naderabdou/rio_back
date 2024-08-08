@@ -15,11 +15,15 @@ $(document).ready(function () {
             title_ar : {
                 required: true,
                 minlength: 3,
+                maxlength: 255,
+
                 noSpecialChars: true,
             },
             title_en : {
                 required: true,
                 minlength: 3,
+                maxlength: 255,
+
                 noSpecialChars: true,
             },
             desc_ar : {
@@ -63,11 +67,15 @@ $(document).ready(function () {
             title_ar : {
                 required: true,
                 minlength: 3,
+                maxlength: 255,
+
                 noSpecialChars: true,
             },
             title_en : {
                 required: true,
                 minlength: 3,
+                maxlength: 255,
+
                 noSpecialChars: true,
             },
             desc_ar : {

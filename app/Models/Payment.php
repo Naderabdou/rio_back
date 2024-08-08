@@ -2,12 +2,13 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Cviebrock\EloquentSluggable\Sluggable;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Payment extends Model
 {
-    use HasFactory;
+    use HasFactory,Sluggable;
 
     protected $guarded = [];
     protected $appends = ['image_path'];
@@ -20,5 +21,13 @@ class Payment extends Model
     public function getImagePathAttribute()
     {
         return asset('storage/' . $this->image);
+    }
+    public function sluggable(): array
+    {
+        return [
+            'slug' => [
+                'source' => 'name_en'
+            ]
+        ];
     }
 }

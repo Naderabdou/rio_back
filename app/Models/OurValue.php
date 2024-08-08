@@ -2,14 +2,18 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
+use App\Models\Product;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class OurValue extends Model
 {
     use HasFactory;
     protected $guarded = [];
     protected $appends = ['icon_path'];
+    protected $casts = [
+        'product_id' => 'array',
+    ];
 
 
     //get translation title
@@ -27,6 +31,11 @@ class OurValue extends Model
     public function getIconPathAttribute()
     {
         return asset('storage/' . $this->icon);
+    }
+
+    public function product()
+    {
+        return $this->belongsTo(Product::class);
     }
 
 

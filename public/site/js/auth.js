@@ -1,80 +1,254 @@
 $(document).ready(function () {
-    $(document).on('submit', '#register_store', function (e) {
-        e.preventDefault();
-        $('#reg_btn').prop('disabled', true);
-        // Hide the button
-        $('#reg_btn').hide();
 
-        // Add a spinner
-        $('#reg_btn').parent().append(
-            `<div class="spinner-border text-primary" style="width: 3rem; height: 3rem;" role="status">
-<span class="sr-only">Loading...</span>
-</div>
-               `
-        );
-
-        var formData = new FormData($('#register_store')[0]);
-
-        console.log('test');
-        var url = this.action;
-
-        $.ajax({
-            url: url,
-            type: "POST",
-            data: formData,
-            contentType: false,
-            processData: false,
-            success: function (data) {
-                $('#register_store')[0].reset();
-
-                $('.error-message').text('')
-                Swal.fire({
-                    icon: 'success',
-                    title: `<h5> ${data.message}</h5> `,
-                    showConfirmButton: false,
-                    timer: 1500
-                });
-
-                $('#reg_btn').prop('disabled', false);
+    $.validator.addMethod("egyptPhone", function (value, element) {
+        return this.optional(element) || /^(?:\+2)?0(15|10|12|11)[0-9]{8}$/.test(value);
+    }, window.egyptPhone);
+    $("#register_store").validate({
 
 
-                // Show the button
-                $('#reg_btn').show();
-
-                // Remove the spinner
-                $('#reg_btn').next('.spinner-border').remove();
-
-                // ajax reload
-                setTimeout(function () {
-                    location.reload();
-                }, 1500);
-
-
-
-            },
-            error: function (data) {
-                $('.error-message').text('');
-                // Display validation errors under each input
-                var errors = data.responseJSON.errors;
-                $.each(errors, function (field, messages) {
-                    var errorMessage = messages.join(', ');
-                    //  console.log('#' + field + '_error');
-                    $('#' + field + '_error').text(errorMessage);
-
-                });
-
-                $('#reg_btn').prop('disabled', false);
-
-
-                // Show the button
-                $('#reg_btn').show();
-
-                // Remove the spinner
-                $('#reg_btn').next('.spinner-border').remove();
+        rules: {
+            // Define validation rules for your form fields here
+            name: {
+                required: true,
+                minlength: 2,
+                noSpecialChars: true,
+                string: true,
+                fullname: true,
             },
 
-        });
-    })
+            email: {
+                required: true,
+                minlength: 3,
+                domain: true,
+                remote: {
+                    url: $('#register_store').data('email'),
+                    type: "post",
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                    },
+                    data: {
+                        email: function () {
+                            return $("#email").val();
+                        }
+                    },
+                    dataFilter: function (data) {
+
+                        var json = JSON.parse(data);
+                        if (json.message) {
+                            return "\"" + json.message + "\"";
+                        }
+                        return true;
+                    }
+                }
+            },
+            phone: {
+                required: true,
+                egyptPhone: true,
+                phone_type: true,
+                minlength: 11,
+                maxlength: 12,
+                remote: {
+                    url: $('#register_store').data('phone'),
+                    type: "post",
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                    },
+                    data: {
+                        phone: function () {
+                            return $("#phone").val();
+                        }
+                    },
+                    dataFilter: function (data) {
+
+                        var json = JSON.parse(data);
+                        if (json.message) {
+                            return "\"" + json.message + "\"";
+                        }
+                        return true;
+                    }
+                }
+            },
+            password: {
+                required: true,
+                minlength: 8,
+            },
+            password_confirmation: {
+                required: true,
+                equalTo: "#password"
+            },
+            check: {
+                required: true
+            }
+
+
+            // Add more fields as needed
+        },
+
+        messages: {
+
+            phone: {
+                minlength: window.phoneMinLengthMessage,
+                maxlength: window.phoneMaxLengthMessage,
+            },
+            password_confirmation: {
+                equalTo: window.passwordConfirmMessage
+            },
+
+
+
+
+        },
+
+
+
+        errorElement: "span",
+        errorLabelContainer: ".errorTxt",
+
+
+        submitHandler: function (form) {
+            $('#reg_btn').prop('disabled', true);
+            // Hide the button
+            $('#reg_btn').hide();
+
+            // Add a spinner
+            $('#reg_btn').parent().append(
+                `<div class="spinner-border text-primary" style="width: 3rem; height: 3rem;" role="status">
+            <span class="sr-only">Loading...</span>
+            </div>
+                   `
+            );
+
+
+            var formData = new FormData(form);
+            let url = form.action;
+            $.ajax({
+                url: url,
+                method: 'POST',
+                data: formData,
+                processData: false,
+                contentType: false,
+                success: function (data) {
+
+                    form.reset();
+                    Swal.fire({
+                        icon: 'success',
+                        title: `<h5> ${data.message}</h5> `,
+                        showConfirmButton: false,
+                        timer: 1500
+                    });
+                    $('#reg_btn').prop('disabled', false);
+
+
+                    // Show the button
+                    $('#reg_btn').show();
+
+                    // Remove the spinner
+                    $('#reg_btn').next('.spinner-border').remove();
+
+                    setTimeout(function () {
+                        location.reload();
+                    }, 1500);
+
+                },
+                error: function (data) {
+                    $('#reg_btn').prop('disabled', false);
+
+                    // Show the button
+                    $('#reg_btn').show();
+
+                    // Remove the spinner
+                    $('#reg_btn').next('.spinner-border').remove();
+                    $('.error-message').text('');
+                    var errors = data.responseJSON.errors;
+                    $.each(errors, function (field, messages) {
+                        var errorMessage = messages.join(', ');
+                        $('#' + field + '_error').text(
+                            errorMessage);
+                    });
+                },
+            });
+
+        },
+    });
+
+
+    //     $(document).on('submit', '#register_store', function (e) {
+    //         e.preventDefault();
+    //         $('#reg_btn').prop('disabled', true);
+    //         // Hide the button
+    //         $('#reg_btn').hide();
+
+    //         // Add a spinner
+    //         $('#reg_btn').parent().append(
+    //             `<div class="spinner-border text-primary" style="width: 3rem; height: 3rem;" role="status">
+    // <span class="sr-only">Loading...</span>
+    // </div>
+    //                `
+    //         );
+
+    //         var formData = new FormData($('#register_store')[0]);
+
+    //         console.log('test');
+    //         var url = this.action;
+
+    //         $.ajax({
+    //             url: url,
+    //             type: "POST",
+    //             data: formData,
+    //             contentType: false,
+    //             processData: false,
+    //             success: function (data) {
+    //                 $('#register_store')[0].reset();
+
+    // $('.error-message').text('')
+    // Swal.fire({
+    //     icon: 'success',
+    //     title: `<h5> ${data.message}</h5> `,
+    //     showConfirmButton: false,
+    //     timer: 1500
+    // });
+
+    //                 $('#reg_btn').prop('disabled', false);
+
+
+    //                 // Show the button
+    //                 $('#reg_btn').show();
+
+    //                 // Remove the spinner
+    //                 $('#reg_btn').next('.spinner-border').remove();
+
+    //                 // ajax reload
+    //                 setTimeout(function () {
+    //                     location.reload();
+    //                 }, 1500);
+
+
+
+    //             },
+    //             error: function (data) {
+    //                 console.log(data, 'data');
+    //                 $('.error-message').text('');
+    //                 // Display validation errors under each input
+    //                 var errors = data.responseJSON.errors;
+    //                 $.each(errors, function (field, messages) {
+    //                     var errorMessage = messages.join(', ');
+    //                     console.log('#' + field + '_error');
+    //                     $('#' + field + '_error').text(errorMessage);
+
+    //                 });
+
+    //                 $('#reg_btn').prop('disabled', false);
+
+
+    //                 // Show the button
+    //                 $('#reg_btn').show();
+
+    //                 // Remove the spinner
+    //                 $('#reg_btn').next('.spinner-border').remove();
+    //             },
+
+    //         });
+    //     })
 
 
     $(document).on('submit', '#storeLogin', function (e) {
@@ -94,7 +268,7 @@ $(document).ready(function () {
 
         var formData = new FormData($('#storeLogin')[0]);
 
-        console.log('test');
+
         var url = this.action;
 
         $.ajax({
@@ -549,5 +723,5 @@ $(document).ready(function () {
 
     });
 
-   
+
 });

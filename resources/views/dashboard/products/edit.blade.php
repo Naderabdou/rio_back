@@ -12,7 +12,7 @@
                 <div class="content-header-left col-md-9 col-12 mb-2">
                     <div class="row breadcrumbs-top">
                         <div class="col-12">
-                            @if ($errors->any())
+                            {{-- @if ($errors->any())
                                 <div class="alert alert-danger">
                                     <ul>
                                         @foreach ($errors->all() as $error)
@@ -21,7 +21,7 @@
                                     </ul>
                                 </div>
 
-                            @endif
+                            @endif --}}
                             <div class="breadcrumb-wrapper">
                                 <ol class="breadcrumb">
                                     <li class="breadcrumb-item"><a
@@ -61,6 +61,8 @@
                                         @csrf
                                         @method('PUT')
                                         <div class="row" id="append">
+                                            <input type="hidden" id="id" value="{{ $product->id }}" name="id">
+
                                             <div class="col-6">
                                                 <div class="form-group">
                                                     <label for="name_ar">{{ transWord('الأسم بالعربية') }}</label>
@@ -120,7 +122,8 @@
                                                 <div class="form-group">
                                                     <label for="label_ar">{{ transWord('ملصق باللغه العربيه') }}</label>
                                                     <input type="text" id="label_ar" class="form-control"
-                                                        name="label_ar" value="{{ old('label_ar', $product->label_ar) }}" />
+                                                        name="label_ar"
+                                                        value="{{ old('label_ar', $product->label_ar) }}" />
                                                     @error('label_ar')
                                                         <span class="alert alert-danger">
                                                             <small class="errorTxt">{{ $message }}</small>
@@ -132,7 +135,8 @@
                                                 <div class="form-group">
                                                     <label for="label_en">{{ transWord('ملصق باللغه الانجليزيه') }}</label>
                                                     <input type="text" id="label_en" class="form-control"
-                                                        name="label_en" value="{{ old('label_en', $product->label_en) }}" />
+                                                        name="label_en"
+                                                        value="{{ old('label_en', $product->label_en) }}" />
                                                     @error('label_en')
                                                         <span class="alert alert-danger">
                                                             <small class="errorTxt">{{ $message }}</small>
@@ -248,7 +252,7 @@
                                                 </div>
                                             </div>
 
-                                            <div class="col-6">
+                                            <div class="col-3">
                                                 <div class="form-group">
                                                     <label for="price">{{ transWord('السعر') }}</label>
                                                     <input type="number" id="price" class="form-control"
@@ -261,7 +265,8 @@
                                                     @enderror
                                                 </div>
                                             </div>
-                                            <div class="col-6">
+
+                                            <div class="col-3">
                                                 <div class="form-group">
                                                     <label for="discount">{{ transWord('الخصم') }}</label>
                                                     <input type="number" id="discount" class="form-control"
@@ -275,7 +280,7 @@
                                                 </div>
                                             </div>
 
-                                            <div class="col-6">
+                                            <div class="col-3">
                                                 <div class="form-group">
                                                     <label
                                                         for="price_after_discount">{{ transWord('السعر بعد الخصم') }}</label>
@@ -290,20 +295,33 @@
                                                     @enderror
                                                 </div>
                                             </div>
-                                            <div class="col-6">
+                                            <div class="col-3">
                                                 <div class="form-group">
-                                                    <label for="stock">{{ transWord('الكميه') }}</label>
-                                                    <input type="number" id="stock" class="form-control"
-                                                        name="stock" value="{{ old('stock', $product->stock) }}"
-                                                        min="1" />
-                                                    @error('stock')
+                                                    <label for="list_price">{{ transWord('سعر الكرتونه') }}</label>
+                                                    <input type="number" id="list_price" class="form-control"
+                                                        name="list_price"
+                                                        value="{{ old('list_price', $product->list_price) }}"
+                                                        min="0" />
+                                                    @error('list_price')
                                                         <span class="alert alert-danger">
                                                             <small class="errorTxt">{{ $message }}</small>
                                                         </span>
                                                     @enderror
                                                 </div>
                                             </div>
-
+                                            <div class="col-12">
+                                                <div class="form-group">
+                                                    <label for="code_product">{{ transWord('كود المنتج') }}</label>
+                                                    <input type="text" id="code_product" class="form-control"
+                                                        name="code_product"
+                                                        value="{{ old('code_product', $product->code_product) }}" />
+                                                    @error('code_product')
+                                                        <span class="alert alert-danger">
+                                                            <small class="errorTxt">{{ $message }}</small>
+                                                        </span>
+                                                    @enderror
+                                                </div>
+                                            </div>
 
                                             <div class="col-12">
                                                 <div class="form-group">
@@ -323,75 +341,129 @@
                                                 </div>
                                             </div>
                                             <div class="col-12">
-                                                <h2 style="display: contents">{{ transWord('تفاصيل المنتج') }}</h2>
-                                                <button id="btn_add_detiles" type="button" onclick="add();"
+                                                <h2 style="display: contents">{{ transWord('تفاصيل الكرتونه') }}</h2>
+                                                {{-- <button id="btn_add_detiles" type="button" onclick="add();"
                                                     class="btn btn-primary my-2" style="margin-right :14px"><i
-                                                        class="fa-solid fa-plus"></i></button>
+                                                        class="fa-solid fa-plus"></i></button> --}}
+                                            </div>
+                                            <div class="col-6">
+                                                <div class="form-group">
+                                                    <label
+                                                        for="dimensions_carton">{{ transWord('ابعاد الكرتونه') }}</label>
+                                                    <input type="text" id="dimensions_carton" class="form-control"
+                                                        name="dimensions_carton"
+                                                        value="{{ old('dimensions_carton', $product->details->dimensions_carton) }}" />
+                                                    @error('dimensions_carton')
+                                                        <span class="alert alert-danger">
+                                                            <small class="errorTxt">{{ $message }}</small>
+                                                        </span>
+                                                    @enderror
+                                                </div>
+                                            </div>
+                                            <div class="col-6">
+                                                <div class="form-group">
+                                                    <label for="num_carton">{{ transWord('العدد في الكرتونه') }}</label>
+                                                    <input type="text" id="num_carton" class="form-control"
+                                                        name="num_carton"
+                                                        value="{{ old('num_carton', $product->details->num_carton) }}" />
+                                                    @error('num_carton')
+                                                        <span class="alert alert-danger">
+                                                            <small class="errorTxt">{{ $message }}</small>
+                                                        </span>
+                                                    @enderror
+                                                </div>
+                                            </div>
+                                            <div class="col-6">
+                                                <div class="form-group">
+                                                    <label for="size_carton">{{ transWord('حجم الكرتونه') }}</label>
+                                                    <input type="text" id="size_carton" class="form-control"
+                                                        name="size_carton"
+                                                        value="{{ old('size_carton', $product->details->size_carton) }}" />
+                                                    @error('size_carton')
+                                                        <span class="alert alert-danger">
+                                                            <small class="errorTxt">{{ $message }}</small>
+                                                        </span>
+                                                    @enderror
+                                                </div>
+                                            </div>
+                                            <div class="col-6">
+                                                <div class="form-group">
+                                                    <label for="weight_carton">{{ transWord('وزن الكرتونه') }}</label>
+                                                    <input type="text" id="weight_carton" class="form-control"
+                                                        name="weight_carton"
+                                                        value="{{ old('weight_carton', $product->details->weight_carton) }}" />
+                                                    @error('weight_carton')
+                                                        <span class="alert alert-danger">
+                                                            <small class="errorTxt">{{ $message }}</small>
+                                                        </span>
+                                                    @enderror
+                                                </div>
                                             </div>
 
-                                            @php
-                                                // Fetch old input values for Arabic and English keys and values
-                                                $old_keys_ar = old(
-                                                    'key_ar',
-                                                    $product->details->pluck('key_ar')->toArray(),
-                                                );
-                                                $old_values_ar = old(
-                                                    'value_ar',
-                                                    $product->details->pluck('value_ar')->toArray(),
-                                                );
-                                                $old_keys_en = old(
-                                                    'key_en',
-                                                    $product->details->pluck('key_en')->toArray(),
-                                                );
-                                                $old_values_en = old(
-                                                    'value_en',
-                                                    $product->details->pluck('value_en')->toArray(),
-                                                );
-                                            @endphp
 
-                                            @for ($i = 0; $i < max(count($old_keys_ar), count($old_values_ar), count($old_keys_en), count($old_values_en)); $i++)
-                                                <div class="col-12 color{{ $i }}">
-                                                    <div class="row">
-                                                        @foreach ([['key_ar', 'اسم الصفة بالعربي', $old_keys_ar], ['value_ar', 'القيمه بالعربي', $old_values_ar], ['key_en', 'اسم الصفة بالانجليزي', $old_keys_en], ['value_en', 'القيمه بالانجليزي', $old_values_en]] as $field)
-                                                            <div class="col-3">
-                                                                <div class="form-group">
-                                                                    <label
-                                                                        for="{{ $field[0] }}.{{ $i }}">{{ transWord($field[1]) }}</label>
-                                                                    <input type="text"
-                                                                        id="{{ $field[0] }}.{{ $i }}"
-                                                                        class="form-control color"
-                                                                        name="{{ $field[0] }}[]"
-                                                                        value="{{ $field[2][$i] ?? '' }}">
-                                                                    @if ($errors->has($field[0] . '.' . $i))
-                                                                        <span class="alert alert-danger">
-                                                                            <small
-                                                                                class="errorTxt">{{ $errors->first($field[0] . '.' . $i) }}</small>
-                                                                        </span>
-                                                                    @endif
-                                                                </div>
+                                            <div class="col-12">
+                                                <h2 style="display: contents">{{ transWord('تفاصيل المنتج') }}</h2>
+                                                {{-- <button id="btn_add_detiles" type="button" onclick="add();"
+                                                    class="btn btn-primary my-2" style="margin-right :14px"><i
+                                                        class="fa-solid fa-plus"></i></button> --}}
+                                            </div>
+
+                                            <div class="col-6">
+                                                <div class="form-group">
+                                                    <label
+                                                        for="dimensions_product">{{ transWord('ابعاد المنتج') }}</label>
+                                                    <input type="text" id="dimensions_product" class="form-control"
+                                                        name="dimensions_product"
+                                                        value="{{ old('dimensions_product', $product->details->dimensions_product) }}" />
+                                                    @error('dimensions_product')
+                                                        <span class="alert alert-danger">
+                                                            <small class="errorTxt">{{ $message }}</small>
+                                                        </span>
+                                                    @enderror
+                                                </div>
+                                            </div>
+                                            <div class="col-6">
+                                                <div class="form-group">
+                                                    <label>{{ transWord('الالوان') }}</label>
+                                                    <div id="colorInputsContainer">
+                                                        <!-- Dynamic color inputs -->
+                                                        @php
+                                                            $colors = old('color', $product->details->color); // Ensure there's at least one input
+                                                        @endphp
+
+                                                        @foreach ($colors as $index => $color)
+                                                            <div class="input-group mb-1">
+                                                                <input type="color" class="form-control color-input"
+                                                                    name="color[]" value="{{ $color }}">
+                                                                @if ($index > 0)
+                                                                    <!-- Add remove button for additional inputs -->
+                                                                    <div class="input-group-append">
+                                                                        <button type="button"
+                                                                            class="btn btn-outline-danger remove-color">X</button>
+                                                                    </div>
+                                                                @endif
                                                             </div>
                                                         @endforeach
                                                     </div>
+                                                    <button type="button" id="addColorButton" class="btn btn-primary">+
+                                                        {{ transWord('إضافة لون') }}</button>
+                                                    @error('color')
+                                                        <span class="alert alert-danger">
+                                                            <small class="errorTxt">{{ $message }}</small>
+                                                        </span>
+                                                    @enderror
                                                 </div>
-                                                <div class="col-3">
-                                                    <button style="margin-right: 14px;" type="button"
-                                                        onclick="remove(this);" class="btn btn-danger my-2"
-                                                        id="color{{ $i }}">
-                                                        <i class="fa-solid fa-trash"></i> حذف
-                                                    </button>
-                                                </div>
-                                            @endfor
-
+                                            </div>
 
 
 
 
                                         </div>
-
+                                        {{--
                                         <div id="add_colors_div">
 
 
-                                        </div>
+                                        </div> --}}
 
 
 
@@ -413,10 +485,50 @@
     <!-- END: Content-->
 
     @push('js')
+        <script>
+            $(document).ready(function() {
+                $('#addColorButton').click(function() {
+                    var $container = $('#colorInputsContainer');
+
+
+
+
+                    var $inputGroup = $('<div>', {
+                        'class': 'input-group mb-1'
+                    });
+                    var $colorInput = $('<input>', {
+                        type: 'color',
+                        'class': 'form-control color-input',
+                        name: 'color[]'
+                    });
+                    var $inputGroupAppend = $('<div>', {
+                        'class': 'input-group-append'
+                    });
+                    var $removeButton = $('<button>', {
+                        'class': 'btn btn-outline-danger remove-color',
+                        type: 'button',
+                        text: 'X'
+                    }).click(function() {
+                        $(this).closest('.input-group').remove();
+                    });
+
+                    $inputGroupAppend.append($removeButton);
+                    $inputGroup.append($colorInput).append($inputGroupAppend);
+                    $container.append($inputGroup);
+                });
+
+                // Since new buttons are dynamically added, use event delegation for the remove button
+                $(document).on('click', '.remove-color', function() {
+                    $(this).closest('.input-group').remove();
+                });
+            });
+            window.urlCode = '{{ route('admin.check.productCode') }}';
+
+        </script>
         <script src="{{ asset('dashboard/app-assets/js/custom/preview-image.js') }}"></script>
-        <script src="https://cdn.tiny.cloud/1/ncu4y607nayo1coo3vekski4tweqhf55lrvzpu0mnmnsstgw/tinymce/6/tinymce.min.js"
+        <script src="https://cdn.tiny.cloud/1/nqqnlyok2ya9y18ja9f7rjy4bho16qirkol34bn56fq5wqg5/tinymce/6/tinymce.min.js"
             referrerpolicy="origin"></script>
-            <script src="{{ asset('dashboard/assets/js/custom/validation/products.js') }}"></script>
+        <script src="{{ asset('dashboard/assets/js/custom/validation/products.js') }}"></script>
         <script>
             // 'anchor autolink charmap codesample emoticons image link lists media searchreplace table visualblocks wordcount'
             tinymce.init({
@@ -440,102 +552,7 @@
         </script>
 
 
-        <script>
-            var i = 0;
 
-            function add() {
-                var newElement =
-                    `<div class="col-12 color${i}" >
-                                                <div class="row">
-                                                    <div class="col-3">
-                                                        <div class="form-group">
-                                                            <label for="key_ar">{{ transWord('اسم الصفة بالعربي') }}</label>
-                                                            <input type="text" id="key_ar"" class="form-control color" name="key_ar[]"
-                                                                value="" >
-                                                            @error('key_ar')
-                                                                <span class="alert alert-danger">
-                                                                    <small class="errorTxt">{{ $message }}</small>
-                                                                </span>
-                                                            @enderror
-                                                        </div>
-                                                    </div>
-                                                    <div class="col-3">
-                                                        <div class="form-group">
-                                                            <label for="value_ar">{{ transWord('القيمه بالعربي') }}</label>
-                                                            <input type="text" id="value_ar" class="form-control color" name="value_ar[]"
-                                                                value="" />
-                                                            @error('value_ar')
-                                                                <span class="alert alert-danger">
-                                                                    <small class="errorTxt">{{ $message }}</small>
-                                                                </span>
-                                                            @enderror
-                                                        </div>
-                                                    </div>
-                                                    <div class="col-3">
-                                                        <div class="form-group">
-                                                            <label for="key_en">{{ transWord('اسم الصفة بالانجليزي') }}</label>
-                                                            <input type="text" id="key_en" class="form-control color" name="key_en[]"
-                                                                value="" />
-                                                            @error('key_en')
-                                                                <span class="alert alert-danger">
-                                                                    <small class="errorTxt">{{ $message }}</small>
-                                                                </span>
-                                                            @enderror
-                                                        </div>
-                                                    </div>
-                                                    <div class="col-3">
-                                                        <div class="form-group">
-                                                            <label for="value_en">{{ transWord('القيمه بالانجليزي') }}</label>
-                                                            <input type="text" id="value_en" class="form-control color" name="value_en[]"
-                                                                value="" />
-                                                            @error('value_en')
-                                                                <span class="alert alert-danger">
-                                                                    <small class="errorTxt">{{ $message }}</small>
-                                                                </span>
-                                                            @enderror
-                                                        </div>
-                                                    </div>
-                                                </div>
-
-
-
-                                            </div>
-                    <button style='margin-right:14px' type="button" onclick="remove(this);"class="btn btn-danger my-2 " id="color${i}"><i class="fa-solid fa-trash"></i> حذف </button>`
-                $("#add_colors_div").append(newElement);
-
-                //  document.getElementById("add_colors_div").innerHTML = document.getElementById("add_colors_div").innerHTML +
-
-
-                i++;
-            }
-
-            function remove(e) {
-                var button = e.id;
-                var id = document.getElementsByClassName(button)[0].remove();
-                e.remove();
-            }
-
-            function deleteRow(button) {
-                var row = button.parentElement.parentElement;
-                row.parentElement.removeChild(row);
-            }
-            $('#display_price_after_discount').hide();
-            $('#display_start_date').hide();
-            $('#display_end_date').hide();
-
-            $('#has_discount').change(function() {
-                if (this.value == true) {
-                    $('#display_price_after_discount').show();
-                    $('#display_start_date').show();
-                    $('#display_end_date').show();
-
-                } else {
-                    $('#display_price_after_discount').hide();
-                    $('#display_start_date').hide();
-                    $('#display_end_date').hide();
-                }
-            });
-        </script>
         <script>
             $(document).ready(function() {
                 $('.select_2').select2();

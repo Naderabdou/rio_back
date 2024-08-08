@@ -23,8 +23,9 @@
                                     <ul class="list-unstyled">
                                         <li><b class="text-primary">{{ transWord('الاسم') }} : </b> {{ $order->name }}</li>
                                         <li><b class="text-primary">{{ transWord('الايميل') }} : </b> {{ $order->email }}</li>
-                                        <li><b class="text-primary"> {{ transWord('رقم الجوال') }} : </b> {{ $order->phone }}</li>
-                                        <li><b class="text-primary"> {{ transWord('العنوان') }} : </b> {{ $order->address }}</li>
+                                        <li><b class="text-primary">{{ transWord('رقم الجوال') }} : </b> {{ $order->phone }}</li>
+                                        <li><b class="text-primary"> {{ transWord(' رقم الجوال الاخر') }} : </b> {{ $order->user->additional_phone; }}</li>
+                                        <li><b class="text-primary"> {{ transWord('العنوان') }} : </b> {{ $order->address }} - {{ $order->city }} - {{ $order->country }}</li>
                                     </ul>
                                 </div>
                             </div>
@@ -54,10 +55,10 @@
                                             <span class="badge badge-success">
                                                 {{ transWord($order->status) }}
                                             </span>
-                                            @elseif ($order->status === 'declined')
-                                            <span class="badge badge-warning">
+                                            {{-- @elseif ($order->status === 'declined')
+                                            <span class="badge badge-danger">
                                                 {{ transWord($order->status) }}
-                                            </span>
+                                            </span> --}}
                                         @endif
                                         </li>
                                     </ul>
@@ -71,9 +72,12 @@
                                     <hr>
                                     <ul class="list-unstyled">
                                         <li><b class="text-primary"> {{ transWord('السعر الكلي') }} : </b> {{ $order->total_price }}</li>
-                                        <li><b class="text-primary"> {{transWord('الخصم')}} : </b> {{ $order->discount ?? 0  }}</li>
-                                        <li><b class="text-primary"> {{transWord('السعر السعر الكلي بعد الخصم')}} : </b> {{ $order->price_before_discount }}</li>
-
+                                        <li><b class="text-primary"> {{transWord('سعر الشحن')}} : </b> {{ $order->tax ?? 0  }}</li>
+                                        @if ($order->coupon_value)
+                                        <li><b class="text-primary"> {{transWord('السعر السعر الكلي بعد الخصم')}} : </b> {{  $order->price_before_discount +$order->tax - $order->coupon_value }}</li>
+                                        @else
+                                        <li><b class="text-primary"> {{transWord('السعر السعر الكلي بعد الخصم')}} : </b> {{  $order->price_before_discount + $order->tax }}</li>
+                                        @endif
                                     </ul>
                                 </div>
                             </div>
@@ -82,11 +86,11 @@
                         <div class="col-6">
                             <div class="card mb-4">
                                 <div class="card-body">
-                                    <h4 class="card-title text-primary">{{ transWord('تفاصيل اخرى') }}</h4>
+                                    <h4 class="card-title text-primary">{{ transWord('تفاصيل الدفع والكوبون') }}</h4>
                                     <hr>
                                     <ul class="list-unstyled">
                                         <li><b class="text-primary"> {{ transWord('كود الكوبون') }} : </b> {{ $order->coupon_code ?? transWord('لايوجد ') }}</li>
-                                        <li><b class="text-primary"> {{transWord('سعر الكوبون')}} : </b> {{ $order->coupon_price ?? transWord('لايوجد ') }}</li>
+                                        <li><b class="text-primary"> {{transWord('سعر الكوبون')}} : </b> {{ $order->coupon_value ?? transWord('لايوجد ') }}</li>
                                         <li><b class="text-primary"> {{transWord('وسيله الدفع')}} : </b> {{ $order->payment_method ?? transWord('لايوجد ')}}</li>
 
                                     </ul>
@@ -112,6 +116,7 @@
                                                     <th class="py-1">{{ transWord('اسم المنتج') }}</th>
                                                     <th class="py-1">{{ transWord('السعر') }}</th>
                                                     <th class="py-1">{{ transWord('الكميه') }}</th>
+                                                    <th class="py-1">{{ transWord('المجموع') }}</th>
                                                 </tr>
                                             </thead>
                                             <tbody>
@@ -133,6 +138,10 @@
 
                                                         <td class="py-1">
                                                             {{ $orderItem->quantity }}
+                                                        </td>
+
+                                                        <td class="py-1">
+                                                            {{ $orderItem->price * $orderItem->quantity }}
                                                         </td>
 
 
